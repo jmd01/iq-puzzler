@@ -55,6 +55,8 @@ export const SpheresCrossUnitedSvg = ({
       transform="translate(142.667 53.333)"
       vectorEffect="non-scaling-stroke"
       // onClick={onClickPath}
+      className="piece"
+      id="piece-1"
       ref={setNodeRef}
       {...listeners}
       {...attributes}
