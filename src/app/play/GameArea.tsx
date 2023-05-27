@@ -19,6 +19,7 @@ import {
   calcUnplacedPosition,
   cellSize,
   generateGameState,
+  getPieceIdOnMouseDown,
   isActivePieceOverBoard,
   removePieceFromBoard,
 } from "./utils";
@@ -129,9 +130,12 @@ export const GameArea = ({
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
+      // Prevent drags on the board getting in the way of a drag on a piece
       event.preventDefault();
+
       if (!state.isMouseDown) return;
       if (!state.activePieceId) return;
+      
       dispatch({
         type: "DRAG_MOVE",
         position: { x: event.clientX, y: event.clientY },
@@ -142,13 +146,9 @@ export const GameArea = ({
         (piece) => piece.id === state.activePieceId
       );
       if (activePiece && activePiece.placedInCells) {
-        const updatedGrid = removePieceFromBoard(
-          gameState.grid,
-          activePiece.placedInCells
-        );
         setGameState({
           ...gameState,
-          grid: updatedGrid,
+          grid: removePieceFromBoard(gameState.grid, activePiece.placedInCells),
         });
 
         setPieces(
@@ -238,16 +238,14 @@ export const GameArea = ({
     },
     [
       state.isDragging,
-      state.activePieceId,
       state.previewPiece,
-      state.dragPosition?.x,
-      state.dragPosition?.y,
-      state.onMouseDownPosition?.x,
-      state.onMouseDownPosition?.y,
+      state.activePieceId,
+      state.dragPosition,
+      state.onMouseDownPosition,
       setPieces,
       pieces,
       boardBounds,
-      gameState,
+      gameState.grid,
     ]
   );
 
@@ -276,35 +274,3 @@ export const GameArea = ({
   );
 };
 
-// TODO: this doesn't work if the pieces areen't place but are overlapping, need to calc the xy of the pieces
-const getPieceIdOnMouseDown = (
-  target: HTMLElement,
-  pieces: Piece[]
-): Piece["id"] | undefined => {
-  if (target.id.includes("piece")) {
-    return target.id.split("-")?.[1];
-  }
-
-  const cellData = target.getAttribute("data-board-cell")?.split(",");
-
-  const cell: [number, number] | undefined =
-    cellData && cellData.length === 2
-      ? [parseInt(cellData[0]), parseInt(cellData[1])]
-      : undefined;
-
-  console.log({ cellData, cell, pieces });
-  if (cell) {
-    return clickedPlacedPieceId(cell, pieces);
-  }
-};
-
-const clickedPlacedPieceId = (
-  clickedCell: [number, number],
-  pieces: Piece[]
-): Piece["id"] | undefined => {
-  return pieces.find((piece) => {
-    return piece.placedInCells?.some(
-      (cell) => cell[0] === clickedCell[0] && cell[1] === clickedCell[1]
-    );
-  })?.id;
-};

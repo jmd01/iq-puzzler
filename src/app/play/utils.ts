@@ -3,6 +3,44 @@ import type { GameState, Piece, PreviewPiece } from "./types";
 export const cellSize = 64;
 
 /**
+ * On mousedown, determine whether the target is a piece or a cell on the board
+ * TODO: this doesn't work if the pieces aren't placed but are overlapping. Will need use an overlay for the rest of the game area and calc the xy of the pieces to determine if one was clicked
+ */
+export const getPieceIdOnMouseDown = (
+  target: HTMLElement,
+  pieces: Piece[]
+): Piece["id"] | undefined => {
+  if (target.id.includes("piece")) {
+    return target.id.split("-")?.[1];
+  }
+
+  const cellData = target.getAttribute("data-board-cell")?.split(",");
+
+  const cell: [number, number] | undefined =
+    cellData && cellData.length === 2
+      ? [parseInt(cellData[0]), parseInt(cellData[1])]
+      : undefined;
+
+  if (cell) {
+    return getPlacedPieceIdFromCell(cell, pieces);
+  }
+};
+
+/**
+ * When clicking a cell on the board, if a piece is placed there, get its ID
+ */
+const getPlacedPieceIdFromCell = (
+  clickedCell: [number, number],
+  pieces: Piece[]
+): Piece["id"] | undefined => {
+  return pieces.find((piece) => {
+    return piece.placedInCells?.some(
+      (cell) => cell[0] === clickedCell[0] && cell[1] === clickedCell[1]
+    );
+  })?.id;
+};
+
+/**
  * When dragging a piece, determine whether it is over the board.
  * The buffer allows a piece to be considered over the board even if piece is not fully over the board
  */
