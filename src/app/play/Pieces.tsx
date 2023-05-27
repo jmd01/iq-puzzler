@@ -58,7 +58,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
 ) {
   const {
     id,
-    isOverBoard,
     position,
     rotation,
     shape,
@@ -80,6 +79,11 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   const y = isDragging ? draggingTransform.y + position.y : position.y;
   const style = {
     transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn)`,
+    /**
+     * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
+     * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
+     */
+    zIndex: isPlaced ? 0 : 20,
   };
 
   const onClickPath = useCallback(() => {
@@ -123,7 +127,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       style={{
         width: "13rem",
         position: "relative",
-        zIndex: isPlaced ? 0 : 1,
         ...style,
       }}
     >

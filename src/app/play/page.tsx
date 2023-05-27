@@ -13,7 +13,6 @@ export default function Page() {
 const generatePieces = (): Piece[] =>
   [...Array(10)].map((_, i) => ({
     id: i.toString(),
-    isOverBoard: false,
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,

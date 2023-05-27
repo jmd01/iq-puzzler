@@ -56,7 +56,8 @@ type GameAreaAction =
     }
   | { type: "MOUSE_UP" }
   | { type: "DRAG_MOVE"; position: { x: number; y: number } }
-  | { type: "DRAG_OVER_BOARD"; previewPiece: PreviewPiece };
+  | { type: "DRAG_OVER_BOARD"; previewPiece: PreviewPiece }
+  | { type: "DRAG_OUTSIDE_BOARD" };
 
 const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   switch (action.type) {
@@ -87,6 +88,11 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
       return {
         ...state,
         previewPiece: action.previewPiece,
+      };
+    case "DRAG_OUTSIDE_BOARD":
+      return {
+        ...state,
+        previewPiece: undefined,
       };
     default:
       throw new Error();
@@ -182,15 +188,21 @@ export const GameArea = ({
             const previewPiece = boardsCellsCoveredByPiece(
               pieceBounds,
               boardBounds,
-              activePiece.shape
+              activePiece.shape,
             );
             previewPiece &&
               dispatch({
                 type: "DRAG_OVER_BOARD",
                 previewPiece,
               });
+            return;
           }
         }
+
+        // If active piece is not over the board, remove any existing preview piece
+        dispatch({
+          type: "DRAG_OUTSIDE_BOARD",
+        });
       }
     },
     [
@@ -200,6 +212,7 @@ export const GameArea = ({
       setPieces,
       state.activePieceId,
       state.isMouseDown,
+      state.onMouseDownPosition,
     ]
   );
 
