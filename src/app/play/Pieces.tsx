@@ -1,59 +1,80 @@
-"use client";
-import { useCallback } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg1";
 import { GameAreaDragState } from "./GameArea";
-
-export type Rotation = 0 | 0.25 | 0.5 | 0.75;
-export type Piece = {
-  id: string;
-  isOverBoard: boolean;
-  position: { x: number; y: number };
-  rotation: Rotation;
-  shape: [number, number, number][];
-  size: [number, number];
-  isActivePiece: boolean;
-  onMouseDownPosition?: { x: number; y: number };
-  dragPosition?: { x: number; y: number };
-};
+import type { Piece as PieceType } from "./types";
+import { type } from "os";
+import { mergeRefs } from "./utils";
 
 export type PiecesProps = {
-  pieces: Piece[];
-  activePieceId: Piece["id"] | undefined;
+  pieces: PieceType[];
+  setPieces: Dispatch<SetStateAction<PieceType[]>>;
+  activePieceId: PieceType["id"] | undefined;
   state: GameAreaDragState;
 };
-export const Pieces = ({ pieces, activePieceId, state }: PiecesProps) => {
+export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
+  { pieces, setPieces, activePieceId, state },
+  activePieceRef
+) {
   return (
     <div className="flex flex-wrap gap-4 items-center justify-items-center p-4 bg-gradient-to-b from-slate-300 to-slate-400">
       {pieces.map((piece) => {
         const isActivePiece = activePieceId === piece.id;
+        const pieceProps: PieceType = {
+          ...piece,
+          isActivePiece,
+          onMouseDownPosition: isActivePiece
+            ? state.onMouseDownPosition
+            : undefined,
+          dragPosition: isActivePiece ? state.dragPosition : undefined,
+        };
 
         return (
           <Piece
             key={piece.id}
-            {...piece}
-            isActivePiece={isActivePiece}
-            onMouseDownPosition={
-              isActivePiece ? state.onMouseDownPosition : undefined
-            }
-            dragPosition={isActivePiece ? state.dragPosition : undefined}
+            piece={pieceProps}
+            setPieces={setPieces}
+            // isActivePiece={isActivePiece}
+            // onMouseDownPosition={
+            //   isActivePiece ? state.onMouseDownPosition : undefined
+            // }
+            // dragPosition={isActivePiece ? state.dragPosition : undefined}
+            ref={isActivePiece ? activePieceRef : undefined}
           />
         );
       })}
     </div>
   );
+});
+
+export type PieceProps = {
+  piece: PieceType;
+  setPieces: Dispatch<SetStateAction<PieceType[]>>;
 };
 
-export const Piece = ({
-  id,
-  isOverBoard,
-  position,
-  rotation,
-  shape,
-  size,
-  isActivePiece,
-  onMouseDownPosition = { x: 0, y: 0 },
-  dragPosition,
-}: Piece) => {
+export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
+  { piece, setPieces },
+  activePieceRef
+) {
+  const {
+    id,
+    isOverBoard,
+    position,
+    rotation,
+    shape,
+    size,
+    isActivePiece,
+    onMouseDownPosition = { x: 0, y: 0 },
+    dragPosition,
+  } = piece;
   const isDragging = isActivePiece && !!dragPosition;
 
   const draggingTransform = {
@@ -71,8 +92,26 @@ export const Piece = ({
     // setRotation(rotation === 0.75 ? 0 : ((rotation + 0.25) as Rotation));
   }, []);
 
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const initialPosition = ref.current?.getBoundingClientRect();
+    if (initialPosition) {
+      setPieces((pieces) =>
+        pieces.map((piece) =>
+          piece.id === id
+            ? {
+                ...piece,
+                initialPosition: { x: initialPosition.x, y: initialPosition.y },
+              }
+            : piece
+        )
+      );
+    }
+  }, []);
+
   return (
     <div
+      ref={mergeRefs([activePieceRef, ref])}
       style={{
         width: "13rem",
         position: "relative",
@@ -87,4 +126,4 @@ export const Piece = ({
       />
     </div>
   );
-};
+});

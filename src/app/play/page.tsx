@@ -1,7 +1,7 @@
 "use client";
 
 import { GameArea } from "./GameArea";
-import { Piece } from "./Pieces";
+import { Piece } from "./types";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -84,6 +84,7 @@ const generatePieces = (): Piece[] =>
   [...Array(10)].map((_, i) => ({
     id: i.toString(),
     isOverBoard: false,
+    initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
     shape: [
@@ -94,4 +95,5 @@ const generatePieces = (): Piece[] =>
     ],
     size: [3, 4],
     isActivePiece: false,
+    ref: {current: null}
   }));

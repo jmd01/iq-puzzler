@@ -1,9 +1,12 @@
 import { RefObject } from "react";
+import { PreviewPiece } from "./types";
 
 export const Board = ({
   boardRef,
+  previewPiece,
 }: {
   boardRef: RefObject<HTMLDivElement>;
+  previewPiece: PreviewPiece | undefined;
 }) => {
   return (
     <div className="grid grid-cols-1 items-center justify-items-center p-4">
@@ -21,12 +24,26 @@ export const Board = ({
             </div>
           </div>
           <div className="inline-grid grid-cols-12" ref={boardRef}>
-            {[...Array(72)].map((_, i) => (
-              <span
-                key={i}
-                className="w-16 h-16 rounded-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-slate-800 to-slate-400"
-              />
-            ))}
+            {[...Array(72)].map((_, i) => {
+              const x = i % 12;
+              const y = Math.floor(i / 12);
+              const isPreview = previewPiece?.cells?.some(
+                ([previewX, previewY]) => previewX === x && previewY === y
+              );
+              // console.log({ x, y, isPreview });
+
+              return (
+                <span
+                  key={i}
+                  className={`w-16 h-16 rounded-full transition-all bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] ${
+                    isPreview
+                      ? "from-slate-500 to-slate-200"
+                      : "from-slate-800 to-slate-400"
+                  }`}
+                  data-board-cell={`${x},${y}`}
+                />
+              );
+            })}
           </div>
         </div>
       </div>

@@ -1,8 +1,21 @@
-"use client";
 import { Board } from "./Board";
-import { Pieces, Piece } from "./Pieces";
-import { useRef, useState, MouseEvent, useCallback, useReducer } from "react";
+import { Pieces } from "./Pieces";
+import {
+  useRef,
+  useState,
+  MouseEvent,
+  useCallback,
+  useReducer,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import type { Reducer } from "react";
+import {
+  boardsCellsCoveredByPiece,
+  cellSize,
+  isActivePieceOverBoard,
+} from "./utils";
+import type { Piece, PreviewPiece } from "./types";
 
 export type GameAreaDragState = {
   isMouseDown: boolean;
@@ -10,6 +23,7 @@ export type GameAreaDragState = {
   activePieceId?: Piece["id"];
   onMouseDownPosition?: { x: number; y: number };
   dragPosition?: { x: number; y: number };
+  previewPiece?: PreviewPiece;
 };
 
 const initialState: GameAreaDragState = {
@@ -18,6 +32,7 @@ const initialState: GameAreaDragState = {
   activePieceId: undefined,
   onMouseDownPosition: undefined,
   dragPosition: undefined,
+  previewPiece: undefined,
 };
 
 type GameAreaAction =
@@ -27,7 +42,8 @@ type GameAreaAction =
       activePieceId: Piece["id"];
     }
   | { type: "MOUSE_UP" }
-  | { type: "DRAG_MOVE"; position: { x: number; y: number } };
+  | { type: "DRAG_MOVE"; position: { x: number; y: number } }
+  | { type: "DRAG_OVER_BOARD"; previewPiece: PreviewPiece };
 
 const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   switch (action.type) {
@@ -46,12 +62,18 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
         isDragging: false,
         onMouseDownPosition: undefined,
         dragPosition: undefined,
+        previewPiece: undefined,
       };
     case "DRAG_MOVE":
       return {
         ...state,
         isDragging: true,
         dragPosition: action.position,
+      };
+    case "DRAG_OVER_BOARD":
+      return {
+        ...state,
+        previewPiece: action.previewPiece,
       };
     default:
       throw new Error();
@@ -70,13 +92,16 @@ export const GameArea = ({
   setPieces,
 }: {
   pieces: Piece[];
-  setPieces: (pieces: Piece[]) => void;
+  setPieces: Dispatch<SetStateAction<Piece[]>>;
 }) => {
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
+  const activePieceRef = useRef<HTMLDivElement>(null);
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(12, 6)
   );
+
+  const boardBounds = boardRef.current?.getBoundingClientRect();
 
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
@@ -102,8 +127,33 @@ export const GameArea = ({
         type: "DRAG_MOVE",
         position: { x: event.clientX, y: event.clientY },
       });
+
+      if (activePieceRef.current && boardBounds) {
+        const pieceBounds = activePieceRef.current.getBoundingClientRect();
+
+        const buffer = cellSize / 2;
+
+        // active piece is overboard
+        if (isActivePieceOverBoard(pieceBounds, boardBounds, buffer)) {
+          const activePiece = pieces.find(
+            ({ id }) => id === state.activePieceId
+          );
+          if (activePiece) {
+            const previewPiece = boardsCellsCoveredByPiece(
+              pieceBounds,
+              boardBounds,
+              activePiece.shape
+            );
+            previewPiece &&
+              dispatch({
+                type: "DRAG_OVER_BOARD",
+                previewPiece,
+              });
+          }
+        }
+      }
     },
-    [state.activePieceId, state.isMouseDown]
+    [boardBounds, pieces, state.activePieceId, state.isMouseDown]
   );
 
   const handleMouseUp = useCallback(
@@ -111,30 +161,59 @@ export const GameArea = ({
       if (state.isDragging) {
         setPieces(
           pieces.map((piece) => {
-            return state.activePieceId === piece.id
-              ? {
-                  ...piece,
-                  isActivePiece: false,
-                  position: {
-                    x:
-                      (state.dragPosition?.x ?? 0) -
-                      (state.onMouseDownPosition?.x ?? 0) +
-                      piece.position.x,
-                    y:
-                      (state.dragPosition?.y ?? 0) -
-                      (state.onMouseDownPosition?.y ?? 0) +
-                      piece.position.y,
-                  },
-                  onMouseDownPosition: undefined,
-                  dragPosition: undefined,
-                }
-              : piece;
+            if (state.activePieceId === piece.id && boardBounds) {
+              let newPosition = { x: 0, y: 0 };
+              if (state.previewPiece) {
+                newPosition = {
+                  x:
+                    boardBounds.left +
+                    state.previewPiece.x * cellSize -
+                    piece.initialPosition.x,
+                  y:
+                    boardBounds.top +
+                    state.previewPiece.y * cellSize -
+                    piece.initialPosition.y,
+                };
+              } else {
+                newPosition = {
+                  x:
+                    (state.dragPosition?.x ?? 0) -
+                    (state.onMouseDownPosition?.x ?? 0) +
+                    piece.position.x,
+                  y:
+                    (state.dragPosition?.y ?? 0) -
+                    (state.onMouseDownPosition?.y ?? 0) +
+                    piece.position.y,
+                };
+              }
+
+              return {
+                ...piece,
+                isActivePiece: false,
+                position: newPosition,
+                onMouseDownPosition: undefined,
+                dragPosition: undefined,
+              };
+            } else {
+              return piece;
+            }
           })
         );
       }
       dispatch({ type: "MOUSE_UP" });
     },
-    [pieces, setPieces, state]
+    [
+      boardBounds,
+      pieces,
+      state.previewPiece,
+      setPieces,
+      state.activePieceId,
+      state.dragPosition?.x,
+      state.dragPosition?.y,
+      state.isDragging,
+      state.onMouseDownPosition?.x,
+      state.onMouseDownPosition?.y,
+    ]
   );
 
   return (
@@ -144,11 +223,13 @@ export const GameArea = ({
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      <Board boardRef={boardRef} />
+      <Board boardRef={boardRef} previewPiece={state.previewPiece} />
       <Pieces
         pieces={pieces}
+        setPieces={setPieces}
         activePieceId={state.activePieceId}
         state={state}
+        ref={activePieceRef}
       />
     </div>
   );
