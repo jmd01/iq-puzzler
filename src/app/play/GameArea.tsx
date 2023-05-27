@@ -11,11 +11,13 @@ import {
 } from "react";
 import type { Reducer } from "react";
 import {
+  addPieceToBoard,
   boardsCellsCoveredByPiece,
   cellSize,
+  generateGameState,
   isActivePieceOverBoard,
 } from "./utils";
-import type { Piece, PreviewPiece } from "./types";
+import type { GameState, Piece, PreviewPiece } from "./types";
 
 export type GameAreaDragState = {
   isMouseDown: boolean;
@@ -23,6 +25,10 @@ export type GameAreaDragState = {
   activePieceId?: Piece["id"];
   onMouseDownPosition?: { x: number; y: number };
   dragPosition?: { x: number; y: number };
+  /**
+   *  Render a preview of where the active piece will drop on the board.
+   * Will only exist if the current position of the piece is placeble
+   */
   previewPiece?: PreviewPiece;
 };
 
@@ -80,13 +86,6 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   }
 };
 
-type GameState = {
-  grid: [number][];
-};
-const generateGameState = (x: number, y: number): GameState => ({
-  grid: Array(y).fill(Array(x).fill(0)),
-});
-
 export const GameArea = ({
   pieces,
   setPieces,
@@ -100,6 +99,7 @@ export const GameArea = ({
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(12, 6)
   );
+  // console.log(gameState);
 
   const boardBounds = boardRef.current?.getBoundingClientRect();
 
@@ -163,6 +163,7 @@ export const GameArea = ({
           pieces.map((piece) => {
             if (state.activePieceId === piece.id && boardBounds) {
               let newPosition = { x: 0, y: 0 };
+              // Piece was dropped on board in a placeable position
               if (state.previewPiece) {
                 newPosition = {
                   x:
@@ -174,6 +175,17 @@ export const GameArea = ({
                     state.previewPiece.y * cellSize -
                     piece.initialPosition.y,
                 };
+
+                const updatedGrid = addPieceToBoard(
+                  gameState.grid,
+                  state.previewPiece.cells
+                );
+                console.log({ updatedGrid });
+
+                setGameState({
+                  ...gameState,
+                  grid: updatedGrid,
+                });
               } else {
                 newPosition = {
                   x:
@@ -203,16 +215,17 @@ export const GameArea = ({
       dispatch({ type: "MOUSE_UP" });
     },
     [
-      boardBounds,
-      pieces,
-      state.previewPiece,
-      setPieces,
+      state.isDragging,
       state.activePieceId,
+      state.previewPiece,
       state.dragPosition?.x,
       state.dragPosition?.y,
-      state.isDragging,
       state.onMouseDownPosition?.x,
       state.onMouseDownPosition?.y,
+      setPieces,
+      pieces,
+      boardBounds,
+      gameState,
     ]
   );
 

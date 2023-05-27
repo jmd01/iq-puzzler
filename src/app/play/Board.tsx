@@ -30,7 +30,6 @@ export const Board = ({
               const isPreview = previewPiece?.cells?.some(
                 ([previewX, previewY]) => previewX === x && previewY === y
               );
-              // console.log({ x, y, isPreview });
 
               return (
                 <span
