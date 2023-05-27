@@ -1,45 +1,25 @@
-import { DraggableAttributes } from "@dnd-kit/core";
-import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { MouseEventHandler, SVGProps } from "react";
 
-export const SpheresCrossUnitedSvg = ({
+export const SpheresCrossUnitedSvg1 = ({
   onClickPath,
   isPlaceable,
-  setNodeRef,
-  listeners,
-  attributes,
+  id,
   ...props
 }: SVGProps<SVGSVGElement> & {
   onClickPath?: MouseEventHandler<SVGPathElement> | undefined;
   isPlaceable?: boolean;
-  setNodeRef: (element: SVGSVGElement | null) => void;
-  listeners: SyntheticListenerMap | undefined;
-  attributes: DraggableAttributes
-
+  id: string;
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlSpace="preserve"
-    width={208}
-    height={280}
-    viewBox="142.667 53.333 208 280"
-    style={
-      isPlaceable
-        ? {
-            position: "absolute",
-            top: isPlaceable ? 10 : 0,
-            left: isPlaceable ? 10 : 0,
-            zIndex: isPlaceable ? 0 : 1,
-          }
-        : {
-            position: "relative",
-            zIndex: 1,
-          }
-    }
-    // transform={isPlaceable ? "translate(10 -270)" : undefined}
+    width={192}
+    height={256}
+    viewBox="150.667 61.333 192 256"
+    {...props}
   >
     <path
-      d="M104 0c17.664 0 32 14.336 32 32 0 14.902-10.203 27.435-24 30.99v10.02c11.24 2.896 20.094 11.75 22.99 22.99h10.02c3.555-13.797 16.088-24 30.99-24 17.664 0 32 14.336 32 32s-14.336 32-32 32c-14.902 0-27.435-10.203-30.99-24h-10.02c-2.896 11.24-11.75 20.094-22.99 22.99v10.02c13.797 3.555 24 16.088 24 30.99 0 14.902-10.203 27.435-24 30.99v10.02c13.797 3.555 24 16.088 24 30.99 0 17.664-14.336 32-32 32s-32-14.336-32-32c0-14.902 10.203-27.435 24-30.99v-10.02c-13.797-3.555-24-16.088-24-30.99 0-14.902 10.203-27.435 24-30.99v-10.02c-11.24-2.896-20.094-11.75-22.99-22.99H62.99c-3.555 13.797-16.088 24-30.99 24-17.664 0-32-14.336-32-32s14.336-32 32-32c14.902 0 27.435 10.203 30.99 24h10.02C75.905 84.76 84.76 75.906 96 73.01V62.99C82.203 59.436 72 46.903 72 32c0-17.664 14.336-32 32-32z"
+      d="M96 0c17.664 0 32 14.336 32 32 0 17.66-14.328 31.992-31.986 32 17.654.008 31.98 14.335 31.986 31.99.006-17.66 14.34-31.99 32-31.99 17.664 0 32 14.336 32 32s-14.336 32-32 32c-17.66 0-31.994-14.33-32-31.99-.006 17.655-14.332 31.982-31.986 31.99 17.658.008 31.986 14.34 31.986 32s-14.328 31.992-31.986 32c17.658.008 31.986 14.34 31.986 32 0 17.664-14.336 32-32 32s-32-14.336-32-32c0-17.66 14.328-31.992 31.986-32C78.328 191.992 64 177.66 64 160s14.328-31.992 31.986-32C78.333 127.992 64.008 113.667 64 96.014 63.992 113.672 49.66 128 32 128c-17.664 0-32-14.336-32-32s14.336-32 32-32c17.66 0 31.992 14.328 32 31.986C64.008 78.333 78.333 64.008 95.986 64 78.328 63.992 64 49.66 64 32 64 14.336 78.336 0 96 0z"
       style={{
         stroke: "#c0e607",
         strokeWidth: 0,
@@ -48,20 +28,14 @@ export const SpheresCrossUnitedSvg = ({
         strokeDashoffset: 0,
         strokeLinejoin: "miter",
         strokeMiterlimit: 4,
-        fill: isPlaceable ? "#fff" : "#f72f3a",
+        fill: "#f72f3a",
         fillRule: "nonzero",
-        opacity: isPlaceable ? 0.4 : 1,
+        opacity: 1,
       }}
-      transform="translate(142.667 53.333)"
+      transform="translate(150.667 61.333)"
       vectorEffect="non-scaling-stroke"
-      // onClick={onClickPath}
-      className="piece"
-      id="piece-1"
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      {...props}
-  
+      id={`piece-${id}`}
+      onClick={onClickPath}
     />
   </svg>
 );

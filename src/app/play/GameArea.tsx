@@ -15,6 +15,8 @@ import type { Reducer } from "react";
 import {
   addPieceToBoard,
   boardsCellsCoveredByPiece,
+  calcPlacedPosition,
+  calcUnplacedPosition,
   cellSize,
   generateGameState,
   isActivePieceOverBoard,
@@ -96,26 +98,23 @@ export const GameArea = ({
   pieces: Piece[];
   setPieces: Dispatch<SetStateAction<Piece[]>>;
 }) => {
-  const gameAreaRef = useRef<HTMLDivElement>(null);
-  const boardRef = useRef<HTMLDivElement>(null);
-  const activePieceRef = useRef<HTMLDivElement>(null);
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(12, 6)
   );
-  console.log({ gameState, pieces });
-
-  const boardBounds = boardRef.current?.getBoundingClientRect();
-
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
   >(reducer, initialState);
 
+  const gameAreaRef = useRef<HTMLDivElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
+  const activePieceRef = useRef<HTMLDivElement>(null);
+
+  const boardBounds = boardRef.current?.getBoundingClientRect();
+
   const handleMouseDown = useCallback(
     (event: MouseEvent<HTMLElement>) => {
       const target = event.target as HTMLElement;
-
-      const clickedPieceId = mouseDownOnPieceId(target, pieces);
-      console.log({ clickedPieceId });
+      const clickedPieceId = getPieceIdOnMouseDown(target, pieces);
 
       if (clickedPieceId) {
         dispatch({
@@ -163,7 +162,6 @@ export const GameArea = ({
 
       if (activePieceRef.current && boardBounds) {
         const pieceBounds = activePieceRef.current.getBoundingClientRect();
-
         const buffer = cellSize / 2;
 
         // If active piece is over the board, determine if it is in a placeable position. If it is, render a preview of where it will drop
@@ -202,41 +200,19 @@ export const GameArea = ({
         setPieces(
           pieces.map((piece) => {
             if (state.activePieceId === piece.id && boardBounds) {
-              let newPosition = { x: 0, y: 0 };
-              let placedInCells: PreviewPiece["cells"] | undefined;
-              // Piece was dropped on board in a placeable position
-              if (state.previewPiece) {
-                newPosition = {
-                  x:
-                    boardBounds.left +
-                    state.previewPiece.x * cellSize -
-                    piece.initialPosition.x,
-                  y:
-                    boardBounds.top +
-                    state.previewPiece.y * cellSize -
-                    piece.initialPosition.y,
-                };
-                placedInCells = state.previewPiece.cells;
-              } else {
-                newPosition = {
-                  x:
-                    (state.dragPosition?.x ?? 0) -
-                    (state.onMouseDownPosition?.x ?? 0) +
-                    piece.position.x,
-                  y:
-                    (state.dragPosition?.y ?? 0) -
-                    (state.onMouseDownPosition?.y ?? 0) +
-                    piece.position.y,
-                };
-              }
-
               return {
                 ...piece,
                 isActivePiece: false,
-                position: newPosition,
+                position: state.previewPiece
+                  ? calcPlacedPosition(piece, boardBounds, state.previewPiece)
+                  : calcUnplacedPosition(
+                      piece,
+                      state.dragPosition,
+                      state.onMouseDownPosition
+                    ),
                 onMouseDownPosition: undefined,
                 dragPosition: undefined,
-                placedInCells,
+                placedInCells: state.previewPiece?.cells,
               };
             } else {
               return piece;
@@ -301,7 +277,7 @@ export const GameArea = ({
 };
 
 // TODO: this doesn't work if the pieces areen't place but are overlapping, need to calc the xy of the pieces
-const mouseDownOnPieceId = (
+const getPieceIdOnMouseDown = (
   target: HTMLElement,
   pieces: Piece[]
 ): Piece["id"] | undefined => {

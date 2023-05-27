@@ -1,17 +1,14 @@
 import {
   Dispatch,
-  RefObject,
   SetStateAction,
   forwardRef,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
 } from "react";
-import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg1";
+import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg";
 import { GameAreaDragState } from "./GameArea";
 import type { Piece as PieceType, Rotation } from "./types";
-import { type } from "os";
 import { mergeRefs } from "./utils";
 
 export type PiecesProps = {
@@ -42,11 +39,6 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
             key={piece.id}
             piece={pieceProps}
             setPieces={setPieces}
-            // isActivePiece={isActivePiece}
-            // onMouseDownPosition={
-            //   isActivePiece ? state.onMouseDownPosition : undefined
-            // }
-            // dragPosition={isActivePiece ? state.dragPosition : undefined}
             ref={isActivePiece ? activePieceRef : undefined}
           />
         );
@@ -118,6 +110,9 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         )
       );
     }
+
+    // Only run on first render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
