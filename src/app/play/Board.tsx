@@ -12,7 +12,7 @@ export const Board = ({
     <div className="grid grid-cols-1 items-center justify-items-center p-4">
       <div className="p-4 rounded-3xl bg-gradient-to-b from-slate-500 to-slate-600">
         <div className="relative">
-          <div className="absolute w-full h-full">
+          <div className="absolute w-full h-full z-10">
             <div className="inline-grid grid-cols-12" ref={boardRef}>
               {[...Array(72)].map((_, i) => (
                 <span

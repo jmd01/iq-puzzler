@@ -10,6 +10,8 @@ export type Piece = {
   isActivePiece: boolean;
   onMouseDownPosition?: { x: number; y: number };
   dragPosition?: { x: number; y: number };
+  /** If piece is placed on board this is the index of the cells the piece is placed in see @PreviewPiece["cells"]. Will undefined if piece is not placed on board */
+  placedInCells?: PreviewPiece["cells"];
 };
 
 /** Represent where an active piece will be dropped on the board */
@@ -32,4 +34,5 @@ export type PreviewPiece = {
 };
 export type GameState = {
   grid: [number][];
+  complete: boolean
 };

@@ -56,6 +56,7 @@ export const boardsCellsCoveredByPiece = (
 
 export const generateGameState = (x: number, y: number): GameState => ({
   grid: Array(y).fill(Array(x).fill(0)),
+  complete: false,
 });
 
 export function addPieceToBoard(
@@ -70,6 +71,22 @@ export function addPieceToBoard(
       );
     }
     updatedGrid[y][x] = 1;
+  });
+  return updatedGrid;
+}
+
+export function removePieceFromBoard(
+  gameStateGrid: GameState["grid"],
+  placedPieceCells: NonNullable<Piece["placedInCells"]>
+) {
+  const updatedGrid = nestedCopy(gameStateGrid);
+  placedPieceCells.forEach(([x, y]) => {
+    if (updatedGrid[y][x] === 0) {
+      throw Error(
+        `Trying to remove piece from {x:${x}, y:${y}} but cell is not taken.`
+      );
+    }
+    updatedGrid[y][x] = 0;
   });
   return updatedGrid;
 }
@@ -89,5 +106,5 @@ export function mergeRefs<T = any>(
 }
 
 function nestedCopy<T>(array: T) {
-  return (JSON.parse(JSON.stringify(array)) as T);
+  return JSON.parse(JSON.stringify(array)) as T;
 }

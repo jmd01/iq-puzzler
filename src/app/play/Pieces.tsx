@@ -10,7 +10,7 @@ import {
 } from "react";
 import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg1";
 import { GameAreaDragState } from "./GameArea";
-import type { Piece as PieceType } from "./types";
+import type { Piece as PieceType, Rotation } from "./types";
 import { type } from "os";
 import { mergeRefs } from "./utils";
 
@@ -74,8 +74,10 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     isActivePiece,
     onMouseDownPosition = { x: 0, y: 0 },
     dragPosition,
+    placedInCells,
   } = piece;
   const isDragging = isActivePiece && !!dragPosition;
+  const isPlaced = placedInCells;
 
   const draggingTransform = {
     x: (dragPosition?.x ?? 0) - onMouseDownPosition.x,
@@ -89,8 +91,17 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   };
 
   const onClickPath = useCallback(() => {
-    // setRotation(rotation === 0.75 ? 0 : ((rotation + 0.25) as Rotation));
-  }, []);
+    setPieces((pieces) =>
+      pieces.map((piece) =>
+        piece.id === id
+          ? {
+              ...piece,
+              rotation: rotation === 0.75 ? 0 : ((rotation + 0.25) as Rotation),
+            }
+          : piece
+      )
+    );
+  }, [id, rotation, setPieces]);
 
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -115,7 +126,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       style={{
         width: "13rem",
         position: "relative",
-        zIndex: 1,
+        zIndex: isPlaced ? 0 : 1,
         ...style,
       }}
     >

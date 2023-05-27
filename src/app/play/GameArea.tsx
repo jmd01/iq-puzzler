@@ -8,6 +8,8 @@ import {
   useReducer,
   Dispatch,
   SetStateAction,
+  use,
+  useEffect,
 } from "react";
 import type { Reducer } from "react";
 import {
@@ -16,6 +18,7 @@ import {
   cellSize,
   generateGameState,
   isActivePieceOverBoard,
+  removePieceFromBoard,
 } from "./utils";
 import type { GameState, Piece, PreviewPiece } from "./types";
 
@@ -99,7 +102,7 @@ export const GameArea = ({
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(12, 6)
   );
-  // console.log(gameState);
+  console.log({ gameState, pieces });
 
   const boardBounds = boardRef.current?.getBoundingClientRect();
 
@@ -107,20 +110,27 @@ export const GameArea = ({
     Reducer<GameAreaDragState, GameAreaAction>
   >(reducer, initialState);
 
-  const handleMouseDown = useCallback((event: MouseEvent<HTMLElement>) => {
-    const target = event.target as HTMLElement;
+  const handleMouseDown = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      const target = event.target as HTMLElement;
 
-    if (isMouseDownOnPiece(target)) {
-      dispatch({
-        type: "MOUSE_DOWN",
-        position: { x: event.clientX, y: event.clientY },
-        activePieceId: target.id.split("-")?.[1],
-      });
-    }
-  }, []);
+      const clickedPieceId = mouseDownOnPieceId(target, pieces);
+      console.log({ clickedPieceId });
+
+      if (clickedPieceId) {
+        dispatch({
+          type: "MOUSE_DOWN",
+          position: { x: event.clientX, y: event.clientY },
+          activePieceId: clickedPieceId,
+        });
+      }
+    },
+    [pieces]
+  );
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
+      event.preventDefault();
       if (!state.isMouseDown) return;
       if (!state.activePieceId) return;
       dispatch({
@@ -128,12 +138,35 @@ export const GameArea = ({
         position: { x: event.clientX, y: event.clientY },
       });
 
+      // If active piece is already placed on the board, remove it and unset placedInCells value
+      const activePiece = pieces.find(
+        (piece) => piece.id === state.activePieceId
+      );
+      if (activePiece && activePiece.placedInCells) {
+        const updatedGrid = removePieceFromBoard(
+          gameState.grid,
+          activePiece.placedInCells
+        );
+        setGameState({
+          ...gameState,
+          grid: updatedGrid,
+        });
+
+        setPieces(
+          pieces.map((piece) =>
+            piece.id === state.activePieceId
+              ? { ...piece, placedInCells: undefined }
+              : piece
+          )
+        );
+      }
+
       if (activePieceRef.current && boardBounds) {
         const pieceBounds = activePieceRef.current.getBoundingClientRect();
 
         const buffer = cellSize / 2;
 
-        // active piece is overboard
+        // If active piece is over the board, determine if it is in a placeable position. If it is, render a preview of where it will drop
         if (isActivePieceOverBoard(pieceBounds, boardBounds, buffer)) {
           const activePiece = pieces.find(
             ({ id }) => id === state.activePieceId
@@ -153,7 +186,14 @@ export const GameArea = ({
         }
       }
     },
-    [boardBounds, pieces, state.activePieceId, state.isMouseDown]
+    [
+      boardBounds,
+      gameState,
+      pieces,
+      setPieces,
+      state.activePieceId,
+      state.isMouseDown,
+    ]
   );
 
   const handleMouseUp = useCallback(
@@ -163,6 +203,7 @@ export const GameArea = ({
           pieces.map((piece) => {
             if (state.activePieceId === piece.id && boardBounds) {
               let newPosition = { x: 0, y: 0 };
+              let placedInCells: PreviewPiece["cells"] | undefined;
               // Piece was dropped on board in a placeable position
               if (state.previewPiece) {
                 newPosition = {
@@ -175,17 +216,7 @@ export const GameArea = ({
                     state.previewPiece.y * cellSize -
                     piece.initialPosition.y,
                 };
-
-                const updatedGrid = addPieceToBoard(
-                  gameState.grid,
-                  state.previewPiece.cells
-                );
-                console.log({ updatedGrid });
-
-                setGameState({
-                  ...gameState,
-                  grid: updatedGrid,
-                });
+                placedInCells = state.previewPiece.cells;
               } else {
                 newPosition = {
                   x:
@@ -205,6 +236,7 @@ export const GameArea = ({
                 position: newPosition,
                 onMouseDownPosition: undefined,
                 dragPosition: undefined,
+                placedInCells,
               };
             } else {
               return piece;
@@ -212,6 +244,20 @@ export const GameArea = ({
           })
         );
       }
+
+      if (state.previewPiece) {
+        const updatedGrid = addPieceToBoard(
+          gameState.grid,
+          state.previewPiece.cells
+        );
+
+        const complete = updatedGrid.every((row) => row.every((cell) => cell));
+        setGameState({
+          grid: updatedGrid,
+          complete,
+        });
+      }
+
       dispatch({ type: "MOUSE_UP" });
     },
     [
@@ -228,6 +274,12 @@ export const GameArea = ({
       gameState,
     ]
   );
+
+  useEffect(() => {
+    if (gameState.complete) {
+      alert("You win!");
+    }
+  }, [gameState.complete]);
 
   return (
     <div
@@ -248,14 +300,35 @@ export const GameArea = ({
   );
 };
 
-const isMouseDownOnPiece = (target: HTMLElement): boolean => {
-  return (
-    target.id.includes("piece") ||
-    (target.id === "board" && hasClickedPlacedPiece())
-  );
-  // TODO: this doesn't work if the pieces are overlapping, need to calc the xy of the pieces
+// TODO: this doesn't work if the pieces areen't place but are overlapping, need to calc the xy of the pieces
+const mouseDownOnPieceId = (
+  target: HTMLElement,
+  pieces: Piece[]
+): Piece["id"] | undefined => {
+  if (target.id.includes("piece")) {
+    return target.id.split("-")?.[1];
+  }
+
+  const cellData = target.getAttribute("data-board-cell")?.split(",");
+
+  const cell: [number, number] | undefined =
+    cellData && cellData.length === 2
+      ? [parseInt(cellData[0]), parseInt(cellData[1])]
+      : undefined;
+
+  console.log({ cellData, cell, pieces });
+  if (cell) {
+    return clickedPlacedPieceId(cell, pieces);
+  }
 };
 
-const hasClickedPlacedPiece = (): boolean => {
-  return true;
+const clickedPlacedPieceId = (
+  clickedCell: [number, number],
+  pieces: Piece[]
+): Piece["id"] | undefined => {
+  return pieces.find((piece) => {
+    return piece.placedInCells?.some(
+      (cell) => cell[0] === clickedCell[0] && cell[1] === clickedCell[1]
+    );
+  })?.id;
 };

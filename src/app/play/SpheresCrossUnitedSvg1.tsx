@@ -1,5 +1,3 @@
-import { DraggableAttributes } from "@dnd-kit/core";
-import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { MouseEventHandler, SVGProps } from "react";
 
 export const SpheresCrossUnitedSvg1 = ({
@@ -37,6 +35,7 @@ export const SpheresCrossUnitedSvg1 = ({
       transform="translate(150.667 61.333)"
       vectorEffect="non-scaling-stroke"
       id={`piece-${id}`}
+      onClick={onClickPath}
     />
   </svg>
 );
