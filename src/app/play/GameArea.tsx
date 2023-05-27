@@ -17,7 +17,8 @@ import {
   boardsCellsCoveredByPiece,
   calcPlacedPosition,
   calcUnplacedPosition,
-  cellSize,
+  CELL_SIZE,
+  DRAG_START_THRESHOLD,
   generateGameState,
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
@@ -133,9 +134,18 @@ export const GameArea = ({
       // Prevent drags on the board getting in the way of a drag on a piece
       event.preventDefault();
 
+      // Early return if no piece is being dragged or dragging has not exceeded the threshold in any direction
       if (!state.isMouseDown) return;
       if (!state.activePieceId) return;
-      
+      if (
+        !state.onMouseDownPosition ||
+        (Math.abs(state.onMouseDownPosition?.x - event.clientX) <
+          DRAG_START_THRESHOLD &&
+          Math.abs(state.onMouseDownPosition?.y - event.clientY) <
+            DRAG_START_THRESHOLD)
+      )
+        return;
+
       dispatch({
         type: "DRAG_MOVE",
         position: { x: event.clientX, y: event.clientY },
@@ -162,10 +172,9 @@ export const GameArea = ({
 
       if (activePieceRef.current && boardBounds) {
         const pieceBounds = activePieceRef.current.getBoundingClientRect();
-        const buffer = cellSize / 2;
 
         // If active piece is over the board, determine if it is in a placeable position. If it is, render a preview of where it will drop
-        if (isActivePieceOverBoard(pieceBounds, boardBounds, buffer)) {
+        if (isActivePieceOverBoard(pieceBounds, boardBounds)) {
           const activePiece = pieces.find(
             ({ id }) => id === state.activePieceId
           );
@@ -273,4 +282,3 @@ export const GameArea = ({
     </div>
   );
 };
-

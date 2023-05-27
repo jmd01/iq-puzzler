@@ -83,17 +83,19 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   };
 
   const onClickPath = useCallback(() => {
-    setPieces((pieces) =>
-      pieces.map((piece) =>
-        piece.id === id
-          ? {
-              ...piece,
-              rotation: rotation === 0.75 ? 0 : ((rotation + 0.25) as Rotation),
-            }
-          : piece
-      )
-    );
-  }, [id, rotation, setPieces]);
+    !isDragging &&
+      setPieces((pieces) =>
+        pieces.map((piece) =>
+          piece.id === id
+            ? {
+                ...piece,
+                rotation:
+                  rotation === 0.75 ? 0 : ((rotation + 0.25) as Rotation),
+              }
+            : piece
+        )
+      );
+  }, [id, isDragging, rotation, setPieces]);
 
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {

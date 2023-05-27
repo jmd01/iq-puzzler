@@ -35,7 +35,7 @@ export const SpheresCrossUnitedSvg1 = ({
       transform="translate(150.667 61.333)"
       vectorEffect="non-scaling-stroke"
       id={`piece-${id}`}
-      onClick={onClickPath}
+      onMouseUp={onClickPath}
     />
   </svg>
 );

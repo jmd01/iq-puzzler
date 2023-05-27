@@ -1,10 +1,12 @@
 import type { GameState, Piece, PreviewPiece } from "./types";
 
-export const cellSize = 64;
+export const CELL_SIZE = 64;
+export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;
+export const DRAG_START_THRESHOLD = 5;
 
 /**
  * On mousedown, determine whether the target is a piece or a cell on the board
- * TODO: this doesn't work if the pieces aren't placed but are overlapping. Will need use an overlay for the rest of the game area and calc the xy of the pieces to determine if one was clicked
+ * TODO: this doesn't work if the pieces aren't placed but are overlapping due to stacking issues. Will need use an overlay for the rest of the game area and calc the xy of the pieces to determine if one was clicked
  */
 export const getPieceIdOnMouseDown = (
   target: HTMLElement,
@@ -47,13 +49,12 @@ const getPlacedPieceIdFromCell = (
 export function isActivePieceOverBoard(
   pieceBounds: DOMRect,
   boardBounds: DOMRect,
-  buffer: number
 ) {
   return (
-    pieceBounds.top > boardBounds.top - buffer &&
-    pieceBounds.left > boardBounds.top - buffer &&
-    pieceBounds.bottom < boardBounds.bottom + buffer &&
-    pieceBounds.right < boardBounds.right + buffer
+    pieceBounds.top > boardBounds.top - DRAG_OVER_BOARD_BUFFER &&
+    pieceBounds.left > boardBounds.top - DRAG_OVER_BOARD_BUFFER &&
+    pieceBounds.bottom < boardBounds.bottom + DRAG_OVER_BOARD_BUFFER &&
+    pieceBounds.right < boardBounds.right + DRAG_OVER_BOARD_BUFFER
   );
 }
 
@@ -76,9 +77,9 @@ export function boardsCellsCoveredByPiece(
     0
   );
 
-  const pieceOverCellY = Math.round(pieceTopRelativeToBoard / cellSize);
+  const pieceOverCellY = Math.round(pieceTopRelativeToBoard / CELL_SIZE);
 
-  const pieceOverCellX = Math.round(pieceLeftRelativeToBoard / cellSize);
+  const pieceOverCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
 
   const pieceOverCells = pieceShape.reduce<[number, number][] | undefined>(
     (acc, currentRow, y) => {
@@ -191,8 +192,8 @@ export function calcPlacedPosition(
   previewPiece: PreviewPiece
 ) {
   return {
-    x: boardBounds.left + previewPiece.x * cellSize - piece.initialPosition.x,
-    y: boardBounds.top + previewPiece.y * cellSize - piece.initialPosition.y,
+    x: boardBounds.left + previewPiece.x * CELL_SIZE - piece.initialPosition.x,
+    y: boardBounds.top + previewPiece.y * CELL_SIZE - piece.initialPosition.y,
   };
 }
 
