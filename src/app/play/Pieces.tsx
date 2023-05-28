@@ -9,7 +9,7 @@ import {
 import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg";
 import { GameAreaDragState } from "./GameArea";
 import type { Piece as PieceType, Rotation } from "./types";
-import { mergeRefs } from "./utils";
+import { mergeRefs, updatePiecesWithRotatedPiece } from "./utils";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -88,18 +88,8 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
 
   const onClickPath = useCallback(() => {
     !isDragging &&
-      setPieces((pieces) =>
-        pieces.map((piece) =>
-          piece.id === id
-            ? {
-                ...piece,
-                rotation:
-                  rotation === 0.75 ? 0 : ((rotation + 0.25) as Rotation),
-              }
-            : piece
-        )
-      );
-  }, [id, isDragging, rotation, setPieces]);
+      setPieces((pieces) => updatePiecesWithRotatedPiece(pieces, id));
+  }, [id, isDragging, setPieces]);
 
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {

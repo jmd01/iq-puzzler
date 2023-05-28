@@ -1,4 +1,4 @@
-import type { GameState, Piece, PreviewPiece } from "./types";
+import type { GameState, Piece, PreviewPiece, Rotation } from "./types";
 
 export const CELL_SIZE = 64;
 export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;
@@ -43,50 +43,12 @@ const getPlacedPieceIdFromCell = (
 };
 
 /**
- * On mousedown, determine whether the target is a piece or a cell on the board
- * TODO: this doesn't work if the pieces aren't placed but are overlapping. Will need use an overlay for the rest of the game area and calc the xy of the pieces to determine if one was clicked
- */
-export const getPieceIdOnMouseDown = (
-  target: HTMLElement,
-  pieces: Piece[]
-): Piece["id"] | undefined => {
-  if (target.id.includes("piece")) {
-    return target.id.split("-")?.[1];
-  }
-
-  const cellData = target.getAttribute("data-board-cell")?.split(",");
-
-  const cell: [number, number] | undefined =
-    cellData && cellData.length === 2
-      ? [parseInt(cellData[0]), parseInt(cellData[1])]
-      : undefined;
-
-  if (cell) {
-    return getPlacedPieceIdFromCell(cell, pieces);
-  }
-};
-
-/**
- * When clicking a cell on the board, if a piece is placed there, get its ID
- */
-const getPlacedPieceIdFromCell = (
-  clickedCell: [number, number],
-  pieces: Piece[]
-): Piece["id"] | undefined => {
-  return pieces.find((piece) => {
-    return piece.placedInCells?.some(
-      (cell) => cell[0] === clickedCell[0] && cell[1] === clickedCell[1]
-    );
-  })?.id;
-};
-
-/**
  * When dragging a piece, determine whether it is over the board.
  * The buffer allows a piece to be considered over the board even if piece is not fully over the board
  */
 export function isActivePieceOverBoard(
   pieceBounds: DOMRect,
-  boardBounds: DOMRect,
+  boardBounds: DOMRect
 ) {
   return (
     pieceBounds.top > boardBounds.top - DRAG_OVER_BOARD_BUFFER &&
@@ -103,29 +65,31 @@ export function isActivePieceOverBoard(
 export function boardsCellsCoveredByPiece(
   pieceBounds: DOMRect,
   boardBounds: DOMRect,
-  pieceShape: Piece["shape"]
+  pieceShape: Piece["shape"],
+  gameStateGrid: GameState["grid"]
 ): PreviewPiece | undefined {
   const pieceTopRelativeToBoard = Math.max(
     pieceBounds.top - boardBounds.top,
     0
   );
-
   const pieceLeftRelativeToBoard = Math.max(
     pieceBounds.left - boardBounds.left,
     0
   );
 
-  const pieceOverCellY = Math.round(pieceTopRelativeToBoard / CELL_SIZE);
+  // The board cell nearest the top side that the dragged piece is over
+  const pieceOverBoardCellY = Math.round(pieceTopRelativeToBoard / CELL_SIZE);
+  // The board cell nearest the left side that the dragged piece is over
+  const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
 
-  const pieceOverCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
-
+  // The index of boards cells that the dragged piece is over
   const pieceOverCells = pieceShape.reduce<[number, number][] | undefined>(
     (acc, currentRow, y) => {
       return currentRow.reduce<[number, number][] | undefined>(
         (rowAcc, coversCell, x) => {
           const cell: [number, number] = [
-            pieceOverCellX + x,
-            pieceOverCellY + y,
+            pieceOverBoardCellX + x,
+            pieceOverBoardCellY + y,
           ];
           return coversCell ? (rowAcc ? [...rowAcc, cell] : [cell]) : rowAcc;
         },
@@ -135,9 +99,20 @@ export function boardsCellsCoveredByPiece(
     undefined
   );
 
-  return pieceOverCells
-    ? { x: pieceOverCellX, y: pieceOverCellY, cells: pieceOverCells }
-    : undefined;
+  if (pieceOverCells) {
+    // Check all the cells the piece will cover are empty
+    const isPiecePlaceable = pieceOverCells.every(([x, y]) => {
+      return gameStateGrid[y] && gameStateGrid[y][x] === 0;
+    });
+
+    if (isPiecePlaceable) {
+      return {
+        x: pieceOverBoardCellX,
+        y: pieceOverBoardCellY,
+        cells: pieceOverCells,
+      };
+    }
+  }
 }
 
 /**
@@ -249,4 +224,22 @@ export function calcUnplacedPosition(
     y:
       (dragPosition?.y ?? 0) - (onMouseDownPosition?.y ?? 0) + piece.position.y,
   };
+}
+
+/**
+ * Rotate the piece with id by 90 degrees and update pieces array
+ */
+export function updatePiecesWithRotatedPiece(
+  pieces: Piece[],
+  id: Piece["id"]
+): Piece[] {
+  return pieces.map((piece) =>
+    piece.id === id
+      ? {
+          ...piece,
+          rotation:
+            piece.rotation === 0.75 ? 0 : ((piece.rotation + 0.25) as Rotation),
+        }
+      : piece
+  );
 }

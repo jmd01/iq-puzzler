@@ -23,6 +23,7 @@ import {
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
   removePieceFromBoard,
+  updatePiecesWithRotatedPiece,
 } from "./utils";
 import type { GameState, Piece, PreviewPiece } from "./types";
 
@@ -189,6 +190,7 @@ export const GameArea = ({
               pieceBounds,
               boardBounds,
               activePiece.shape,
+              gameState.grid
             );
             previewPiece &&
               dispatch({
@@ -241,6 +243,22 @@ export const GameArea = ({
             }
           })
         );
+      } else {
+        const activePiece = pieces.find(
+          (piece) => piece.id === state.activePieceId
+        );
+
+        // Click on placed board piece but didn't drag, so rotate it and remove it from the board
+        if (activePiece?.placedInCells && state.activePieceId) {
+          setPieces(updatePiecesWithRotatedPiece(pieces, state.activePieceId));
+          setGameState({
+            ...gameState,
+            grid: removePieceFromBoard(
+              gameState.grid,
+              activePiece.placedInCells
+            ),
+          });
+        }
       }
 
       if (state.previewPiece) {
