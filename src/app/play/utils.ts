@@ -309,13 +309,19 @@ export function calcUnplacedPosition(
  */
 export function updatePiecesWithRotatedPiece(
   pieces: Piece[],
-  id: Piece["id"]
+  id: Piece["id"],
+  droppedOnBoard: boolean,
 ): Piece[] {
   return pieces.map((piece) =>
     piece.id === id
       ? {
           ...piece,
           rotation: rotatePiece(piece.rotation),
+          droppedOnBoard,
+          isActivePiece: false,
+          onMouseDownPosition: undefined,
+          dragPosition: undefined,
+          placedInCells: undefined,
         }
       : piece
   );

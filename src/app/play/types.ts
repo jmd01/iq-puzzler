@@ -11,6 +11,8 @@ export type Piece = {
   dragPosition?: { x: number; y: number };
   /** If piece is placed on board this is the index of the cells the piece is placed in see @PreviewPiece["cells"]. Will undefined if piece is not placed on board */
   placedInCells?: PreviewPiece["cells"];
+  /** If piece is dropped on board but not placed. This is used to give a visual indicator, since it could appear placed if perfectly aligned with the grid */
+  droppedOnBoard: boolean;
 };
 
 /** Represent where an active piece will be dropped on the board */

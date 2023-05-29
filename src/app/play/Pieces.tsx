@@ -9,16 +9,21 @@ import {
 import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg";
 import { GameAreaDragState } from "./GameArea";
 import type { Piece as PieceType, Rotation } from "./types";
-import { mergeRefs, updatePiecesWithRotatedPiece } from "./utils";
+import {
+  isActivePieceOverBoard,
+  mergeRefs,
+  updatePiecesWithRotatedPiece,
+} from "./utils";
 
 export type PiecesProps = {
   pieces: PieceType[];
   setPieces: Dispatch<SetStateAction<PieceType[]>>;
   activePieceId: PieceType["id"] | undefined;
   state: GameAreaDragState;
+  boardBounds: DOMRect | undefined;
 };
 export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
-  { pieces, setPieces, activePieceId, state },
+  { pieces, setPieces, activePieceId, state, boardBounds },
   activePieceRef
 ) {
   return (
@@ -40,6 +45,7 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
             piece={pieceProps}
             setPieces={setPieces}
             ref={isActivePiece ? activePieceRef : undefined}
+            boardBounds={boardBounds}
           />
         );
       })}
@@ -50,10 +56,11 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
 export type PieceProps = {
   piece: PieceType;
   setPieces: Dispatch<SetStateAction<PieceType[]>>;
+  boardBounds: DOMRect | undefined;
 };
 
 export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
-  { piece, setPieces },
+  { piece, setPieces, boardBounds },
   activePieceRef
 ) {
   const {
@@ -86,12 +93,23 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     zIndex: isPlaced ? 0 : 20,
   };
 
-  const onClickPath = useCallback(() => {
-    !isDragging &&
-      setPieces((pieces) => updatePiecesWithRotatedPiece(pieces, id));
-  }, [id, isDragging, setPieces]);
-
   const ref = useRef<HTMLDivElement>(null);
+
+  const onClickPath = useCallback(() => {
+    const pieceBounds = ref.current?.getBoundingClientRect();
+
+    !isDragging &&
+      pieceBounds &&
+      boardBounds &&
+      setPieces((pieces) =>
+        updatePiecesWithRotatedPiece(
+          pieces,
+          id,
+          isActivePieceOverBoard(pieceBounds, boardBounds)
+        )
+      );
+  }, [boardBounds, id, isDragging, setPieces]);
+
   useEffect(() => {
     const initialPosition = ref.current?.getBoundingClientRect();
     if (initialPosition) {
@@ -124,6 +142,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         filter={
           isPlaced ? undefined : "drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"
         }
+        showStroke={!isPlaced && !isDragging && piece.droppedOnBoard}
         id={id}
       />
     </div>
