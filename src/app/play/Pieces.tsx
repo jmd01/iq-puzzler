@@ -121,7 +121,9 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     >
       <SpheresCrossUnitedSvg1
         onClickPath={onClickPath}
-        filter={"drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"}
+        filter={
+          isPlaced ? undefined : "drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"
+        }
         id={id}
       />
     </div>
