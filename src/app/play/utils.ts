@@ -144,8 +144,7 @@ export function boardsCellsCoveredByPiece(
   // The board cell nearest the left side that the dragged piece is over
   const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
 
-  // The index of boards cells that the dragged piece is over
-  // calcPieceShape(pieceShape, pieceRotation)
+  // The index of boards cells that the dragged piece is over  
   const pieceOverCells = getRotatedShape(pieceShape, pieceRotation).reduce<
     [number, number][] | undefined
   >((acc, currentRow, y) => {
@@ -160,6 +159,9 @@ export function boardsCellsCoveredByPiece(
       acc
     );
   }, undefined);
+
+  console.log("here");
+  
 
   if (pieceOverCells) {
     // Check all the cells the piece will cover are empty
