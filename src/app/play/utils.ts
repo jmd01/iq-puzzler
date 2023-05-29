@@ -58,6 +58,10 @@ export function isActivePieceOverBoard(
   );
 }
 
+/**
+ * When a piece is rotated, if it is not a swquare shape then it's position will change relative to the screen.
+ * This function calculates the new position of the piece so that it can be position relative to the board and it's initial position when placed
+ */
 function calcRotatedInitialPiecePosition(
   pieceBounds: DOMRect,
   pieceRotation: Piece["rotation"],
@@ -66,21 +70,7 @@ function calcRotatedInitialPiecePosition(
   const isRotatedSideways = pieceRotation === 0.25 || pieceRotation === 0.75;
 
   if (isRotatedSideways) {
-    // const pieceBoundsRatio = pieceBounds.height / pieceBounds.width;
-
     const offset = (pieceBounds.height - pieceBounds.width) / 2;
-    // const widthOffset = pieceBounds.width * pieceBoundsRatio;
-
-    // const offsetInitialPositionByRotation = {
-    //   x: pieceInitialPosition.x + offset,
-    //   y: pieceInitialPosition.y - offset,
-    // };
-    // console.log({
-    //   pieceInitialPosition,
-    //   offset,
-    //   offsetInitialPositionByRotation,
-    // });
-
     const offsetInitialPositionByRotation =
       pieceBounds.height > pieceBounds.width
         ? {
@@ -98,23 +88,40 @@ function calcRotatedInitialPiecePosition(
   return pieceInitialPosition;
 }
 
-//
+/**
+ *  Rotate a piece's shape array by Rotation degrees eg Rotate by 0.25 / 90 degrees
+ * ```
+ *  0 1 0
+ *  1 1 1
+ *  0 1 0
+ *  0 1 0
+ * ```
+ * becomes
+ * ```
+ *  0 0 1 0
+ *  1 1 1 1
+ *  0 0 1 0
+ * ```
+ *
+ *
+ */
 function getRotatedShape(
   pieceShape: Piece["shape"],
   pieceRotation: Piece["rotation"]
 ): Piece["shape"] {
+  const pieceShapeClone = nestedCopy(pieceShape);
   switch (pieceRotation) {
     case 0:
-      return pieceShape;
+      return pieceShapeClone;
     case 0.25:
-      return pieceShape[0].map((_, index) =>
-        pieceShape.map((row) => row[index]).reverse()
+      return pieceShapeClone[0].map((_, index) =>
+        pieceShapeClone.map((row) => row[index]).reverse()
       );
     case 0.5:
-      return [...pieceShape.reverse()];
+      return [...pieceShapeClone.reverse()];
     case 0.75:
-      return pieceShape[0].map((_, index) =>
-        pieceShape.map((row) => row[row.length - 1 - index])
+      return pieceShapeClone[0].map((_, index) =>
+        pieceShapeClone.map((row) => row[row.length - 1 - index])
       );
   }
 }
@@ -144,24 +151,23 @@ export function boardsCellsCoveredByPiece(
   // The board cell nearest the left side that the dragged piece is over
   const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
 
-  // The index of boards cells that the dragged piece is over  
-  const pieceOverCells = getRotatedShape(pieceShape, pieceRotation).reduce<
-    [number, number][] | undefined
-  >((acc, currentRow, y) => {
-    return currentRow.reduce<[number, number][] | undefined>(
-      (rowAcc, coversCell, x) => {
-        const cell: [number, number] = [
-          pieceOverBoardCellX + x,
-          pieceOverBoardCellY + y,
-        ];
-        return coversCell ? (rowAcc ? [...rowAcc, cell] : [cell]) : rowAcc;
-      },
-      acc
-    );
-  }, undefined);
-
-  console.log("here");
-  
+  // The index of boards cells that the dragged piece is over
+  const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
+  const pieceOverCells = rotatedShape.reduce<[number, number][] | undefined>(
+    (acc, currentRow, y) => {
+      return currentRow.reduce<[number, number][] | undefined>(
+        (rowAcc, coversCell, x) => {
+          const cell: [number, number] = [
+            pieceOverBoardCellX + x,
+            pieceOverBoardCellY + y,
+          ];
+          return coversCell ? (rowAcc ? [...rowAcc, cell] : [cell]) : rowAcc;
+        },
+        acc
+      );
+    },
+    undefined
+  );
 
   if (pieceOverCells) {
     // Check all the cells the piece will cover are empty
@@ -309,9 +315,15 @@ export function updatePiecesWithRotatedPiece(
     piece.id === id
       ? {
           ...piece,
-          rotation:
-            piece.rotation === 0.75 ? 0 : ((piece.rotation + 0.25) as Rotation),
+          rotation: rotatePiece(piece.rotation),
         }
       : piece
   );
+}
+
+/**
+ * Increment the rotation value by 0.25. If the rotation is 0.75, reset to 0
+ */
+export function rotatePiece(currentRotation: Rotation) {
+  return currentRotation === 0.75 ? 0 : ((currentRotation + 0.25) as Rotation);
 }
