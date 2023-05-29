@@ -26,3 +26,13 @@ const generatePieces = (): Piece[] =>
     isActivePiece: false,
     ref: { current: null },
   }));
+
+// // rotated shape
+// const shape = [
+//   [0, 0, 1, 0],
+//   [1, 1, 1, 1],
+//   [0, 0, 1, 0],
+// ];
+
+//
+

@@ -58,6 +58,67 @@ export function isActivePieceOverBoard(
   );
 }
 
+function calcRotatedInitialPiecePosition(
+  pieceBounds: DOMRect,
+  pieceRotation: Piece["rotation"],
+  pieceInitialPosition: Piece["initialPosition"]
+): Piece["initialPosition"] {
+  const isRotatedSideways = pieceRotation === 0.25 || pieceRotation === 0.75;
+
+  if (isRotatedSideways) {
+    // const pieceBoundsRatio = pieceBounds.height / pieceBounds.width;
+
+    const offset = (pieceBounds.height - pieceBounds.width) / 2;
+    // const widthOffset = pieceBounds.width * pieceBoundsRatio;
+
+    // const offsetInitialPositionByRotation = {
+    //   x: pieceInitialPosition.x + offset,
+    //   y: pieceInitialPosition.y - offset,
+    // };
+    // console.log({
+    //   pieceInitialPosition,
+    //   offset,
+    //   offsetInitialPositionByRotation,
+    // });
+
+    const offsetInitialPositionByRotation =
+      pieceBounds.height > pieceBounds.width
+        ? {
+            x: pieceInitialPosition.x - offset,
+            y: pieceInitialPosition.y + offset,
+          }
+        : {
+            x: pieceInitialPosition.x + offset,
+            y: pieceInitialPosition.y - offset,
+          };
+
+    return offsetInitialPositionByRotation;
+  }
+
+  return pieceInitialPosition;
+}
+
+//
+function getRotatedShape(
+  pieceShape: Piece["shape"],
+  pieceRotation: Piece["rotation"]
+): Piece["shape"] {
+  switch (pieceRotation) {
+    case 0:
+      return pieceShape;
+    case 0.25:
+      return pieceShape[0].map((_, index) =>
+        pieceShape.map((row) => row[index]).reverse()
+      );
+    case 0.5:
+      return [...pieceShape.reverse()];
+    case 0.75:
+      return pieceShape[0].map((_, index) =>
+        pieceShape.map((row) => row[row.length - 1 - index])
+      );
+  }
+}
+
 /**
  * When dragging a piece, calculate the cells on the board that a piece will cover if dropped on the board
  * Also returns the index of top and left cells that the piece will be dropped on
@@ -66,6 +127,7 @@ export function boardsCellsCoveredByPiece(
   pieceBounds: DOMRect,
   boardBounds: DOMRect,
   pieceShape: Piece["shape"],
+  pieceRotation: Piece["rotation"],
   gameStateGrid: GameState["grid"]
 ): PreviewPiece | undefined {
   const pieceTopRelativeToBoard = Math.max(
@@ -83,21 +145,21 @@ export function boardsCellsCoveredByPiece(
   const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
 
   // The index of boards cells that the dragged piece is over
-  const pieceOverCells = pieceShape.reduce<[number, number][] | undefined>(
-    (acc, currentRow, y) => {
-      return currentRow.reduce<[number, number][] | undefined>(
-        (rowAcc, coversCell, x) => {
-          const cell: [number, number] = [
-            pieceOverBoardCellX + x,
-            pieceOverBoardCellY + y,
-          ];
-          return coversCell ? (rowAcc ? [...rowAcc, cell] : [cell]) : rowAcc;
-        },
-        acc
-      );
-    },
-    undefined
-  );
+  // calcPieceShape(pieceShape, pieceRotation)
+  const pieceOverCells = getRotatedShape(pieceShape, pieceRotation).reduce<
+    [number, number][] | undefined
+  >((acc, currentRow, y) => {
+    return currentRow.reduce<[number, number][] | undefined>(
+      (rowAcc, coversCell, x) => {
+        const cell: [number, number] = [
+          pieceOverBoardCellX + x,
+          pieceOverBoardCellY + y,
+        ];
+        return coversCell ? (rowAcc ? [...rowAcc, cell] : [cell]) : rowAcc;
+      },
+      acc
+    );
+  }, undefined);
 
   if (pieceOverCells) {
     // Check all the cells the piece will cover are empty
@@ -201,12 +263,20 @@ export function nestedCopy<T>(array: T) {
  */
 export function calcPlacedPosition(
   piece: Piece,
+  pieceBounds: DOMRect,
   boardBounds: DOMRect,
   previewPiece: PreviewPiece
 ) {
+  const pieceInitialPosition = calcRotatedInitialPiecePosition(
+    pieceBounds,
+    piece.rotation,
+    piece.initialPosition
+  );
+  console.log({ piece, pieceInitialPosition });
+
   return {
-    x: boardBounds.left + previewPiece.x * CELL_SIZE - piece.initialPosition.x,
-    y: boardBounds.top + previewPiece.y * CELL_SIZE - piece.initialPosition.y,
+    x: boardBounds.left + previewPiece.x * CELL_SIZE - pieceInitialPosition.x,
+    y: boardBounds.top + previewPiece.y * CELL_SIZE - pieceInitialPosition.y,
   };
 }
 

@@ -190,6 +190,7 @@ export const GameArea = ({
               pieceBounds,
               boardBounds,
               activePiece.shape,
+              activePiece.rotation,
               gameState.grid
             );
             previewPiece &&
@@ -220,15 +221,28 @@ export const GameArea = ({
 
   const handleMouseUp = useCallback(
     (event: MouseEvent) => {
+      // On drag end, update active piece position and if placeable, set its placedInCells value and clear any drag related state
       if (state.isDragging) {
         setPieces(
           pieces.map((piece) => {
-            if (state.activePieceId === piece.id && boardBounds) {
+            if (
+              state.activePieceId === piece.id &&
+              activePieceRef.current &&
+              boardBounds
+            ) {
+              const pieceBounds =
+                activePieceRef.current.getBoundingClientRect();
+
               return {
                 ...piece,
                 isActivePiece: false,
                 position: state.previewPiece
-                  ? calcPlacedPosition(piece, boardBounds, state.previewPiece)
+                  ? calcPlacedPosition(
+                      piece,
+                      pieceBounds,
+                      boardBounds,
+                      state.previewPiece
+                    )
                   : calcUnplacedPosition(
                       piece,
                       state.dragPosition,
@@ -244,11 +258,10 @@ export const GameArea = ({
           })
         );
       } else {
+        // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
         const activePiece = pieces.find(
           (piece) => piece.id === state.activePieceId
         );
-
-        // Click on placed board piece but didn't drag, so rotate it and remove it from the board
         if (activePiece?.placedInCells && state.activePieceId) {
           setPieces(updatePiecesWithRotatedPiece(pieces, state.activePieceId));
           setGameState({
@@ -261,6 +274,7 @@ export const GameArea = ({
         }
       }
 
+      // If piece was dropped on the board in a placeable position, add it to the board grid and check if grid is full (i.e game complete)
       if (state.previewPiece) {
         const updatedGrid = addPieceToBoard(
           gameState.grid,
@@ -285,7 +299,7 @@ export const GameArea = ({
       setPieces,
       pieces,
       boardBounds,
-      gameState.grid,
+      gameState,
     ]
   );
 
@@ -299,8 +313,8 @@ export const GameArea = ({
     <div
       ref={gameAreaRef}
       onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
     >
       <Board boardRef={boardRef} previewPiece={state.previewPiece} />
       <Pieces

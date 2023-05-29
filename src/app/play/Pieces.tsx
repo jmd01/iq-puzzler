@@ -115,7 +115,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     <div
       ref={mergeRefs([activePieceRef, ref])}
       style={{
-        width: "13rem",
         position: "relative",
         ...style,
       }}
