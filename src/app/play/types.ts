@@ -12,6 +12,10 @@ export type Piece = {
   placedInCells?: PreviewPiece["cells"];
   /** If piece is dropped on board but not placed. This is used to give a visual indicator, since it could appear placed if perfectly aligned with the grid */
   droppedOnBoard: boolean;
+  height: number;
+  width: number;
+  d: string;
+  color: string;
 };
 
 /** Represent where an active piece will be dropped on the board */

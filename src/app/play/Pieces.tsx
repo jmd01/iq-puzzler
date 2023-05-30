@@ -7,7 +7,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg";
+import { SpheresCrossUnitedSvg } from "./SpheresCrossUnitedSvg";
 import { GameAreaDragState } from "./GameArea";
 import type { Piece as PieceType, Rotation } from "./types";
 import {
@@ -15,6 +15,7 @@ import {
   mergeRefs,
   updatePiecesWithRotatedPiece,
 } from "./utils";
+import { PieceSvg } from "./PieceSvg";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -64,6 +65,8 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   { piece, setPieces, boardBounds },
   activePieceRef
 ) {
+  console.log({ piece });
+
   const {
     id,
     position,
@@ -72,6 +75,10 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     onMouseDownPosition = { x: 0, y: 0 },
     dragPosition,
     placedInCells,
+    d,
+    color,
+    height,
+    width,
   } = piece;
   const isDragging = isActivePiece && !!dragPosition;
   const isPlaced = placedInCells;
@@ -139,13 +146,17 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         ...style,
       }}
     >
-      <SpheresCrossUnitedSvg1
+      <PieceSvg
         onClickPath={onClickPath}
         filter={
           isPlaced ? undefined : "drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"
         }
         opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
         id={id}
+        d={d}
+        color={color}
+        width={width}
+        height={height}
       />
     </div>
   );
