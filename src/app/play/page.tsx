@@ -22,7 +22,6 @@ const generatePieces = (): Piece[] =>
       [0, 1, 0],
       [0, 1, 0],
     ],
-    size: [3, 4],
     isActivePiece: false,
     ref: { current: null },
     droppedOnBoard: false,

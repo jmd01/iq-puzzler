@@ -5,7 +5,6 @@ export type Piece = {
   position: { x: number; y: number };
   rotation: Rotation;
   shape: number[][];
-  size: [number, number];
   isActivePiece: boolean;
   onMouseDownPosition?: { x: number; y: number };
   dragPosition?: { x: number; y: number };

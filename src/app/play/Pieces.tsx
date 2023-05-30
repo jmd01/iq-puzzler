@@ -4,6 +4,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
 } from "react";
 import { SpheresCrossUnitedSvg1 } from "./SpheresCrossUnitedSvg";
@@ -67,8 +68,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     id,
     position,
     rotation,
-    shape,
-    size,
     isActivePiece,
     onMouseDownPosition = { x: 0, y: 0 },
     dragPosition,
@@ -84,14 +83,18 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
 
   const x = isDragging ? draggingTransform.x + position.x : position.x;
   const y = isDragging ? draggingTransform.y + position.y : position.y;
-  const style = {
-    transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn)`,
-    /**
-     * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
-     * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
-     */
-    zIndex: isPlaced ? 0 : 20,
-  };
+
+  const style = useMemo(
+    () => ({
+      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn)`,
+      /**
+       * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
+       * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
+       */
+      zIndex: isPlaced ? 0 : 20,
+    }),
+    [isPlaced, rotation, x, y]
+  );
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -124,7 +127,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         )
       );
     }
-
     // Only run on first render
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -142,7 +144,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         filter={
           isPlaced ? undefined : "drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"
         }
-        showStroke={!isPlaced && !isDragging && piece.droppedOnBoard}
+        opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
         id={id}
       />
     </div>
