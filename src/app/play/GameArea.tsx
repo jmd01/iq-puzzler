@@ -319,6 +319,8 @@ export const GameArea = ({
     ]
   );
 
+  const onContextMenu = (event: MouseEvent) => event.preventDefault();
+
   useEffect(() => {
     if (gameState.complete) {
       alert("You win!");
@@ -331,6 +333,7 @@ export const GameArea = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onContextMenu={onContextMenu}
     >
       <Board boardRef={boardRef} previewPiece={state.previewPiece} />
       <Pieces
