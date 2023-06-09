@@ -92,18 +92,29 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   const x = isDragging ? draggingTransform.x + position.x : position.x;
   const y = isDragging ? draggingTransform.y + position.y : position.y;
 
+  const scaleX =
+    (isFlippedX && (rotation === 0.25 || rotation === 0.75)) ||
+    (isFlippedY && (rotation === 0 || rotation === 0.5))
+      ? -1
+      : 1;
+
+  const scaleY =
+    (isFlippedY && (rotation === 0.25 || rotation === 0.75)) ||
+    (isFlippedX && (rotation === 0 || rotation === 0.5))
+      ? -1
+      : 1;
+
   const style = useMemo(
     () => ({
-      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn) scaleX(${
-        isFlippedX ? -1 : 1
-      }) scaleY(${isFlippedY ? -1 : 1})`,
+      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn) scaleX(${scaleX}) scaleY(${scaleY})`,
       /**
        * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
        * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
        */
       zIndex: isPlaced ? 0 : 20,
+      transition: "transform 0.2s ease-out",
     }),
-    [isFlippedX, isFlippedY, isPlaced, rotation, x, y]
+    [isPlaced, rotation, scaleX, scaleY, x, y]
   );
 
   const ref = useRef<HTMLDivElement>(null);
@@ -116,12 +127,12 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         pieceBounds &&
         boardBounds &&
         setPieces((pieces) =>
-          (event.ctrlKey || event.metaKey)
+          event.ctrlKey || event.metaKey || event.shiftKey
             ? updatePiecesWithFlippedPiece(
                 pieces,
                 id,
                 isActivePieceOverBoard(pieceBounds, boardBounds),
-                "x" // TODO allow flipping on y axis
+                event.ctrlKey || event.metaKey  ? "x" : "y"
               )
             : updatePiecesWithRotatedPiece(
                 pieces,

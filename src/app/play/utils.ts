@@ -143,7 +143,24 @@ function getRotatedShape(
  *
  *
  */
-function getFlippedShape(
+export function getFlippedShape(
+  pieceShape: Piece["shape"],
+  pieceIsFlippedX: Piece["isFlippedX"],
+  pieceIsFlippedY: Piece["isFlippedY"]
+): Piece["shape"] {
+  let flippedShape = nestedCopy(pieceShape);
+
+  if (pieceIsFlippedX) {
+    flippedShape = flippedShape.reverse();
+  }
+  if (pieceIsFlippedY) {
+    flippedShape = flippedShape.map((row) => row.reverse());
+  }
+
+  return flippedShape;
+}
+
+export function getFlippedShapeOld(
   pieceShape: Piece["shape"],
   pieceRotation: Piece["rotation"],
   pieceIsFlippedX: Piece["isFlippedX"],
@@ -204,7 +221,6 @@ export function boardsCellsCoveredByPiece(
   const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
   const flippedShape = getFlippedShape(
     rotatedShape,
-    pieceRotation,
     pieceIsFlippedX,
     pieceIsFlippedY
   );
@@ -380,7 +396,13 @@ export function updatePiecesWithRotatedPiece(
     piece.id === id
       ? {
           ...piece,
-          rotation: rotatePiece(piece.rotation),
+          rotation: rotatePieceClockwise(
+            piece.rotation,
+            (piece.isFlippedX && piece.isFlippedY) ||
+              !(piece.isFlippedX && piece.isFlippedY)
+              ? "clockwise"
+              : "anticlockwise"
+          ),
           droppedOnBoard,
           isActivePiece: false,
           onMouseDownPosition: undefined,
@@ -417,8 +439,17 @@ export function updatePiecesWithFlippedPiece(
 }
 
 /**
- * Increment the rotation value by 0.25. If the rotation is 0.75, reset to 0
+ * Increment or decrement the rotation value by 0.25. If clockwise and the rotation is 0.75, reset to 0. If anti-clockwise and the rotation is 0, reset to 0.75
  */
-export function rotatePiece(currentRotation: Rotation) {
-  return currentRotation === 0.75 ? 0 : ((currentRotation + 0.25) as Rotation);
+export function rotatePieceClockwise(
+  currentRotation: Rotation,
+  direction: "clockwise" | "anticlockwise"
+) {
+  return direction === "clockwise"
+    ? currentRotation === 0.75
+      ? 0
+      : ((currentRotation + 0.25) as Rotation)
+    : currentRotation === 0
+    ? 0.75
+    : ((currentRotation - 0.25) as Rotation);
 }
