@@ -16,6 +16,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [1, 0, 0, 0],
       [1, 1, 1, 1],
@@ -32,6 +34,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [0, 0, 1, 1],
       [1, 1, 1, 0],
@@ -48,8 +52,10 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
-      [0, 1, 0, 0],
+      [0, 0, 1, 0],
       [1, 1, 1, 1],
     ],
     isActivePiece: false,
@@ -64,6 +70,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [1, 0, 1],
       [1, 1, 1],
@@ -80,6 +88,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [1, 1, 0],
       [1, 1, 1],
@@ -96,6 +106,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [1, 0, 0],
       [1, 1, 1],
@@ -112,6 +124,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [0, 1],
       [1, 1],
@@ -128,6 +142,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [0, 0, 1],
       [0, 0, 1],
@@ -145,6 +161,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [0, 1, 0],
       [1, 1, 0],
@@ -162,6 +180,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [1, 1, 0],
       [0, 1, 1],
@@ -179,6 +199,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [0, 1],
       [1, 1],
@@ -196,6 +218,8 @@ const generatePieces = (): Piece[] => [
     initialPosition: { x: 0, y: 0 },
     position: { x: 0, y: 0 },
     rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
     shape: [
       [1, 0],
       [1, 1],
@@ -204,7 +228,7 @@ const generatePieces = (): Piece[] => [
     isActivePiece: false,
     droppedOnBoard: false,
     color: "#21a09e",
-    d:`M96 64c17.664 0 32 14.336 32 32s-14.336 32-32 32c-17.66 0-31.992-14.328-32-31.986-.008 17.653-14.333 31.978-31.986 31.986C49.672 128.008 64 142.34 64 160c0 17.664-14.336 32-32 32S0 177.664 0 160c0-17.66 14.328-31.992 31.986-32C14.328 127.992 0 113.66 0 96s14.328-31.992 31.986-32C14.328 63.992 0 49.66 0 32 0 14.336 14.336 0 32 0s32 14.336 32 32c0 17.66-14.328 31.992-31.986 32C49.667 64.008 63.992 78.333 64 95.986 64.008 78.328 78.34 64 96 64z`,
+    d: `M96 64c17.664 0 32 14.336 32 32s-14.336 32-32 32c-17.66 0-31.992-14.328-32-31.986-.008 17.653-14.333 31.978-31.986 31.986C49.672 128.008 64 142.34 64 160c0 17.664-14.336 32-32 32S0 177.664 0 160c0-17.66 14.328-31.992 31.986-32C14.328 127.992 0 113.66 0 96s14.328-31.992 31.986-32C14.328 63.992 0 49.66 0 32 0 14.336 14.336 0 32 0s32 14.336 32 32c0 17.66-14.328 31.992-31.986 32C49.667 64.008 63.992 78.333 64 95.986 64.008 78.328 78.34 64 96 64z`,
     width: 128,
     height: 192,
   },

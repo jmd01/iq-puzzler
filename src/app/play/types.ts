@@ -4,6 +4,8 @@ export type Piece = {
   initialPosition: { x: number; y: number };
   position: { x: number; y: number };
   rotation: Rotation;
+  isFlippedX: boolean;
+  isFlippedY: boolean;
   shape: number[][];
   isActivePiece: boolean;
   onMouseDownPosition?: { x: number; y: number };

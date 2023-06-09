@@ -125,6 +125,53 @@ function getRotatedShape(
       );
   }
 }
+/**
+ *  Flip a piece's shape array by x or y axis, eg flip y axis
+ * ```
+ *  0 1 0
+ *  1 1 1
+ *  0 1 0
+ *  0 1 0
+ * ```
+ * becomes
+ * ```
+ *  0 1 0
+ *  0 1 0
+ *  1 1 1
+ *  0 1 0
+ * ```
+ *
+ *
+ */
+function getFlippedShape(
+  pieceShape: Piece["shape"],
+  pieceRotation: Piece["rotation"],
+  pieceIsFlippedX: Piece["isFlippedX"],
+  pieceIsFlippedY: Piece["isFlippedY"]
+): Piece["shape"] {
+  let flippedShape = nestedCopy(pieceShape);
+
+  switch (pieceRotation) {
+    case 0:
+    case 0.5:
+      if (pieceIsFlippedX) {
+        flippedShape = flippedShape.map((row) => row.reverse());
+      }
+      if (pieceIsFlippedY) {
+        flippedShape = flippedShape.reverse();
+      }
+    case 0.25:
+    case 0.75:
+      if (pieceIsFlippedY) {
+        flippedShape = flippedShape.map((row) => row.reverse());
+      }
+      if (pieceIsFlippedX) {
+        flippedShape = flippedShape.reverse();
+      }
+  }
+
+  return flippedShape;
+}
 
 /**
  * When dragging a piece, calculate the cells on the board that a piece will cover if dropped on the board
@@ -135,6 +182,8 @@ export function boardsCellsCoveredByPiece(
   boardBounds: DOMRect,
   pieceShape: Piece["shape"],
   pieceRotation: Piece["rotation"],
+  pieceIsFlippedX: Piece["isFlippedX"],
+  pieceIsFlippedY: Piece["isFlippedY"],
   gameStateGrid: GameState["grid"]
 ): PreviewPiece | undefined {
   const pieceTopRelativeToBoard = Math.max(
@@ -153,7 +202,22 @@ export function boardsCellsCoveredByPiece(
 
   // The index of boards cells that the dragged piece is over
   const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
-  const pieceOverCells = rotatedShape.reduce<[number, number][] | undefined>(
+  const flippedShape = getFlippedShape(
+    rotatedShape,
+    pieceRotation,
+    pieceIsFlippedX,
+    pieceIsFlippedY
+  );
+  console.log({
+    pieceShape,
+    rotatedShape,
+    flippedShape,
+    pieceIsFlippedX,
+    pieceIsFlippedY,
+    pieceRotation,
+  });
+
+  const pieceOverCells = flippedShape.reduce<[number, number][] | undefined>(
     (acc, currentRow, y) => {
       return currentRow.reduce<[number, number][] | undefined>(
         (rowAcc, coversCell, x) => {
@@ -310,13 +374,38 @@ export function calcUnplacedPosition(
 export function updatePiecesWithRotatedPiece(
   pieces: Piece[],
   id: Piece["id"],
-  droppedOnBoard: boolean,
+  droppedOnBoard: boolean
 ): Piece[] {
   return pieces.map((piece) =>
     piece.id === id
       ? {
           ...piece,
           rotation: rotatePiece(piece.rotation),
+          droppedOnBoard,
+          isActivePiece: false,
+          onMouseDownPosition: undefined,
+          dragPosition: undefined,
+          placedInCells: undefined,
+        }
+      : piece
+  );
+}
+
+/**
+ * Flip the piece on x or y axis and update pieces array
+ */
+export function updatePiecesWithFlippedPiece(
+  pieces: Piece[],
+  id: Piece["id"],
+  droppedOnBoard: boolean,
+  plane: "x" | "y"
+): Piece[] {
+  return pieces.map((piece) =>
+    piece.id === id
+      ? {
+          ...piece,
+          isFlippedX: plane === "x" ? !piece.isFlippedX : piece.isFlippedX,
+          isFlippedY: plane === "y" ? !piece.isFlippedY : piece.isFlippedY,
           droppedOnBoard,
           isActivePiece: false,
           onMouseDownPosition: undefined,

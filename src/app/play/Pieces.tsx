@@ -1,5 +1,6 @@
 import {
   Dispatch,
+  MouseEvent,
   SetStateAction,
   forwardRef,
   useCallback,
@@ -7,12 +8,12 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { SpheresCrossUnitedSvg } from "./SpheresCrossUnitedSvg";
 import { GameAreaDragState } from "./GameArea";
 import type { Piece as PieceType, Rotation } from "./types";
 import {
   isActivePieceOverBoard,
   mergeRefs,
+  updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
 import { PieceSvg } from "./PieceSvg";
@@ -65,12 +66,12 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   { piece, setPieces, boardBounds },
   activePieceRef
 ) {
-  console.log({ piece });
-
   const {
     id,
     position,
     rotation,
+    isFlippedX,
+    isFlippedY,
     isActivePiece,
     onMouseDownPosition = { x: 0, y: 0 },
     dragPosition,
@@ -93,32 +94,44 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
 
   const style = useMemo(
     () => ({
-      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn)`,
+      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn) scaleX(${
+        isFlippedX ? -1 : 1
+      }) scaleY(${isFlippedY ? -1 : 1})`,
       /**
        * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
        * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
        */
       zIndex: isPlaced ? 0 : 20,
     }),
-    [isPlaced, rotation, x, y]
+    [isFlippedX, isFlippedY, isPlaced, rotation, x, y]
   );
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const onClickPath = useCallback(() => {
-    const pieceBounds = ref.current?.getBoundingClientRect();
+  const onClickPath = useCallback(
+    (event: MouseEvent) => {
+      const pieceBounds = ref.current?.getBoundingClientRect();
 
-    !isDragging &&
-      pieceBounds &&
-      boardBounds &&
-      setPieces((pieces) =>
-        updatePiecesWithRotatedPiece(
-          pieces,
-          id,
-          isActivePieceOverBoard(pieceBounds, boardBounds)
-        )
-      );
-  }, [boardBounds, id, isDragging, setPieces]);
+      !isDragging &&
+        pieceBounds &&
+        boardBounds &&
+        setPieces((pieces) =>
+          (event.ctrlKey || event.metaKey)
+            ? updatePiecesWithFlippedPiece(
+                pieces,
+                id,
+                isActivePieceOverBoard(pieceBounds, boardBounds),
+                "x" // TODO allow flipping on y axis
+              )
+            : updatePiecesWithRotatedPiece(
+                pieces,
+                id,
+                isActivePieceOverBoard(pieceBounds, boardBounds)
+              )
+        );
+    },
+    [boardBounds, id, isDragging, setPieces]
+  );
 
   useEffect(() => {
     const initialPosition = ref.current?.getBoundingClientRect();

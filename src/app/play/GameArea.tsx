@@ -23,6 +23,7 @@ import {
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
   removePieceFromBoard,
+  updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
 import type { GameState, Piece, PreviewPiece } from "./types";
@@ -191,6 +192,8 @@ export const GameArea = ({
               boardBounds,
               activePiece.shape,
               activePiece.rotation,
+              activePiece.isFlippedX,
+              activePiece.isFlippedY,
               gameState.grid
             );
             previewPiece &&
@@ -288,11 +291,18 @@ export const GameArea = ({
           boardBounds
         ) {
           setPieces(
-            updatePiecesWithRotatedPiece(
-              pieces,
-              state.activePieceId,
-              isActivePieceOverBoard(pieceBounds, boardBounds)
-            )
+            event.ctrlKey || event.metaKey
+              ? updatePiecesWithFlippedPiece(
+                  pieces,
+                  state.activePieceId,
+                  isActivePieceOverBoard(pieceBounds, boardBounds),
+                  "y" // TODO allow flipping on x axis
+                )
+              : updatePiecesWithRotatedPiece(
+                  pieces,
+                  state.activePieceId,
+                  isActivePieceOverBoard(pieceBounds, boardBounds)
+                )
           );
           setGameState({
             ...gameState,
