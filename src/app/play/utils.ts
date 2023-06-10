@@ -118,7 +118,7 @@ function getRotatedShape(
         pieceShapeClone.map((row) => row[index]).reverse()
       );
     case 0.5:
-      return [...pieceShapeClone.reverse()];
+      return [...pieceShapeClone.reverse()].map((row) => row.reverse());
     case 0.75:
       return pieceShapeClone[0].map((_, index) =>
         pieceShapeClone.map((row) => row[row.length - 1 - index])
@@ -160,36 +160,6 @@ export function getFlippedShape(
   return flippedShape;
 }
 
-export function getFlippedShapeOld(
-  pieceShape: Piece["shape"],
-  pieceRotation: Piece["rotation"],
-  pieceIsFlippedX: Piece["isFlippedX"],
-  pieceIsFlippedY: Piece["isFlippedY"]
-): Piece["shape"] {
-  let flippedShape = nestedCopy(pieceShape);
-
-  switch (pieceRotation) {
-    case 0:
-    case 0.5:
-      if (pieceIsFlippedX) {
-        flippedShape = flippedShape.map((row) => row.reverse());
-      }
-      if (pieceIsFlippedY) {
-        flippedShape = flippedShape.reverse();
-      }
-    case 0.25:
-    case 0.75:
-      if (pieceIsFlippedY) {
-        flippedShape = flippedShape.map((row) => row.reverse());
-      }
-      if (pieceIsFlippedX) {
-        flippedShape = flippedShape.reverse();
-      }
-  }
-
-  return flippedShape;
-}
-
 /**
  * When dragging a piece, calculate the cells on the board that a piece will cover if dropped on the board
  * Also returns the index of top and left cells that the piece will be dropped on
@@ -224,14 +194,14 @@ export function boardsCellsCoveredByPiece(
     pieceIsFlippedX,
     pieceIsFlippedY
   );
-  console.log({
-    pieceShape,
-    rotatedShape,
-    flippedShape,
-    pieceIsFlippedX,
-    pieceIsFlippedY,
-    pieceRotation,
-  });
+  // console.log({
+  //   pieceShape,
+  //   rotatedShape,
+  //   flippedShape,
+  //   pieceIsFlippedX,
+  //   pieceIsFlippedY,
+  //   pieceRotation,
+  // });
 
   const pieceOverCells = flippedShape.reduce<[number, number][] | undefined>(
     (acc, currentRow, y) => {
@@ -392,25 +362,35 @@ export function updatePiecesWithRotatedPiece(
   id: Piece["id"],
   droppedOnBoard: boolean
 ): Piece[] {
-  return pieces.map((piece) =>
-    piece.id === id
-      ? {
-          ...piece,
-          rotation: rotatePieceClockwise(
-            piece.rotation,
-            (piece.isFlippedX && piece.isFlippedY) ||
-              !(piece.isFlippedX && piece.isFlippedY)
-              ? "clockwise"
-              : "anticlockwise"
-          ),
-          droppedOnBoard,
-          isActivePiece: false,
-          onMouseDownPosition: undefined,
-          dragPosition: undefined,
-          placedInCells: undefined,
-        }
-      : piece
-  );
+  return pieces.map((piece) => {
+    if (piece.id === id) {
+      console.log(
+        "piece.isFlippedX",
+        piece.isFlippedX,
+        "piece.isFlippedY",
+        piece.isFlippedY,
+        (piece.isFlippedX && piece.isFlippedY) ||
+          (!piece.isFlippedX && !piece.isFlippedY)
+      );
+      return {
+        ...piece,
+        rotation: rotatePiece(
+          piece.rotation,
+          (piece.isFlippedX && piece.isFlippedY) ||
+            (!piece.isFlippedX && !piece.isFlippedY)
+            ? "clockwise"
+            : "anticlockwise"
+        ),
+        droppedOnBoard,
+        isActivePiece: false,
+        onMouseDownPosition: undefined,
+        dragPosition: undefined,
+        placedInCells: undefined,
+      };
+    } else {
+      return piece;
+    }
+  });
 }
 
 /**
@@ -441,10 +421,12 @@ export function updatePiecesWithFlippedPiece(
 /**
  * Increment or decrement the rotation value by 0.25. If clockwise and the rotation is 0.75, reset to 0. If anti-clockwise and the rotation is 0, reset to 0.75
  */
-export function rotatePieceClockwise(
+export function rotatePiece(
   currentRotation: Rotation,
   direction: "clockwise" | "anticlockwise"
 ) {
+  console.log({ direction });
+
   return direction === "clockwise"
     ? currentRotation === 0.75
       ? 0

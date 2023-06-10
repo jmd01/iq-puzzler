@@ -112,7 +112,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
        * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
        */
       zIndex: isPlaced ? 0 : 20,
-      transition: "transform 0.2s ease-out",
+      // transition: "transform 0.2s ease-out",
     }),
     [isPlaced, rotation, scaleX, scaleY, x, y]
   );

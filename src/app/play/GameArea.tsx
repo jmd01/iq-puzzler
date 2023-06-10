@@ -17,7 +17,6 @@ import {
   boardsCellsCoveredByPiece,
   calcPlacedPosition,
   calcUnplacedPosition,
-  CELL_SIZE,
   DRAG_START_THRESHOLD,
   generateGameState,
   getPieceIdOnMouseDown,
@@ -111,6 +110,8 @@ export const GameArea = ({
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(12, 6)
   );
+  // console.log(gameState.grid);
+  
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
   >(reducer, initialState);
@@ -291,12 +292,12 @@ export const GameArea = ({
           boardBounds
         ) {
           setPieces(
-            event.ctrlKey || event.metaKey
+            event.ctrlKey || event.metaKey || event.shiftKey
               ? updatePiecesWithFlippedPiece(
                   pieces,
                   state.activePieceId,
                   isActivePieceOverBoard(pieceBounds, boardBounds),
-                  "y" // TODO allow flipping on x axis
+                  event.ctrlKey || event.metaKey ? "x" : "y"
                 )
               : updatePiecesWithRotatedPiece(
                   pieces,
