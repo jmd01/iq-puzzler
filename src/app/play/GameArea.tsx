@@ -17,14 +17,15 @@ import {
   calcPlacedPosition,
   calcUnplacedPosition,
   DRAG_START_THRESHOLD,
-  generateGameState,
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
   removePieceFromBoard,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
+import { generateGameState } from "./generateGameState";
 import type { GameState, Piece, PreviewPiece } from "./types";
+import { generatePieces } from "./generatePieces";
 
 export type GameAreaDragState = {
   isMouseDown: boolean;
@@ -99,16 +100,12 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   }
 };
 
-export const GameArea = ({
-  pieces,
-  setPieces,
-}: {
-  pieces: Piece[];
-  setPieces: Dispatch<SetStateAction<Piece[]>>;
-}) => {
+export const GameArea = () => {
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(11, 5)
-  );  
+  );
+  const [pieces, setPieces] = useState(generatePieces());
+
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
   >(reducer, initialState);
