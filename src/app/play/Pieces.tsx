@@ -121,6 +121,8 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
 
   const onClickPath = useCallback(
     (event: MouseEvent) => {
+      if (piece.isLocked) return;
+
       const pieceBounds = ref.current?.getBoundingClientRect();
 
       !isDragging &&
@@ -141,7 +143,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
               )
         );
     },
-    [boardBounds, id, isDragging, setPieces]
+    [boardBounds, id, isDragging, piece.isLocked, setPieces]
   );
 
   useEffect(() => {

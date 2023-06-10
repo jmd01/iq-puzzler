@@ -13,7 +13,8 @@ export const getPieceIdOnMouseDown = (
   pieces: Piece[]
 ): Piece["id"] | undefined => {
   if (target.id.includes("piece")) {
-    return target.id.split("-")?.[1];
+    const pieceId =  target.id.split("-")?.[1];
+    return pieces.find((piece) => piece.id === pieceId && !piece.isLocked)?.id;
   }
 
   const cellData = target.getAttribute("data-board-cell")?.split(",");
@@ -35,8 +36,8 @@ const getPlacedPieceIdFromCell = (
   clickedCell: [number, number],
   pieces: Piece[]
 ): Piece["id"] | undefined => {
-  return pieces.find((piece) => {
-    return piece.placedInCells?.some(
+  return pieces.find((piece) => {   
+    return !piece.isLocked && piece.placedInCells?.some(
       (cell) => cell[0] === clickedCell[0] && cell[1] === clickedCell[1]
     );
   })?.id;

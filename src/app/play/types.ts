@@ -18,6 +18,8 @@ export type Piece = {
   width: number;
   d: string;
   color: string;
+  /** If piece is pre-placed on board it should not be draggable */
+  isLocked: boolean;
 };
 
 /** Represent where an active piece will be dropped on the board */
