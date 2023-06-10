@@ -72,7 +72,7 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
       return {
         ...state,
         isMouseDown: false,
-        activePiece: undefined,
+        activePieceId: undefined,
         isDragging: false,
         onMouseDownPosition: undefined,
         dragPosition: undefined,
