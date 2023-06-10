@@ -70,17 +70,13 @@ function calcRotatedInitialPiecePosition(
   const isRotatedSideways = pieceRotation === 0.25 || pieceRotation === 0.75;
 
   if (isRotatedSideways) {
-    const offset = (pieceBounds.height - pieceBounds.width) / 2;
-    const offsetInitialPositionByRotation =
-      pieceBounds.height > pieceBounds.width
-        ? {
-            x: pieceInitialPosition.x - offset,
-            y: pieceInitialPosition.y + offset,
-          }
-        : {
-            x: pieceInitialPosition.x + offset,
-            y: pieceInitialPosition.y - offset,
-          };
+    const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
+    const offsetY = (pieceBounds.width - pieceBounds.height) / 2;
+
+    const offsetInitialPositionByRotation = {
+      x: pieceInitialPosition.x + offsetX,
+      y: pieceInitialPosition.y + offsetY,
+    };
 
     return offsetInitialPositionByRotation;
   }
@@ -194,14 +190,6 @@ export function boardsCellsCoveredByPiece(
     pieceIsFlippedX,
     pieceIsFlippedY
   );
-  // console.log({
-  //   pieceShape,
-  //   rotatedShape,
-  //   flippedShape,
-  //   pieceIsFlippedX,
-  //   pieceIsFlippedY,
-  //   pieceRotation,
-  // });
 
   const pieceOverCells = flippedShape.reduce<[number, number][] | undefined>(
     (acc, currentRow, y) => {
@@ -330,7 +318,6 @@ export function calcPlacedPosition(
     piece.rotation,
     piece.initialPosition
   );
-  console.log({ piece, pieceInitialPosition });
 
   return {
     x: boardBounds.left + previewPiece.x * CELL_SIZE - pieceInitialPosition.x,
@@ -364,14 +351,6 @@ export function updatePiecesWithRotatedPiece(
 ): Piece[] {
   return pieces.map((piece) => {
     if (piece.id === id) {
-      console.log(
-        "piece.isFlippedX",
-        piece.isFlippedX,
-        "piece.isFlippedY",
-        piece.isFlippedY,
-        (piece.isFlippedX && piece.isFlippedY) ||
-          (!piece.isFlippedX && !piece.isFlippedY)
-      );
       return {
         ...piece,
         rotation: rotatePiece(
@@ -425,8 +404,6 @@ export function rotatePiece(
   currentRotation: Rotation,
   direction: "clockwise" | "anticlockwise"
 ) {
-  console.log({ direction });
-
   return direction === "clockwise"
     ? currentRotation === 0.75
       ? 0

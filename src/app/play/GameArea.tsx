@@ -8,8 +8,7 @@ import {
   useReducer,
   Dispatch,
   SetStateAction,
-  use,
-  useEffect,
+  useLayoutEffect,
 } from "react";
 import type { Reducer } from "react";
 import {
@@ -108,10 +107,8 @@ export const GameArea = ({
   setPieces: Dispatch<SetStateAction<Piece[]>>;
 }) => {
   const [gameState, setGameState] = useState<GameState>(
-    generateGameState(12, 6)
-  );
-  // console.log(gameState.grid);
-  
+    generateGameState(11, 5)
+  );  
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
   >(reducer, initialState);
@@ -166,7 +163,7 @@ export const GameArea = ({
       );
       if (activePiece && activePiece.placedInCells) {
         setGameState({
-          ...gameState,
+          complete: false,
           grid: removePieceFromBoard(gameState.grid, activePiece.placedInCells),
         });
 
@@ -306,7 +303,7 @@ export const GameArea = ({
                 )
           );
           setGameState({
-            ...gameState,
+            complete: false,
             grid: removePieceFromBoard(
               gameState.grid,
               activePiece.placedInCells
@@ -332,7 +329,7 @@ export const GameArea = ({
 
   const onContextMenu = (event: MouseEvent) => event.preventDefault();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (gameState.complete) {
       alert("You win!");
     }

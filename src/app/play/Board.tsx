@@ -13,20 +13,20 @@ export const Board = ({
       <div className="p-4 rounded-3xl bg-gradient-to-b from-slate-500 to-slate-600">
         <div className="relative">
           <div className="absolute w-full h-full z-10">
-            <div className="inline-grid grid-cols-12" ref={boardRef}>
-              {[...Array(72)].map((_, i) => (
+            <div className="inline-grid grid-cols-11" ref={boardRef}>
+              {[...Array(55)].map((_, i) => (
                 <span
                   key={i}
                   className={`boardCell w-16 h-16 `}
-                  data-board-cell={`${i % 12},${Math.floor(i / 12)}`}
+                  data-board-cell={`${i % 11},${Math.floor(i / 11)}`}
                 />
               ))}
             </div>
           </div>
-          <div className="inline-grid grid-cols-12" ref={boardRef}>
-            {[...Array(72)].map((_, i) => {
-              const x = i % 12;
-              const y = Math.floor(i / 12);
+          <div className="inline-grid grid-cols-11" ref={boardRef}>
+            {[...Array(55)].map((_, i) => {
+              const x = i % 11;
+              const y = Math.floor(i / 11);
               const isPreview = previewPiece?.cells?.some(
                 ([previewX, previewY]) => previewX === x && previewY === y
               );
