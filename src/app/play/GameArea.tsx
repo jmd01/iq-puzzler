@@ -6,9 +6,8 @@ import {
   MouseEvent,
   useCallback,
   useReducer,
-  Dispatch,
-  SetStateAction,
   useLayoutEffect,
+  useEffect,
 } from "react";
 import type { Reducer } from "react";
 import {
@@ -23,7 +22,7 @@ import {
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
-import { generateGameState } from "./generateGameState";
+import { generateGameState, prePlacedPieces } from "./generateGameState";
 import type { GameState, Piece, PreviewPiece } from "./types";
 import { generatePieces } from "./generatePieces";
 
@@ -102,9 +101,19 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
 
 export const GameArea = () => {
   const [gameState, setGameState] = useState<GameState>(
-    generateGameState(11, 5)
+    generateGameState(11, 5, prePlacedPieces)
   );
+
   const [pieces, setPieces] = useState(generatePieces());
+
+  console.log(gameState, pieces);
+  const [gameAreaDims, setGameAreaDims] = useState<{
+    width: number | string;
+    height: number | string;
+  }>({
+    height: "100%",
+    width: "100%",
+  });
 
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
@@ -331,6 +340,17 @@ export const GameArea = () => {
       alert("You win!");
     }
   }, [gameState.complete]);
+  
+  // Fix the window size to 100% on first load
+  useEffect(() => {
+    if (gameAreaRef.current) {
+      const { width, height } = gameAreaRef.current?.getBoundingClientRect();
+      setGameAreaDims({
+        width,
+        height,
+      });
+    }
+  }, []);
 
   return (
     <div
@@ -339,6 +359,7 @@ export const GameArea = () => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onContextMenu={onContextMenu}
+      style={{ width: gameAreaDims.width, height: gameAreaDims.height }}
     >
       <Board boardRef={boardRef} previewPiece={state.previewPiece} />
       <Pieces
