@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Piece {
+  id     Int    @id @default(autoincrement())
+  shape  String
+  height Int
+  width  Int
+  d      String
+  color  String 
+}
+
+model Solution {
+  id             Int             @id @default(autoincrement())
+  solutionPieces SolutionPiece[]
+}
+
+model SolutionPiece {
+  id         Int      @id @default(autoincrement())
+  rotation   Int
+  isFlippedX Boolean
+  isFlippedY Boolean
+  solution   Solution @relation(fields: [solutionId], references: [id])
+  solutionId Int
+  Levels      Level[]
+}
+
+model Level {
+  id             Int             @id @default(autoincrement())
+  difficulty     String
+  solutionId     Int
+  // A subset of the Solution's SolutionPieces representing the pre-placed pieces
+  solutionPieces SolutionPiece[]
+}
