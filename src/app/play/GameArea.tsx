@@ -124,6 +124,7 @@ export const GameArea = () => {
   const activePieceRef = useRef<HTMLDivElement>(null);
 
   const boardBounds = boardRef.current?.getBoundingClientRect();
+  console.log({ pieces, gameState });
 
   const handleMouseDown = useCallback(
     (event: MouseEvent<HTMLElement>) => {
@@ -340,7 +341,7 @@ export const GameArea = () => {
       alert("You win!");
     }
   }, [gameState.complete]);
-  
+
   // Fix the window size to 100% on first load
   useEffect(() => {
     if (gameAreaRef.current) {

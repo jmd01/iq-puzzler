@@ -125,3 +125,13 @@ export const pieces = [
     height: 192,
   },
 ];
+
+const solutionPieces = [
+  {
+    pieceId: 1,
+    rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
+    placedInCells: []
+  }
+]
