@@ -11,12 +11,13 @@ datasource db {
 }
 
 model Piece {
-  id     Int    @id @default(autoincrement())
-  shape  String
-  height Int
-  width  Int
-  d      String
-  color  String 
+  id            Int             @id @default(autoincrement())
+  shape         String
+  height        Int
+  width         Int
+  d             String
+  color         String
+  SolutionPiece SolutionPiece[]
 }
 
 model Solution {
@@ -26,12 +27,14 @@ model Solution {
 
 model SolutionPiece {
   id         Int      @id @default(autoincrement())
+  piece      Piece    @relation(fields: [pieceId], references: [id])
+  pieceId    Int
   rotation   Int
   isFlippedX Boolean
   isFlippedY Boolean
   solution   Solution @relation(fields: [solutionId], references: [id])
   solutionId Int
-  Levels      Level[]
+  Levels     Level[]
 }
 
 model Level {
