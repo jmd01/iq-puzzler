@@ -101,7 +101,11 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
 
 export const GameArea = () => {
   const [gameState, setGameState] = useState<GameState>(
-    generateGameState(11, 5, prePlacedPieces)
+    generateGameState(
+      11,
+      5
+      // prePlacedPieces
+    )
   );
 
   const [pieces, setPieces] = useState(generatePieces());
