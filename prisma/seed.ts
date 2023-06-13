@@ -10,21 +10,66 @@ async function main() {
   //       data: { ...piece, shape: JSON.stringify(piece.shape) },
   //     })
   // );
-  const res = await prisma.solution.create({
+  // const res = await prisma.solution.create({
+  //   data: {
+  //     solutionPieces: {
+  //       create: solutionPieces.map(({id, placedInCells, ...solutionPiece}) => ({
+  //         ...solutionPiece,
+  //         placedInCells: JSON.stringify(placedInCells),
+  //         piece: {
+  //           connect: {
+  //             id
+  //           }
+  //         }
+  //       }))
+  //     }
+  //   },
+  // });
+  // const res = await prisma.level.create({
+  //   data: {
+  //     difficulty: "EASY",
+  //     solutionId: 1,
+  //     solutionPieces: {
+  //       connect: [
+  //         {
+  //           id: 1,
+  //         },
+  //         {
+  //           id: 2,
+  //         },
+  //         {
+  //           id: 3,
+  //         },
+  //         {
+  //           id: 4,
+  //         },
+  //       ],
+  //     },
+  //   },
+  // });
+  const res = await prisma.level.create({
     data: {
+      difficulty: "EASY",
+      solutionId: 1,
       solutionPieces: {
-        create: solutionPieces.map(({id, placedInCells, ...solutionPiece}) => ({
-          ...solutionPiece,
-          placedInCells: JSON.stringify(placedInCells),
-          piece: {
-            connect: {
-              id
-            }
-          }
-        }))
-      }
+        connect: [
+          {
+            id: 5,
+          },
+          {
+            id: 6,
+          },
+          {
+            id: 7,
+          },
+          {
+            id: 8,
+          },
+        ],
+      },
     },
   });
+
   console.log(res);
 }
 

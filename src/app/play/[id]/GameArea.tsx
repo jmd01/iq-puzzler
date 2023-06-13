@@ -1,3 +1,4 @@
+"use client";
 import { Board } from "./Board";
 import { Pieces } from "./Pieces";
 import {
@@ -99,6 +100,9 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   }
 };
 
+type GameAreaProps = {
+  level: number;
+};
 export const GameArea = () => {
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(
