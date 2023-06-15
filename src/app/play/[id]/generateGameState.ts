@@ -1,4 +1,4 @@
-import type { GameState, Piece } from "./types";
+import type { GameState, Piece, PieceData } from "./types";
 import { addPieceToBoard } from "./utils";
 
 /**
@@ -15,14 +15,14 @@ import { addPieceToBoard } from "./utils";
 export function generateGameState(
   x: number,
   y: number,
-  prePlacedPieces?: [string, NonNullable<Piece["placedInCells"]>][]
+  prePlacedPieces?: PieceData[]
 ): GameState {
   // Create an empty grid
   let grid: [number][] = Array(y).fill(Array(x).fill(0));
 
   // Fill it with the preplaced pieces
   prePlacedPieces &&
-    prePlacedPieces.forEach(([, placedInCells]) => {
+    prePlacedPieces.forEach(({placedInCells}) => {
       grid = addPieceToBoard(grid, placedInCells);
     });
 

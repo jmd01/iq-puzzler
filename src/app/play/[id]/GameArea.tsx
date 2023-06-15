@@ -24,7 +24,7 @@ import {
   updatePiecesWithRotatedPiece,
 } from "./utils";
 import { generateGameState, prePlacedPieces } from "./generateGameState";
-import type { GameState, Piece, PreviewPiece } from "./types";
+import type { GameState, Piece, PieceData, PreviewPiece } from "./types";
 import { generatePieces } from "./generatePieces";
 
 export type GameAreaDragState = {
@@ -101,20 +101,18 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
 };
 
 type GameAreaProps = {
-  level: number;
+  placedPieces: PieceData[];
+  unplacedPieces: Piece[];
 };
-export const GameArea = () => {
+export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
   const [gameState, setGameState] = useState<GameState>(
-    generateGameState(
-      11,
-      5
-      // prePlacedPieces
-    )
+    generateGameState(11, 5, placedPieces)
   );
 
-  const [pieces, setPieces] = useState(generatePieces());
+  const [prePlacedPieces, setPrePlacedPieces] = useState(placedPieces);
+  const [pieces, setPieces] = useState(unplacedPieces);
 
-  console.log(gameState, pieces);
+  console.log({ gameState, placedPieces, pieces });
   const [gameAreaDims, setGameAreaDims] = useState<{
     width: number | string;
     height: number | string;
@@ -132,7 +130,6 @@ export const GameArea = () => {
   const activePieceRef = useRef<HTMLDivElement>(null);
 
   const boardBounds = boardRef.current?.getBoundingClientRect();
-  console.log({ pieces, gameState });
 
   const handleMouseDown = useCallback(
     (event: MouseEvent<HTMLElement>) => {

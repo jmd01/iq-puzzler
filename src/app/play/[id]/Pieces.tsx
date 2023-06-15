@@ -172,13 +172,14 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         ...style,
       }}
     >
+      {/* {`piece-${id}`} */}
       <PieceSvg
         onClickPath={onClickPath}
         filter={
           isPlaced ? undefined : "drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"
         }
         opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
-        id={id}
+        id={id.toString()}
         d={d}
         color={color}
         width={width}

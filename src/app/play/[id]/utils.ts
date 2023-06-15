@@ -13,8 +13,10 @@ export const getPieceIdOnMouseDown = (
   pieces: Piece[]
 ): Piece["id"] | undefined => {
   if (target.id.includes("piece")) {
-    const pieceId =  target.id.split("-")?.[1];
-    return pieces.find((piece) => piece.id === pieceId && !piece.isLocked)?.id;
+    const pieceId = target.id.split("-")?.[1];
+    return pieces.find(
+      (piece) => piece.id === Number(pieceId) && !piece.isLocked
+    )?.id;
   }
 
   const cellData = target.getAttribute("data-board-cell")?.split(",");
@@ -36,9 +38,12 @@ const getPlacedPieceIdFromCell = (
   clickedCell: [number, number],
   pieces: Piece[]
 ): Piece["id"] | undefined => {
-  return pieces.find((piece) => {   
-    return !piece.isLocked && piece.placedInCells?.some(
-      (cell) => cell[0] === clickedCell[0] && cell[1] === clickedCell[1]
+  return pieces.find((piece) => {
+    return (
+      !piece.isLocked &&
+      piece.placedInCells?.some(
+        (cell) => cell[0] === clickedCell[0] && cell[1] === clickedCell[1]
+      )
     );
   })?.id;
 };
@@ -120,6 +125,8 @@ function getRotatedShape(
       return pieceShapeClone[0].map((_, index) =>
         pieceShapeClone.map((row) => row[row.length - 1 - index])
       );
+    default:
+      return pieceShapeClone;
   }
 }
 /**

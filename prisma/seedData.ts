@@ -1,5 +1,6 @@
 export const pieces = [
   {
+    id: 11,
     shape: [
       [1, 0, 0, 0],
       [1, 1, 1, 1],
@@ -10,6 +11,7 @@ export const pieces = [
     height: 128,
   },
   {
+    id: 6,
     shape: [
       [0, 0, 1, 1],
       [1, 1, 1, 0],
@@ -20,6 +22,7 @@ export const pieces = [
     height: 128,
   },
   {
+    id: 1,
     shape: [
       [0, 0, 1, 0],
       [1, 1, 1, 1],
@@ -30,6 +33,7 @@ export const pieces = [
     height: 128,
   },
   {
+    id: 12,
     shape: [
       [1, 0, 1],
       [1, 1, 1],
@@ -40,6 +44,7 @@ export const pieces = [
     height: 128,
   },
   {
+    id: 10,
     shape: [
       [1, 1, 0],
       [1, 1, 1],
@@ -50,6 +55,7 @@ export const pieces = [
     height: 128,
   },
   {
+    id: 4,
     shape: [
       [1, 0, 0],
       [1, 1, 1],
@@ -60,6 +66,7 @@ export const pieces = [
     height: 128,
   },
   {
+    id: 9,
     shape: [
       [0, 1],
       [1, 1],
@@ -70,6 +77,7 @@ export const pieces = [
     height: 128,
   },
   {
+    id: 2,
     shape: [
       [0, 0, 1],
       [0, 0, 1],
@@ -81,6 +89,7 @@ export const pieces = [
     height: 192,
   },
   {
+    id: 8,
     shape: [
       [0, 1, 0],
       [1, 1, 0],
@@ -92,6 +101,7 @@ export const pieces = [
     height: 192,
   },
   {
+    id: 7,
     shape: [
       [1, 1, 0],
       [0, 1, 1],
@@ -103,6 +113,7 @@ export const pieces = [
     height: 192,
   },
   {
+    id: 5,
     shape: [
       [0, 1],
       [1, 1],
@@ -114,6 +125,7 @@ export const pieces = [
     height: 192,
   },
   {
+    id: 3,
     shape: [
       [1, 0],
       [1, 1],
@@ -129,32 +141,6 @@ export const pieces = [
 export const solutionPieces = [
   {
     id: 1,
-    rotation: 0.25,
-    isFlippedX: false,
-    isFlippedY: true,
-    placedInCells: [
-      [4, 1],
-      [5, 1],
-      [5, 2],
-      [5, 3],
-      [5, 4],
-    ],
-  },
-  {
-    id: 2,
-    rotation: 0.25,
-    isFlippedX: false,
-    isFlippedY: false,
-    placedInCells: [
-      [3, 0],
-      [3, 1],
-      [3, 2],
-      [4, 2],
-      [4, 3],
-    ],
-  },
-  {
-    id: 3,
     rotation: 0,
     isFlippedX: true,
     isFlippedY: false,
@@ -167,56 +153,7 @@ export const solutionPieces = [
     ],
   },
   {
-    id: 4,
-    rotation: 0,
-    isFlippedX: true,
-    isFlippedY: false,
-    placedInCells: [
-      [8, 0],
-      [9, 0],
-      [10, 0],
-      [8, 1],
-      [10, 1],
-    ],
-  },
-  {
-    id: 5,
-    rotation: 0,
-    isFlippedX: false,
-    isFlippedY: false,
-    placedInCells: [
-      [0, 3],
-      [1, 3],
-      [0, 4],
-      [1, 4],
-      [2, 4],
-    ],
-  },
-  {
-    id: 6,
-    rotation: 0.25,
-    isFlippedX: false,
-    isFlippedY: false,
-    placedInCells: [
-      [0, 0],
-      [1, 0],
-      [0, 1],
-      [0, 2],
-    ],
-  },
-  {
-    id: 7,
-    rotation: 0.25,
-    isFlippedX: false,
-    isFlippedY: false,
-    placedInCells: [
-      [6, 3],
-      [6, 4],
-      [7, 4],
-    ],
-  },
-  {
-    id: 8,
+    id: 2,
     rotation: 0,
     isFlippedX: false,
     isFlippedY: false,
@@ -229,20 +166,55 @@ export const solutionPieces = [
     ],
   },
   {
-    id: 9,
+    id: 3,
+    rotation: 0,
+    isFlippedX: false,
+    isFlippedY: true,
+    placedInCells: [
+      [9, 1],
+      [8, 2],
+      [9, 2],
+      [9, 3],
+    ],
+  },
+  {
+    id: 4,
+    rotation: 0.25,
+    isFlippedX: false,
+    isFlippedY: false,
+    placedInCells: [
+      [0, 0],
+      [1, 0],
+      [0, 1],
+      [0, 2],
+    ],
+  },
+  {
+    id: 5,
     rotation: 0,
     isFlippedX: false,
     isFlippedY: false,
     placedInCells: [
-      [7, 1],
-      [6, 2],
-      [7, 2],
-      [7, 3],
-      [8, 3],
+      [2, 0],
+      [1, 1],
+      [2, 1],
+      [1, 2],
     ],
   },
   {
-    id: 10,
+    id: 6,
+    rotation: 0.25,
+    isFlippedX: false,
+    isFlippedY: true,
+    placedInCells: [
+      [3, 0],
+      [3, 1],
+      [3, 2],
+      [4, 3],
+    ],
+  },
+  {
+    id: 7,
     rotation: 0.5,
     isFlippedX: false,
     isFlippedY: false,
@@ -255,27 +227,66 @@ export const solutionPieces = [
     ],
   },
   {
-    id: 11,
+    id: 8,
     rotation: 0,
     isFlippedX: false,
     isFlippedY: false,
     placedInCells: [
-      [2, 0],
-      [1, 1],
-      [2, 1],
-      [1, 2],
+      [7, 1],
+      [6, 2],
+      [7, 2],
+      [7, 3],
+      [8, 3],
+    ],
+  },
+  {
+    id: 9,
+    rotation: 0,
+    isFlippedX: false,
+    isFlippedY: true,
+    placedInCells: [
+      [6, 3],
+      [6, 4],
+      [7, 4],
+    ],
+  },
+  {
+    id: 10,
+    rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
+    placedInCells: [
+      [0, 3],
+      [1, 3],
+      [0, 4],
+      [1, 4],
+      [2, 4],
+    ],
+  },
+  {
+    id: 11,
+    rotation: 0.25,
+    isFlippedX: false,
+    isFlippedY: true,
+    placedInCells: [
+      [4, 1],
+      [5, 1],
+      [5, 2],
+      [5, 3],
+      [5, 4],
     ],
   },
   {
     id: 12,
     rotation: 0,
-    isFlippedX: false,
-    isFlippedY: true,
+    isFlippedX: true,
+    isFlippedY: false,
     placedInCells: [
-      [9, 1],
-      [8, 2],
-      [9, 2],
-      [9, 3],
+      [8, 0],
+      [9, 0],
+      [10, 0],
+      [8, 1],
+      [10, 1],
     ],
   },
 ];
