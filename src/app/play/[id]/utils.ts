@@ -65,8 +65,8 @@ export function isActivePieceOverBoard(
 }
 
 /**
- * When a piece is rotated, if it is not a swquare shape then it's position will change relative to the screen.
- * This function calculates the new position of the piece so that it can be position relative to the board and it's initial position when placed
+ * When a piece is rotated, if it is not a square shape then it's position will change relative to the screen.
+ * This function calculates the new position of the piece so that it can be positioned relative to the board and it's initial position when placed
  */
 function calcRotatedInitialPiecePosition(
   pieceBounds: { width: number; height: number },
@@ -79,10 +79,16 @@ function calcRotatedInitialPiecePosition(
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
     const offsetY = (pieceBounds.width - pieceBounds.height) / 2;
 
-    const offsetInitialPositionByRotation = {
-      x: pieceInitialPosition.x + offsetX,
-      y: pieceInitialPosition.y + offsetY,
-    };
+    const offsetInitialPositionByRotation =
+      pieceBounds.height > pieceBounds.width
+        ? {
+            x: pieceInitialPosition.x + offsetX,
+            y: pieceInitialPosition.y + offsetY,
+          }
+        : {
+            x: pieceInitialPosition.x - offsetX,
+            y: pieceInitialPosition.y - offsetY,
+          };
 
     return offsetInitialPositionByRotation;
   }
