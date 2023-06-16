@@ -69,7 +69,7 @@ export function isActivePieceOverBoard(
  * This function calculates the new position of the piece so that it can be position relative to the board and it's initial position when placed
  */
 function calcRotatedInitialPiecePosition(
-  pieceBounds: DOMRect,
+  pieceBounds: { width: number; height: number },
   pieceRotation: Piece["rotation"],
   pieceInitialPosition: Piece["initialPosition"]
 ): Piece["initialPosition"] {
@@ -299,10 +299,13 @@ export function nestedCopy<T>(array: T) {
  * Calculated as the position of the preview piece relative the starting position of the piece to place
  */
 export function calcPlacedPosition(
-  piece: Piece,
-  pieceBounds: DOMRect,
-  boardBounds: DOMRect,
-  previewPiece: PreviewPiece
+  piece: {
+    rotation: Piece["rotation"];
+    initialPosition: Piece["initialPosition"];
+  },
+  pieceBounds: { width: number; height: number },
+  boardBounds: { top: number; left: number },
+  previewPiece: { x: number; y: number }
 ) {
   const pieceInitialPosition = calcRotatedInitialPiecePosition(
     pieceBounds,

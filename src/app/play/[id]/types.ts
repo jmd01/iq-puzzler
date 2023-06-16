@@ -44,6 +44,10 @@ export type Piece = Omit<PieceData, "placedInCells"> & {
   placedInCells?: PreviewPiece["cells"];
 };
 
+export type PlacedPiece = Omit<Piece, "placedInCells"> & {
+  placedInCells: PreviewPiece["cells"];
+};
+
 /** Represent where an active piece will be dropped on the board */
 export type PreviewPiece = {
   /** The index of the board cell on the x axis that the active piece will be placed on  */

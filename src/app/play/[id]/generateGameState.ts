@@ -1,4 +1,4 @@
-import type { GameState, Piece, PieceData } from "./types";
+import type { GameState, Piece, PieceData, PlacedPiece } from "./types";
 import { addPieceToBoard } from "./utils";
 
 /**
@@ -15,14 +15,14 @@ import { addPieceToBoard } from "./utils";
 export function generateGameState(
   x: number,
   y: number,
-  prePlacedPieces?: PieceData[]
+  prePlacedPieces: PlacedPiece[]
 ): GameState {
   // Create an empty grid
   let grid: [number][] = Array(y).fill(Array(x).fill(0));
 
   // Fill it with the preplaced pieces
   prePlacedPieces &&
-    prePlacedPieces.forEach(({placedInCells}) => {
+    prePlacedPieces.forEach(({ placedInCells }) => {
       grid = addPieceToBoard(grid, placedInCells);
     });
 
@@ -31,55 +31,3 @@ export function generateGameState(
     complete: false,
   };
 }
-
-export const prePlacedPieces: [string, NonNullable<Piece["placedInCells"]>][] =
-  [
-    [
-      "2",
-      [
-        [3, 0],
-        [3, 1],
-        [3, 2],
-        [4, 2],
-        [4, 3],
-      ],
-    ],
-    [
-      "3",
-      [
-        [4, 0],
-        [5, 0],
-        [6, 0],
-        [7, 0],
-        [6, 1],
-      ],
-    ],
-    [
-      "4",
-      [
-        [8, 0],
-        [9, 0],
-        [10, 0],
-        [8, 1],
-        [10, 1],
-      ],
-    ],
-    [
-      "6",
-      [
-        [0, 0],
-        [1, 0],
-        [0, 1],
-        [0, 2],
-      ],
-    ],
-    [
-      "11",
-      [
-        [2, 0],
-        [1, 1],
-        [2, 1],
-        [1, 2],
-      ],
-    ],
-  ];

@@ -23,8 +23,8 @@ import {
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
-import { generateGameState, prePlacedPieces } from "./generateGameState";
-import type { GameState, Piece, PieceData, PreviewPiece } from "./types";
+import { generateGameState } from "./generateGameState";
+import type { GameState, Piece, PlacedPiece, PreviewPiece } from "./types";
 import { generatePieces } from "./generatePieces";
 
 export type GameAreaDragState = {
@@ -101,7 +101,7 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
 };
 
 type GameAreaProps = {
-  placedPieces: PieceData[];
+  placedPieces: PlacedPiece[];
   unplacedPieces: Piece[];
 };
 export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
@@ -109,10 +109,10 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
     generateGameState(11, 5, placedPieces)
   );
 
-  const [prePlacedPieces, setPrePlacedPieces] = useState(placedPieces);
+  const [prePlacedPieces] = useState(placedPieces);
   const [pieces, setPieces] = useState(unplacedPieces);
+  console.log({ prePlacedPieces });
 
-  console.log({ gameState, placedPieces, pieces });
   const [gameAreaDims, setGameAreaDims] = useState<{
     width: number | string;
     height: number | string;
@@ -367,7 +367,15 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       onContextMenu={onContextMenu}
       style={{ width: gameAreaDims.width, height: gameAreaDims.height }}
     >
-      <Board boardRef={boardRef} previewPiece={state.previewPiece} />
+      {/* {prePlacedPieces.map((piece) => (
+        <Piece key={piece.id} piece={piece} setPieces={() => {}} />
+      ))} */}
+
+      <Board
+        boardRef={boardRef}
+        previewPiece={state.previewPiece}
+        prePlacedPieces={prePlacedPieces}
+      />
       <Pieces
         pieces={pieces}
         setPieces={setPieces}

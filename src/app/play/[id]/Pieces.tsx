@@ -59,7 +59,7 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
 export type PieceProps = {
   piece: PieceType;
   setPieces: Dispatch<SetStateAction<PieceType[]>>;
-  boardBounds: DOMRect | undefined;
+  boardBounds?: DOMRect;
 };
 
 export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
@@ -168,7 +168,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     <div
       ref={mergeRefs([activePieceRef, ref])}
       style={{
-        position: "relative",
+        position: piece.isLocked ? "absolute" : "relative",
         ...style,
       }}
     >
