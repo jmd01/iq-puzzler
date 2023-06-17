@@ -17,6 +17,7 @@ import {
   updatePiecesWithRotatedPiece,
 } from "./utils";
 import { PieceSvg } from "./PieceSvg";
+import { PieceDiv } from "./PieceDiv";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -80,6 +81,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     color,
     height,
     width,
+    shape,
   } = piece;
   const isDragging = isActivePiece && !!dragPosition;
   const isPlaced = placedInCells;
@@ -112,7 +114,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
        * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
        */
       zIndex: isPlaced ? 0 : 20,
-      // transition: "transform 0.2s ease-out",
+      transition: "transform 0.2s ease-out",
     }),
     [isPlaced, rotation, scaleX, scaleY, x, y]
   );
@@ -134,7 +136,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
                 pieces,
                 id,
                 isActivePieceOverBoard(pieceBounds, boardBounds),
-                event.ctrlKey || event.metaKey  ? "x" : "y"
+                event.ctrlKey || event.metaKey ? "x" : "y"
               )
             : updatePiecesWithRotatedPiece(
                 pieces,
@@ -173,7 +175,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       }}
     >
       {/* {`piece-${id}`} */}
-      <PieceSvg
+      {/* <PieceSvg
         onClickPath={onClickPath}
         filter={
           isPlaced ? undefined : "drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"
@@ -184,7 +186,46 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         color={color}
         width={width}
         height={height}
+      /> */}
+      <PieceDiv
+        onClick={onClickPath}
+        filter={
+          isPlaced
+            ? undefined
+            : `drop-shadow(${calcShadow(rotation)} 7px rgb(1 1 1 / 0.8))`
+        }
+        boxShadow={`${calcShadow(rotation)} 7px rgb(1 1 1 / 0.8)`}
+        opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
+        id={id.toString()}
+        color={color}
+        width={width}
+        height={height}
+        shape={shape}
       />
     </div>
   );
 });
+
+const calcShadow = (rotation: number): string => {
+  console.log(getDecimalPart(rotation), rotation);
+
+  switch (getDecimalPart(rotation)) {
+    case 25:
+      return "5px -5px";
+    case 5:
+      return "-5px -5px";
+    case 75:
+      return "-5px 5px";
+    default:
+      return "5px 5px";
+  }
+};
+
+function getDecimalPart(num: number) {
+  if (Number.isInteger(num)) {
+    return 0;
+  }
+
+  const decimalStr = num.toString().split(".")[1];
+  return Number(decimalStr);
+}
