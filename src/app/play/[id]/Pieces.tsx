@@ -86,7 +86,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     shape,
   } = piece;
   const isDragging = isActivePiece && !!dragPosition;
-  const isPlaced = placedInCells;
+  const isPlaced = !!placedInCells;
 
   const draggingTransform = {
     x: (dragPosition?.x ?? 0) - onMouseDownPosition.x,
@@ -177,33 +177,18 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         ...style,
       }}
     >
-      {/* {`piece-${id}`} */}
-      {/* <PieceSvg
-        onClickPath={onClickPath}
-        filter={
-          isPlaced ? undefined : "drop-shadow(3px 5px 2px rgb(1 1 1 / 0.4))"
-        }
-        opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
-        id={id.toString()}
-        d={d}
-        color={color}
-        width={width}
-        height={height}
-      /> */}
       <PieceDiv
         onClick={onClickPath}
-        filter={
-          isPlaced
-            ? undefined
-            : `drop-shadow(${calcShadow(rotation)} 7px rgb(1 1 1 / 0.8))`
-        }
-        boxShadow={`${calcShadow(rotation)} 7px rgb(1 1 1 / 0.8)`}
+        hasBoxShadow={!isPlaced}
         opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
         id={id.toString()}
         color={color}
         width={width}
         height={height}
         shape={shape}
+        rotation={rotation}
+        isFlippedX={isFlippedX}
+        isFlippedY={isFlippedY}
       />
     </div>
   );

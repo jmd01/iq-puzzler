@@ -400,7 +400,7 @@ export function updatePiecesWithFlippedPiece(
 }
 
 /**
- * Increment or decrement the rotation value by 0.25. 
+ * Increment or decrement the rotation value by 0.25.
  */
 export function rotatePiece(
   currentRotation: Rotation,
@@ -414,16 +414,44 @@ export function rotatePiece(
 /**
  * Calculate the x y pixel for the shdow based on the current rotation
  */
-export const calcShadow = (rotation: number): string => {
+export const calcShadow = (
+  rotation: number,
+  isFlippedX: boolean,
+  isFlippedY: boolean
+): string => {
   switch (getDecimalPart(rotation)) {
     case 25:
-      return "5px -5px";
+      return !isFlippedX && !isFlippedY
+        ? "5px -5px"
+        : isFlippedX && isFlippedY
+        ? "-5px 5px"
+        : isFlippedX
+        ? "-5px -5px"
+        : "5px 5px";
     case 5:
-      return "-5px -5px";
+      return !isFlippedX && !isFlippedY
+        ? "-5px -5px"
+        : isFlippedX && isFlippedY
+        ? "5px 5px"
+        : isFlippedX
+        ? "-5px 5px"
+        : "5px -5px";
     case 75:
-      return "-5px 5px";
+      return !isFlippedX && !isFlippedY
+        ? "-5px 5px"
+        : isFlippedX && isFlippedY
+        ? "5px -5px"
+        : isFlippedX
+        ? "5px 5px"
+        : "-5px -5px";
     default:
-      return "5px 5px";
+      return !isFlippedX && !isFlippedY
+        ? "5px 5px"
+        : isFlippedX && isFlippedY
+        ? "-5px -5px"
+        : isFlippedX
+        ? "5px -5px"
+        : "-5px 5px";
   }
 };
 

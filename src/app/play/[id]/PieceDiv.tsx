@@ -1,6 +1,6 @@
 import { HTMLProps, MouseEventHandler, SVGProps } from "react";
 import { Piece } from "./types";
-import { CELL_SIZE } from "./utils";
+import { CELL_SIZE, calcShadow } from "./utils";
 
 export const PieceDiv = ({
   onClick,
@@ -11,8 +11,10 @@ export const PieceDiv = ({
   color,
   shape,
   opacity,
-  filter,
-  boxShadow,
+  hasBoxShadow: boxShadow,
+  rotation,
+  isFlippedX,
+  isFlippedY,
 }: Omit<HTMLProps<HTMLDivElement>, "shape"> & {
   onClick?: MouseEventHandler<HTMLDivElement> | undefined;
   isPlaceable?: boolean;
@@ -20,8 +22,10 @@ export const PieceDiv = ({
   color: string;
   shape: Piece["shape"];
   opacity: number;
-  filter?: string;
-  boxShadow?: string;
+  hasBoxShadow: boolean;
+  rotation: number;
+  isFlippedX: boolean;
+  isFlippedY: boolean;
 }) => (
   <div style={{ width, height }}>
     {shape.map((row, y) => {
@@ -29,6 +33,8 @@ export const PieceDiv = ({
       return row.map((isFilledCell, x) =>
         isFilledCell
           ? [...Array(2)].map((_, i) => (
+              /*  Create 2 pieces for each cell, one for the shadow and one for the piece
+               *  This is to allow the shadow to be placed behind all the pieces */
               <div
                 key={`${id}-${x}-${y}`}
                 id={`piece-${id}`}
@@ -38,13 +44,27 @@ export const PieceDiv = ({
                   top: `${y * CELL_SIZE}px`,
                   width: `${CELL_SIZE}px`,
                   height: `${CELL_SIZE}px`,
-                  backgroundColor: i === 1 ? "none" : color,
+                  background: i === 1 ? undefined : color,
+                  backgroundImage:
+                    i === 1
+                      ? undefined
+                      : `
+                      radial-gradient(
+                        circle at 30% 30%, 
+                        rgba(255,255,255,0.4) 0%, 
+                        rgba(255,255,255,0) 40%,
+                        rgba(0,0,0,0) 40%,
+                        rgba(0,0,0,0.4) 100%
+                      ) 
+                      `,
                   opacity,
                   zIndex: i === 1 ? 0 : 1,
                   pointerEvents: isPlaceable ? "none" : "auto",
                   borderRadius: "50%",
-                  // filter,
-                  boxShadow: i === 1 ? boxShadow : undefined,
+                  boxShadow:
+                    i === 1 && boxShadow
+                      ? `${calcShadow(rotation, isFlippedX, isFlippedY)} 15px 0px rgb(1 1 1 / 0.45)`
+                      : undefined,
                 }}
                 onClick={onClick}
               />
