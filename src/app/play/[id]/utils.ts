@@ -12,8 +12,8 @@ export const getPieceIdOnMouseDown = (
   target: HTMLElement,
   pieces: Piece[]
 ): Piece["id"] | undefined => {
-  if (target.id.includes("piece")) {
-    const pieceId = target.id.split("-")?.[1];
+  if (target.className.includes("piece")) {
+    const pieceId = target.className.split("-")?.[1];
     return pieces.find(
       (piece) => piece.id === Number(pieceId) && !piece.isLocked
     )?.id;

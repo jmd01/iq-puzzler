@@ -111,7 +111,6 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
 
   const [prePlacedPieces] = useState(placedPieces);
   const [pieces, setPieces] = useState(unplacedPieces);
-  console.log({ prePlacedPieces });
 
   const [gameAreaDims, setGameAreaDims] = useState<{
     width: number | string;
@@ -233,7 +232,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
   );
 
   const handleMouseUp = useCallback(
-    (event: MouseEvent) => {
+    (event: MouseEvent) => {     
       // On drag end, update active piece position and if placeable, set its placedInCells value and clear any drag related state
       if (state.isDragging) {
         setPieces(
@@ -363,14 +362,10 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       ref={gameAreaRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
+      onClick={handleMouseUp}
       onContextMenu={onContextMenu}
       style={{ width: gameAreaDims.width, height: gameAreaDims.height }}
     >
-      {/* {prePlacedPieces.map((piece) => (
-        <Piece key={piece.id} piece={piece} setPieces={() => {}} />
-      ))} */}
-
       <Board
         boardRef={boardRef}
         previewPiece={state.previewPiece}

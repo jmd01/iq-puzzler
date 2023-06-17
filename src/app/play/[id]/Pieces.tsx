@@ -117,9 +117,9 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
        * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
        */
       zIndex: isPlaced ? 0 : 20,
-      transition: "transform 0.2s ease-out",
+      transition: isDragging ? undefined : "transform 0.2s ease-out",
     }),
-    [isPlaced, rotation, scaleX, scaleY, x, y]
+    [isDragging, isPlaced, rotation, scaleX, scaleY, x, y]
   );
 
   const ref = useRef<HTMLDivElement>(null);
@@ -174,22 +174,22 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       ref={mergeRefs([activePieceRef, ref])}
       style={{
         position: piece.isLocked ? "absolute" : "relative",
-        ...style,
+        ...style
       }}
-    >
-      <PieceDiv
-        onClick={onClickPath}
-        hasBoxShadow={!isPlaced}
-        opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
-        id={id.toString()}
-        color={color}
-        width={width}
-        height={height}
-        shape={shape}
-        rotation={rotation}
-        isFlippedX={isFlippedX}
-        isFlippedY={isFlippedY}
-      />
+      >
+        <PieceDiv
+          onClick={onClickPath}
+          hasBoxShadow={!isPlaced}
+          opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
+          id={id.toString()}
+          color={color}
+          width={width}
+          height={height}
+          shape={shape}
+          rotation={rotation}
+          isFlippedX={isFlippedX}
+          isFlippedY={isFlippedY}
+        />
     </div>
   );
 });
