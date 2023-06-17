@@ -11,6 +11,8 @@ import {
 import { GameAreaDragState } from "./GameArea";
 import type { Piece as PieceType, Rotation } from "./types";
 import {
+  calcShadow,
+  getDecimalPart,
   isActivePieceOverBoard,
   mergeRefs,
   updatePiecesWithFlippedPiece,
@@ -94,15 +96,16 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   const x = isDragging ? draggingTransform.x + position.x : position.x;
   const y = isDragging ? draggingTransform.y + position.y : position.y;
 
+  const rotationDecimal = getDecimalPart(rotation);
   const scaleX =
-    (isFlippedX && (rotation === 0.25 || rotation === 0.75)) ||
-    (isFlippedY && (rotation === 0 || rotation === 0.5))
+    (isFlippedX && (rotationDecimal === 25 || rotationDecimal === 75)) ||
+    (isFlippedY && (rotationDecimal === 0 || rotationDecimal === 5))
       ? -1
       : 1;
 
   const scaleY =
-    (isFlippedY && (rotation === 0.25 || rotation === 0.75)) ||
-    (isFlippedX && (rotation === 0 || rotation === 0.5))
+    (isFlippedY && (rotationDecimal === 25 || rotationDecimal === 75)) ||
+    (isFlippedX && (rotationDecimal === 0 || rotationDecimal === 5))
       ? -1
       : 1;
 
@@ -205,27 +208,3 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     </div>
   );
 });
-
-const calcShadow = (rotation: number): string => {
-  console.log(getDecimalPart(rotation), rotation);
-
-  switch (getDecimalPart(rotation)) {
-    case 25:
-      return "5px -5px";
-    case 5:
-      return "-5px -5px";
-    case 75:
-      return "-5px 5px";
-    default:
-      return "5px 5px";
-  }
-};
-
-function getDecimalPart(num: number) {
-  if (Number.isInteger(num)) {
-    return 0;
-  }
-
-  const decimalStr = num.toString().split(".")[1];
-  return Number(decimalStr);
-}

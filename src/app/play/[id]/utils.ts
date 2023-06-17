@@ -73,7 +73,9 @@ function calcRotatedInitialPiecePosition(
   pieceRotation: Piece["rotation"],
   pieceInitialPosition: Piece["initialPosition"]
 ): Piece["initialPosition"] {
-  const isRotatedSideways = pieceRotation === 0.25 || pieceRotation === 0.75;
+  const isRotatedSideways =
+    getDecimalPart(pieceRotation) === 25 ||
+    getDecimalPart(pieceRotation) === 75;
 
   if (isRotatedSideways) {
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
@@ -118,16 +120,16 @@ function getRotatedShape(
   pieceRotation: Piece["rotation"]
 ): Piece["shape"] {
   const pieceShapeClone = nestedCopy(pieceShape);
-  switch (pieceRotation) {
+  switch (getDecimalPart(pieceRotation)) {
     case 0:
       return pieceShapeClone;
-    case 0.25:
+    case 25:
       return pieceShapeClone[0].map((_, index) =>
         pieceShapeClone.map((row) => row[index]).reverse()
       );
-    case 0.5:
+    case 5:
       return [...pieceShapeClone.reverse()].map((row) => row.reverse());
-    case 0.75:
+    case 75:
       return pieceShapeClone[0].map((_, index) =>
         pieceShapeClone.map((row) => row[row.length - 1 - index])
       );
@@ -398,17 +400,38 @@ export function updatePiecesWithFlippedPiece(
 }
 
 /**
- * Increment or decrement the rotation value by 0.25. If clockwise and the rotation is 0.75, reset to 0. If anti-clockwise and the rotation is 0, reset to 0.75
+ * Increment or decrement the rotation value by 0.25. 
  */
 export function rotatePiece(
   currentRotation: Rotation,
   direction: "clockwise" | "anticlockwise"
-) {
+): Rotation {
   return direction === "clockwise"
-    ? currentRotation === 0.75
-      ? 0
-      : ((currentRotation + 0.25) as Rotation)
-    : currentRotation === 0
-    ? 0.75
-    : ((currentRotation - 0.25) as Rotation);
+    ? currentRotation + 0.25
+    : currentRotation - 0.25;
+}
+
+/**
+ * Calculate the x y pixel for the shdow based on the current rotation
+ */
+export const calcShadow = (rotation: number): string => {
+  switch (getDecimalPart(rotation)) {
+    case 25:
+      return "5px -5px";
+    case 5:
+      return "-5px -5px";
+    case 75:
+      return "-5px 5px";
+    default:
+      return "5px 5px";
+  }
+};
+
+export function getDecimalPart(num: number) {
+  if (Number.isInteger(num)) {
+    return 0;
+  }
+
+  const decimalStr = num.toString().split(".")[1];
+  return Number(decimalStr);
 }
