@@ -33,7 +33,7 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   activePieceRef
 ) {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-items-center p-4 bg-gradient-to-b from-slate-300 to-slate-400">
+    <div className="flex flex-wrap gap-4 items-center justify-items-center p-4">
       {pieces.map((piece) => {
         const isActivePiece = activePieceId === piece.id;
         const pieceProps: PieceType = {

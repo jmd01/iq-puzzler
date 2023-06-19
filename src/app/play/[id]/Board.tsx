@@ -13,15 +13,17 @@ export const Board = ({
 }) => {
   return (
     <div className="grid grid-cols-1 items-center justify-items-center p-4">
-      <div className="p-4 rounded-3xl bg-gradient-to-b from-slate-500 to-slate-600">
+      <div
+        className="p-4 rounded-3xl"
+        style={{
+          // backgroundImage: `linear-gradient(45deg, #222830, #222a37)`,
+          backgroundImage: `linear-gradient(135deg, #173e71, #10386d)`,
+        }}
+      >
         <div className="relative">
-          {prePlacedPieces.map((piece) => 
-            <Piece
-              key={piece.id}
-              piece={piece}
-              setPieces={() => {}}
-            />
-          )}
+          {prePlacedPieces.map((piece) => (
+            <Piece key={piece.id} piece={piece} setPieces={() => {}} />
+          ))}
           <div className="absolute w-full h-full z-10">
             <div className="inline-grid grid-cols-11" ref={boardRef}>
               {[...Array(55)].map((_, i) => (
@@ -44,11 +46,20 @@ export const Board = ({
               return (
                 <span
                   key={i}
-                  className={`w-16 h-16 rounded-full transition-all bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] ${
-                    isPreview
-                      ? "from-slate-500 to-slate-200"
-                      : "from-slate-800 to-slate-400"
-                  }`}
+                  className={`w-16 h-16 rounded-full
+                  `}
+                  style={{
+                    // backgroundColor: "#0f172a",
+                    backgroundImage: `radial-gradient(
+                      circle at 20% 20%, 
+                      rgba(1,1,1,0.5) 2%, 
+                      rgba(1,1,1,0.2) 40%, 
+                      rgba(255,255,255,0.2) 99%,
+                      rgba(255,255,255,0.5) 100%
+                      )`,
+                    boxShadow:
+                      "rgb(255, 255, 255, 0.25) 0.5px 0.5px 0.3px 0.3px inset",
+                  }}
                   data-board-cell={`${x},${y}`}
                 />
               );
