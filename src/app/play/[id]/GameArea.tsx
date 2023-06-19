@@ -25,7 +25,6 @@ import {
 } from "./utils";
 import { generateGameState } from "./generateGameState";
 import type { GameState, Piece, PlacedPiece, PreviewPiece } from "./types";
-import { generatePieces } from "./generatePieces";
 
 export type GameAreaDragState = {
   isMouseDown: boolean;

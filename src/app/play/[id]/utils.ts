@@ -455,6 +455,47 @@ export const calcShadow = (
   }
 };
 
+export const calcRadialGradient = (
+  rotation: number,
+  isFlippedX: boolean,
+  isFlippedY: boolean
+): string => {
+  switch (getDecimalPart(rotation)) {
+    case 25:
+      return !isFlippedX && !isFlippedY
+        ? "5px -5px"
+        : isFlippedX && isFlippedY
+        ? "-5px 5px"
+        : isFlippedX
+        ? "-5px -5px"
+        : "5px 5px";
+    case 5:
+      return !isFlippedX && !isFlippedY
+        ? "-5px -5px"
+        : isFlippedX && isFlippedY
+        ? "5px 5px"
+        : isFlippedX
+        ? "-5px 5px"
+        : "5px -5px";
+    case 75:
+      return !isFlippedX && !isFlippedY
+        ? "-5px 5px"
+        : isFlippedX && isFlippedY
+        ? "5px -5px"
+        : isFlippedX
+        ? "5px 5px"
+        : "-5px -5px";
+    default:
+      return !isFlippedX && !isFlippedY
+        ? "5px 5px"
+        : isFlippedX && isFlippedY
+        ? "-5px -5px"
+        : isFlippedX
+        ? "5px -5px"
+        : "-5px 5px";
+  }
+};
+
 export function getDecimalPart(num: number) {
   if (Number.isInteger(num)) {
     return 0;

@@ -49,16 +49,17 @@ export const Board = ({
                   className={`w-16 h-16 rounded-full
                   `}
                   style={{
-                    // backgroundColor: "#0f172a",
                     backgroundImage: `radial-gradient(
                       circle at 20% 20%, 
                       rgba(1,1,1,0.5) 2%, 
                       rgba(1,1,1,0.2) 40%, 
-                      rgba(255,255,255,0.2) 99%,
-                      rgba(255,255,255,0.5) 100%
+                      rgba(255,255,255,0.2) 79%,
+                      rgba(255,255,255,0.4) 80%,
+                      rgba(255,255,255,0.4) 100%
                       )`,
-                    boxShadow:
-                      "rgb(255, 255, 255, 0.25) 0.5px 0.5px 0.3px 0.3px inset",
+                    boxShadow: `
+                      rgb(255, 255, 255, 0.25) 0.5px 0.5px 0.3px 0.3px inset
+                      `,
                   }}
                   data-board-cell={`${x},${y}`}
                 />
