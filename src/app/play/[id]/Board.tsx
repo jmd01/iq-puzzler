@@ -49,7 +49,9 @@ export const Board = ({
                   className={`w-16 h-16 rounded-full
                   `}
                   style={{
-                    backgroundImage: `radial-gradient(
+                    background: isPreview
+                      ? `rgba(255,255,255,0.5)`
+                      : `radial-gradient(
                       circle at 20% 20%, 
                       rgba(1,1,1,0.5) 2%, 
                       rgba(1,1,1,0.2) 40%, 
