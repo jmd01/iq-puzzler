@@ -463,36 +463,36 @@ export const calcRadialGradient = (
   switch (getDecimalPart(rotation)) {
     case 25:
       return !isFlippedX && !isFlippedY
-        ? "5px -5px"
+        ? "30% 70%"
         : isFlippedX && isFlippedY
-        ? "-5px 5px"
+        ? "70% 30%"
         : isFlippedX
-        ? "-5px -5px"
-        : "5px 5px";
+        ? "70% 70%"
+        : "30% 30%";
     case 5:
       return !isFlippedX && !isFlippedY
-        ? "-5px -5px"
+        ? "70% 70%"
         : isFlippedX && isFlippedY
-        ? "5px 5px"
+        ? "30% 30%"
         : isFlippedX
-        ? "-5px 5px"
-        : "5px -5px";
+        ? "70% 30%"
+        : "30% 70%";
     case 75:
       return !isFlippedX && !isFlippedY
-        ? "-5px 5px"
+        ? "70% 30%"
         : isFlippedX && isFlippedY
-        ? "5px -5px"
+        ? "30% 70%"
         : isFlippedX
-        ? "5px 5px"
-        : "-5px -5px";
+        ? "30% 30%"
+        : "70% 70%";
     default:
       return !isFlippedX && !isFlippedY
-        ? "5px 5px"
+        ? "30% 30%"
         : isFlippedX && isFlippedY
-        ? "-5px -5px"
+        ? "70% 70%"
         : isFlippedX
-        ? "5px -5px"
-        : "-5px 5px";
+        ? "30% 70%"
+        : "70% 30%";
   }
 };
 

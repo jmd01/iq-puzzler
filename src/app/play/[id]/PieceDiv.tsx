@@ -1,6 +1,6 @@
 import { HTMLProps, MouseEventHandler, SVGProps } from "react";
 import { Piece } from "./types";
-import { CELL_SIZE, calcShadow } from "./utils";
+import { CELL_SIZE, calcRadialGradient, calcShadow } from "./utils";
 
 export const PieceDiv = ({
   onClick,
@@ -50,7 +50,11 @@ export const PieceDiv = ({
                       ? undefined
                       : `
                       radial-gradient(
-                        circle at 30% 30%, 
+                        circle at ${calcRadialGradient(
+                          rotation,
+                          isFlippedX,
+                          isFlippedY
+                        )}, 
                         rgba(255,255,255,0.4) 0%, 
                         rgba(255,255,255,0) 40%,
                         rgba(0,0,0,0) 40%,
