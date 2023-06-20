@@ -16,8 +16,11 @@ export const Board = ({
       <div
         className="p-4 rounded-3xl"
         style={{
-          // backgroundImage: `linear-gradient(45deg, #222830, #222a37)`,
-          backgroundImage: `linear-gradient(135deg, #173e71, #10386d)`,
+          backgroundImage: `linear-gradient(135deg, #4c00c5, #2d2285)`,
+          boxShadow: `
+          rgb(255, 255, 255, 0.25) 0.5px 0.5px 0.3px 0.3px inset,
+          5px 5px 15px 0px rgb(1 1 1 / 0.45)
+          `,
         }}
       >
         <div className="relative">

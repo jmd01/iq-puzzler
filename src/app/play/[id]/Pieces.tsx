@@ -33,28 +33,30 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   activePieceRef
 ) {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-items-center p-4">
-      {pieces.map((piece) => {
-        const isActivePiece = activePieceId === piece.id;
-        const pieceProps: PieceType = {
-          ...piece,
-          isActivePiece,
-          onMouseDownPosition: isActivePiece
-            ? state.onMouseDownPosition
-            : undefined,
-          dragPosition: isActivePiece ? state.dragPosition : undefined,
-        };
+    <div className="flex items-center justify-center p-4">
+      <div className="flex flex-wrap gap-4 justify-between max-w-4xl">
+        {pieces.map((piece) => {
+          const isActivePiece = activePieceId === piece.id;
+          const pieceProps: PieceType = {
+            ...piece,
+            isActivePiece,
+            onMouseDownPosition: isActivePiece
+              ? state.onMouseDownPosition
+              : undefined,
+            dragPosition: isActivePiece ? state.dragPosition : undefined,
+          };
 
-        return (
-          <Piece
-            key={piece.id}
-            piece={pieceProps}
-            setPieces={setPieces}
-            ref={isActivePiece ? activePieceRef : undefined}
-            boardBounds={boardBounds}
-          />
-        );
-      })}
+          return (
+            <Piece
+              key={piece.id}
+              piece={pieceProps}
+              setPieces={setPieces}
+              ref={isActivePiece ? activePieceRef : undefined}
+              boardBounds={boardBounds}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 });
@@ -174,22 +176,22 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       ref={mergeRefs([activePieceRef, ref])}
       style={{
         position: piece.isLocked ? "absolute" : "relative",
-        ...style
+        ...style,
       }}
-      >
-        <PieceDiv
-          onClick={onClickPath}
-          hasBoxShadow={!isPlaced}
-          opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
-          id={id.toString()}
-          color={color}
-          width={width}
-          height={height}
-          shape={shape}
-          rotation={rotation}
-          isFlippedX={isFlippedX}
-          isFlippedY={isFlippedY}
-        />
+    >
+      <PieceDiv
+        onClick={onClickPath}
+        hasBoxShadow={!isPlaced}
+        opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
+        id={id.toString()}
+        color={color}
+        width={width}
+        height={height}
+        shape={shape}
+        rotation={rotation}
+        isFlippedX={isFlippedX}
+        isFlippedY={isFlippedY}
+      />
     </div>
   );
 });

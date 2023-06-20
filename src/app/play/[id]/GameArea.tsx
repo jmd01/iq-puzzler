@@ -231,7 +231,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
   );
 
   const handleMouseUp = useCallback(
-    (event: MouseEvent) => {     
+    (event: MouseEvent) => {
       // On drag end, update active piece position and if placeable, set its placedInCells value and clear any drag related state
       if (state.isDragging) {
         setPieces(
@@ -363,7 +363,20 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       onMouseMove={handleMouseMove}
       onClick={handleMouseUp}
       onContextMenu={onContextMenu}
-      style={{ width: gameAreaDims.width, height: gameAreaDims.height }}
+      style={{
+        width: gameAreaDims.width,
+        height: gameAreaDims.height,
+        backgroundImage: `
+        radial-gradient(
+          circle at 5% 20%, 
+          rgba(255,255,255,0.1) 2%, 
+          rgba(255,255,255,0) 40%, 
+          rgba(255,255,255,0.05) 80%,
+          rgba(255,255,255,0) 100%
+          ),
+          linear-gradient(135deg, #04012f, #1e012f)
+          `,
+      }}
     >
       <Board
         boardRef={boardRef}

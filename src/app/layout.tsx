@@ -14,8 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" style={{ height: "100%" }}>
-      <body className={inter.className}>{children}</body>
+    <html lang="en" style={{ height: "100vh" }}>
+      <body className={inter.className} style={{ height: "100vh" }}>
+        {children}
+      </body>
     </html>
   );
 }
