@@ -32,31 +32,29 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   activePieceRef
 ) {
   return (
-    <div className="flex items-center justify-center p-4 ">
-      <div className="flex flex-wrap gap-4 justify-between max-w-4xl">
-        {pieces.map((piece, i) => {
-          const isActivePiece = activePieceId === piece.id;
-          const pieceProps: PieceType = {
-            ...piece,
-            isActivePiece,
-            onMouseDownPosition: isActivePiece
-              ? state.onMouseDownPosition
-              : undefined,
-            dragPosition: isActivePiece ? state.dragPosition : undefined,
-          };
+    <div className="flex flex-wrap gap-4 items-center justify-between p-4 max-w-4xl mx-auto">
+      {pieces.map((piece, i) => {
+        const isActivePiece = activePieceId === piece.id;
+        const pieceProps: PieceType = {
+          ...piece,
+          isActivePiece,
+          onMouseDownPosition: isActivePiece
+            ? state.onMouseDownPosition
+            : undefined,
+          dragPosition: isActivePiece ? state.dragPosition : undefined,
+        };
 
-          return (
-            <Piece
-              key={piece.id}
-              index={i}
-              piece={pieceProps}
-              setPieces={setPieces}
-              ref={isActivePiece ? activePieceRef : undefined}
-              boardBounds={boardBounds}
-            />
-          );
-        })}
-      </div>
+        return (
+          <Piece
+            key={piece.id}
+            index={i}
+            piece={pieceProps}
+            setPieces={setPieces}
+            ref={isActivePiece ? activePieceRef : undefined}
+            boardBounds={boardBounds}
+          />
+        );
+      })}
     </div>
   );
 });
@@ -183,8 +181,8 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       <Animate
         key={piece.id}
         play
-        duration={0.3}
-        delay={index * 0.05}
+        duration={0.25}
+        delay={index * 0.03}
         start={{
           transform: "translateY(-20px)  scale(0)",
           opacity: 0.5,
