@@ -100,7 +100,8 @@ export default async function Page({ params }: { params: { id: string } }) {
               },
               { width, height },
               { top: 0, left: 0 },
-              previewPiece
+              previewPiece,
+              true
             ),
             isActivePiece: false,
             droppedOnBoard: true,

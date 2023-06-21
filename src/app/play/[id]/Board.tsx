@@ -1,6 +1,7 @@
 import { RefObject } from "react";
 import { PlacedPiece, PreviewPiece } from "./types";
 import { Piece } from "./Pieces";
+import { Animate } from "react-simple-animate";
 
 export const Board = ({
   boardRef,
@@ -13,6 +14,19 @@ export const Board = ({
 }) => {
   return (
     <div className="grid grid-cols-1 items-center justify-items-center p-4">
+      <Animate
+        play
+        duration={0.4}
+        start={{
+          opacity: 0.3,
+          transform: "scale(1) translateY(30px)",
+        }}
+        end={{
+          opacity: 1,
+          transform: "scale(1) translateY(0px)",
+        }}
+        easeType="ease-out"
+      >
       <div
         className="p-4 rounded-3xl"
         style={{
@@ -24,8 +38,8 @@ export const Board = ({
         }}
       >
         <div className="relative">
-          {prePlacedPieces.map((piece) => (
-            <Piece key={piece.id} piece={piece} setPieces={() => {}} />
+          {prePlacedPieces.map((piece, i) => (
+              <Piece key={piece.id} index={i} piece={piece} setPieces={() => {}} />
           ))}
           <div className="absolute w-full h-full z-10">
             <div className="inline-grid grid-cols-11" ref={boardRef}>
@@ -73,6 +87,7 @@ export const Board = ({
           </div>
         </div>
       </div>
+      </Animate>
     </div>
   );
 };

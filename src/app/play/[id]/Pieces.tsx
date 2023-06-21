@@ -11,14 +11,13 @@ import {
 import { GameAreaDragState } from "./GameArea";
 import type { Piece as PieceType, Rotation } from "./types";
 import {
-  calcShadow,
   getDecimalPart,
   isActivePieceOverBoard,
   mergeRefs,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
-import { PieceSvg } from "./PieceSvg";
+import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
 
 export type PiecesProps = {
@@ -33,9 +32,9 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   activePieceRef
 ) {
   return (
-    <div className="flex items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4 ">
       <div className="flex flex-wrap gap-4 justify-between max-w-4xl">
-        {pieces.map((piece) => {
+        {pieces.map((piece, i) => {
           const isActivePiece = activePieceId === piece.id;
           const pieceProps: PieceType = {
             ...piece,
@@ -49,6 +48,7 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
           return (
             <Piece
               key={piece.id}
+              index={i}
               piece={pieceProps}
               setPieces={setPieces}
               ref={isActivePiece ? activePieceRef : undefined}
@@ -65,10 +65,11 @@ export type PieceProps = {
   piece: PieceType;
   setPieces: Dispatch<SetStateAction<PieceType[]>>;
   boardBounds?: DOMRect;
+  index: number;
 };
 
 export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
-  { piece, setPieces, boardBounds },
+  { piece, setPieces, boardBounds, index },
   activePieceRef
 ) {
   const {
@@ -179,19 +180,36 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         ...style,
       }}
     >
-      <PieceDiv
-        onClick={onClickPath}
-        hasBoxShadow={!isPlaced}
-        opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
-        id={id.toString()}
-        color={color}
-        width={width}
-        height={height}
-        shape={shape}
-        rotation={rotation}
-        isFlippedX={isFlippedX}
-        isFlippedY={isFlippedY}
-      />
+      <Animate
+        key={piece.id}
+        play
+        duration={0.3}
+        delay={index * 0.05}
+        start={{
+          transform: "translateY(-20px)  scale(0)",
+          opacity: 0.5,
+        }}
+        end={{
+          transform: "translateX(0px) scale(1)",
+          opacity: 1,
+        }}
+        easeType="ease-out"
+        onComplete={() => {}}
+      >
+        <PieceDiv
+          onClick={onClickPath}
+          hasBoxShadow={!isPlaced}
+          opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
+          id={id.toString()}
+          color={color}
+          width={width}
+          height={height}
+          shape={shape}
+          rotation={rotation}
+          isFlippedX={isFlippedX}
+          isFlippedY={isFlippedY}
+        />
+      </Animate>
     </div>
   );
 });

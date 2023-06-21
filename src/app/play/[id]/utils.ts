@@ -313,7 +313,8 @@ export function calcPlacedPosition(
   },
   pieceBounds: { width: number; height: number },
   boardBounds: { top: number; left: number },
-  previewPiece: { x: number; y: number }
+  previewPiece: { x: number; y: number },
+  isPreplaced?: boolean
 ) {
   const pieceInitialPosition = calcRotatedInitialPiecePosition(
     pieceBounds,
@@ -321,9 +322,14 @@ export function calcPlacedPosition(
     piece.initialPosition
   );
 
+  const onloadAnimationOffset = isPreplaced ? 0 : 20;
+
   return {
     x: boardBounds.left + previewPiece.x * CELL_SIZE - pieceInitialPosition.x,
-    y: boardBounds.top + previewPiece.y * CELL_SIZE - pieceInitialPosition.y,
+    y:
+      boardBounds.top +
+      previewPiece.y * CELL_SIZE -
+      pieceInitialPosition.y,
   };
 }
 
