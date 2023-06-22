@@ -9,7 +9,7 @@ import {
   useRef,
 } from "react";
 import { GameAreaDragState } from "./GameArea";
-import type { Piece as PieceType, Rotation } from "./types";
+import type { Piece as PieceType } from "./types";
 import {
   getDecimalPart,
   isActivePieceOverBoard,
@@ -192,7 +192,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
           opacity: 1,
         }}
         easeType="ease-out"
-        onComplete={() => {}}
       >
         <PieceDiv
           onClick={onClickPath}

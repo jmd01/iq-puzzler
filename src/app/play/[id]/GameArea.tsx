@@ -1,5 +1,6 @@
 "use client";
 import { Board } from "./Board";
+import Logo from "./Logo";
 import { Pieces } from "./Pieces";
 import {
   useRef,
@@ -131,6 +132,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
 
   const handleMouseDown = useCallback(
     (event: MouseEvent<HTMLElement>) => {
+      if (event.button !== 0) return;
+
       const target = event.target as HTMLElement;
       const clickedPieceId = getPieceIdOnMouseDown(target, pieces);
 
@@ -378,6 +381,12 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           `,
       }}
     >
+      <div className="flex justify-center p-8">
+        <Logo
+          fill="#2e205f"
+          width={80}
+        />
+      </div>
       <Board
         boardRef={boardRef}
         previewPiece={state.previewPiece}
