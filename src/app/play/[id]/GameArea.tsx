@@ -26,6 +26,7 @@ import {
 } from "./utils";
 import { generateGameState } from "./generateGameState";
 import type { GameState, Piece, PlacedPiece, PreviewPiece } from "./types";
+import { Animate, AnimateKeyframes } from "react-simple-animate";
 
 export type GameAreaDragState = {
   isMouseDown: boolean;
@@ -381,11 +382,162 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           `,
       }}
     >
+      <AnimateKeyframes
+        play
+        iterationCount="infinite"
+        direction="alternate"
+        easeType="ease-in-out"
+        duration={10}
+        keyframes={[
+          { 0: "opacity: 0.6"  },
+          { 70: "opacity: 0.9 transform: scaleY(0.7)" },
+          { 100: "opacity: 1 transform: scaleY(1.2)" },
+        ]}
+        render={({ style }) => {
+          return (
+            <div
+              style={{
+                width: 500,
+                height: 700,
+                position: "absolute",
+                backgroundImage: `        
+                  radial-gradient(
+                    farthest-corner at 40px 40px,
+                    rgba(164, 132, 239, 0.15) 0%, 
+                    transparent 20% 
+                    )
+                `,
+                pointerEvents: "none",
+                ...style,
+              }}
+            />
+          );
+        }}
+      />
+      <AnimateKeyframes
+        play
+        iterationCount="infinite"
+        direction="alternate"
+        easeType="ease-in-out"
+        duration={8}
+        keyframes={[
+          { 0: "transform-origin: 0 100%; opacity: 0 transform: translate3d(200px, 200px, 0)"  },
+          { 50: "transform-origin: 0 100%; opacity: 1 transform: scaleY(1.2) " },
+          { 100: "transform-origin: 0 100%; opacity: 0.9 transform: scaleY(0.7) translate3d(-200px, -200px, 0)" },
+        ]}
+        render={({ style }) => {
+          return (
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                top: 0,
+                left: 0,
+                backgroundImage: `        
+                  radial-gradient(
+                    rgba(131, 105, 193, 0.2) 0%, 
+                    transparent 40% 
+                    )
+                `,
+                transform: "scaleY(1.2) translate3d(-150px, 200px, 0)",
+                pointerEvents: "none",
+                ...style,
+              }}
+            />
+          );
+        }}
+      />
+      <AnimateKeyframes
+        play
+        iterationCount="infinite"
+        direction="alternate"
+        easeType="ease-in-out"
+        duration={20}
+        keyframes={[
+          {
+            0: "transform-origin: 0 100%; transform: translate3d(40%, 45%, 0)",
+          },
+          {
+            50: "transform-origin: 0 100%; transform: translate(20%, -15%, 0) scaleY(1.3)",
+          },
+          {
+            70: "transform-origin: 0 100%; transform: translate(15%, -25%, 0) scaleX(1.3)",
+          },
+          {
+            100: "transform-origin: 0 100%; transform: translate(-50%, 10%, 0)",
+          },
+        ]}
+        render={({ style }) => {
+          return (
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                top: 0,
+                left: 0,
+                backgroundImage: `        
+                  radial-gradient(
+                    rgba(1, 1, 1, 0.5) 0%, 
+                    transparent 60% 
+                    )
+                `,
+                pointerEvents: "none",
+                ...style,
+              }}
+            />
+          );
+        }}
+      />
+      <AnimateKeyframes
+        play
+        iterationCount="infinite"
+        direction="alternate"
+        easeType="ease-in-out"
+        duration={5}
+        keyframes={[
+          { 0: "opacity: 0.75" },
+          { 30: "opacity: 0.9" },
+          { 100: "opacity: 1" },
+        ]}
+        render={({ style }) => {
+          return (
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                top: 0,
+                left: 0,
+                backgroundImage: `
+                linear-gradient(135deg, transparent 80%, rgba(45, 11, 123, 0.3));        
+                `,
+                ...style,
+              }}
+            />
+          );
+        }}
+      />
+
       <div className="flex justify-center p-8">
-        <Logo
-          fill="#2e205f"
-          width={80}
-        />
+        {/* <AnimateKeyframes
+          play
+          iterationCount="infinite"
+          direction="alternate"
+          easeType="ease-in"
+          duration={5}
+          keyframes={[
+            { 0: "opacity: 0.75" },
+            { 70: "opacity: 0.9" },
+            { 100: "opacity: 1" },
+          ]}
+          render={({ style }) => { 
+          return ( */}
+        <Logo fill="#3a287a" /*style={style}*/ width={80} />;
+        {/* )
+           }}
+        /> */}
       </div>
       <Board
         boardRef={boardRef}
