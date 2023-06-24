@@ -382,6 +382,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           `,
       }}
     >
+      {/* Top left radial gradient */}
       <AnimateKeyframes
         play
         iterationCount="infinite"
@@ -389,9 +390,9 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         easeType="ease-in-out"
         duration={10}
         keyframes={[
-          { 0: "opacity: 0.6"  },
-          { 70: "opacity: 0.9 transform: scaleY(0.7)" },
-          { 100: "opacity: 1 transform: scaleY(1.2)" },
+          { 0: "opacity: 0.6" },
+          { 70: "opacity: 0.9" },
+          { 100: "opacity: 1" },
         ]}
         render={({ style }) => {
           return (
@@ -402,9 +403,9 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
                 position: "absolute",
                 backgroundImage: `        
                   radial-gradient(
-                    farthest-corner at 40px 40px,
-                    rgba(164, 132, 239, 0.15) 0%, 
-                    transparent 20% 
+                    farthest-corner at 3% 5%,
+                    rgba(67, 19, 180, 0.9) 0%, 
+                    transparent 50% 
                     )
                 `,
                 pointerEvents: "none",
@@ -414,16 +415,17 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           );
         }}
       />
+      {/* Moving radial gradient */}
       <AnimateKeyframes
         play
         iterationCount="infinite"
         direction="alternate"
-        easeType="ease-in-out"
+        easeType="linear"
         duration={8}
         keyframes={[
-          { 0: "transform-origin: 0 100%; opacity: 0 transform: translate3d(200px, 200px, 0)"  },
-          { 50: "transform-origin: 0 100%; opacity: 1 transform: scaleY(1.2) " },
-          { 100: "transform-origin: 0 100%; opacity: 0.9 transform: scaleY(0.7) translate3d(-200px, -200px, 0)" },
+          { 0: "opacity: 0.4" },
+          { 50: "opacity: 0.8" },
+          { 100: "opacity: 0.5" },
         ]}
         render={({ style }) => {
           return (
@@ -436,11 +438,27 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
                 left: 0,
                 backgroundImage: `        
                   radial-gradient(
-                    rgba(131, 105, 193, 0.2) 0%, 
-                    transparent 40% 
+                    ellipse at 10% 120%,
+                    rgba(64, 255, 0, 0.5) 0%, 
+                    transparent 50% 
+                    ),
+                  radial-gradient(
+                    90em 50em at 13% 120%,
+                    rgba(64, 255, 0, 0.5) 0%, 
+                    transparent 50% 
+                    ),
+                  radial-gradient(
+                    70% 130% at 115% -10%,
+                    rgba(0, 247, 255, 0.5) 0%, 
+                    transparent 50% 
+                    ),
+                  radial-gradient(
+                    60% 120% at 120% 25%,
+                    rgba(0, 247, 255, 0.5) 0%, 
+                    transparent 50% 
                     )
                 `,
-                transform: "scaleY(1.2) translate3d(-150px, 200px, 0)",
+                // transform: "translate3d(-20%, 75%, 0)",
                 pointerEvents: "none",
                 ...style,
               }}
@@ -448,24 +466,24 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           );
         }}
       />
-      <AnimateKeyframes
+      {/* <AnimateKeyframes
         play
         iterationCount="infinite"
         direction="alternate"
         easeType="ease-in-out"
-        duration={20}
+        duration={10}
         keyframes={[
           {
-            0: "transform-origin: 0 100%; transform: translate3d(40%, 45%, 0)",
+            0: "transform-origin: 0 100%; transform: scaleY(0.8)",
           },
+          // {
+          //   50: "transform-origin: 0 100%; opacity: 0.6; transform: translate(20%, -15%, 0) scaleY(1.3)",
+          // },
+          // {
+          //   70: "transform-origin: 0 100%; transform: translate(15%, -25%, 0) scaleX(1.3)",
+          // },
           {
-            50: "transform-origin: 0 100%; transform: translate(20%, -15%, 0) scaleY(1.3)",
-          },
-          {
-            70: "transform-origin: 0 100%; transform: translate(15%, -25%, 0) scaleX(1.3)",
-          },
-          {
-            100: "transform-origin: 0 100%; transform: translate(-50%, 10%, 0)",
+            100: "transform-origin: 0 100%; opacity: 0.7; transform: scaleX(0.8) scaleY(2) ",
           },
         ]}
         render={({ style }) => {
@@ -479,7 +497,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
                 left: 0,
                 backgroundImage: `        
                   radial-gradient(
-                    rgba(1, 1, 1, 0.5) 0%, 
+                    rgba(35, 146, 237, 0.7) 0%, 
                     transparent 60% 
                     )
                 `,
@@ -489,7 +507,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
             />
           );
         }}
-      />
+      /> */}
+      {/* Bottom right linear gradient */}
       <AnimateKeyframes
         play
         iterationCount="infinite"
@@ -511,7 +530,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
                 top: 0,
                 left: 0,
                 backgroundImage: `
-                linear-gradient(135deg, transparent 80%, rgba(45, 11, 123, 0.3));        
+                linear-gradient(135deg, transparent 80%, rgba(45, 11, 123, 0.9));        
                 `,
                 ...style,
               }}
