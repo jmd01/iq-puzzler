@@ -117,10 +117,10 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
        * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
        * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
        */
-      zIndex: isPlaced ? 0 : isDragging ? 21 : 20,
+      zIndex: isPlaced ? 0 : 20 + piece.layer,
       transition: isDragging ? undefined : "transform 0.2s ease-out",
     }),
-    [isDragging, isPlaced, rotation, scaleX, scaleY, x, y]
+    [isDragging, isPlaced, piece.layer, rotation, scaleX, scaleY, x, y]
   );
 
   const ref = useRef<HTMLDivElement>(null);

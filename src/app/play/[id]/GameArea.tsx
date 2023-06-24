@@ -144,6 +144,27 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           position: { x: event.clientX, y: event.clientY },
           activePieceId: clickedPieceId,
         });
+
+        // Reorder pieces so that the active piece is on top
+        const activePiece = pieces.find((piece) => piece.id === clickedPieceId);
+        if (activePiece) {
+          setPieces(
+            pieces.map((piece) => {
+              return piece.id === clickedPieceId
+                ? {
+                    ...piece,
+                    layer: pieces.length,
+                  }
+                : {
+                    ...piece,
+                    layer:
+                      piece.layer > activePiece?.layer
+                        ? piece.layer - 1
+                        : piece.layer,
+                  };
+            })
+          );
+        }
       }
     },
     [pieces]
@@ -184,7 +205,11 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         setPieces(
           pieces.map((piece) =>
             piece.id === state.activePieceId
-              ? { ...piece, placedInCells: undefined, droppedOnBoard: false }
+              ? {
+                  ...piece,
+                  placedInCells: undefined,
+                  droppedOnBoard: false,
+                }
               : piece
           )
         );

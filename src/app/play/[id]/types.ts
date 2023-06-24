@@ -4,6 +4,8 @@ export type Rotation = number;
 
 export type PieceData = {
   id: number;
+  /** Sets the zindex on unplaced pieces so the most recently moved piece appears on top */
+  layer: number;
   rotation: Rotation;
   isFlippedX: boolean;
   isFlippedY: boolean;
@@ -18,6 +20,7 @@ export type PieceData = {
 
 export const pieceDataSchema = z.object({
   id: z.number(),
+  layer: z.number(),
   rotation: z.number(),
   isFlippedX: z.boolean(),
   isFlippedY: z.boolean(),

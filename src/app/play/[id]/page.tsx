@@ -47,6 +47,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           ...solutionPiece,
           placedInCells: placedInCellsParsed,
           ...piece,
+          layer: piece.id,  
           shape: shapeParsed,
         };
       }
@@ -66,6 +67,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       .map(
         ({
           id,
+          layer,
           shape,
           height,
           width,
@@ -87,6 +89,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           );
           return {
             id,
+            layer,
             shape,
             height,
             width,
@@ -123,6 +126,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       )
       .map(({ id, shape, height, width, d, color }) => ({
         id,
+        layer: id,
         shape,
         height,
         width,
