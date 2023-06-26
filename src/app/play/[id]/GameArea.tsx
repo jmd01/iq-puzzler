@@ -18,15 +18,18 @@ import {
   calcPlacedPosition,
   calcUnplacedPosition,
   DRAG_START_THRESHOLD,
+  generateGameState,
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
   removePieceFromBoard,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
-import { generateGameState } from "./generateGameState";
 import type { GameState, Piece, PlacedPiece, PreviewPiece } from "./types";
-import { Animate, AnimateKeyframes } from "react-simple-animate";
+import { AnimatedBackground } from "../AnimatedBackground";
+import gameAreaStyles from "./gameArea.module.css";
+import * as twStyles from "./styles";
+
 
 export type GameAreaDragState = {
   isMouseDown: boolean;
@@ -392,196 +395,15 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       onMouseMove={handleMouseMove}
       onClick={handleMouseUp}
       onContextMenu={onContextMenu}
+      className={gameAreaStyles.gameArea}
       style={{
         width: gameAreaDims.width,
         height: gameAreaDims.height,
-        backgroundImage: `
-        radial-gradient(
-          circle at 5% 20%, 
-          rgba(255,255,255,0.1) 2%, 
-          rgba(255,255,255,0) 40%, 
-          rgba(255,255,255,0.05) 80%,
-          rgba(255,255,255,0) 100%
-          ),
-          linear-gradient(135deg, #04012f, #1e012f)
-          `,
       }}
     >
-      {/* Top left radial gradient */}
-      <AnimateKeyframes
-        play
-        iterationCount="infinite"
-        direction="alternate"
-        easeType="ease-in-out"
-        duration={10}
-        keyframes={[
-          { 0: "opacity: 0.6" },
-          { 70: "opacity: 0.9" },
-          { 100: "opacity: 1" },
-        ]}
-        render={({ style }) => {
-          return (
-            <div
-              style={{
-                width: 500,
-                height: 700,
-                position: "absolute",
-                backgroundImage: `        
-                  radial-gradient(
-                    farthest-corner at 3% 5%,
-                    rgba(67, 19, 180, 0.9) 0%, 
-                    transparent 50% 
-                    )
-                `,
-                pointerEvents: "none",
-                ...style,
-              }}
-            />
-          );
-        }}
-      />
-      {/* Moving radial gradient */}
-      <AnimateKeyframes
-        play
-        iterationCount="infinite"
-        direction="alternate"
-        easeType="linear"
-        duration={8}
-        keyframes={[
-          { 0: "opacity: 0.4" },
-          { 50: "opacity: 0.8" },
-          { 100: "opacity: 0.5" },
-        ]}
-        render={({ style }) => {
-          return (
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                top: 0,
-                left: 0,
-                backgroundImage: `        
-                  radial-gradient(
-                    ellipse at 10% 120%,
-                    rgba(64, 255, 0, 0.5) 0%, 
-                    transparent 50% 
-                    ),
-                  radial-gradient(
-                    90em 50em at 13% 120%,
-                    rgba(64, 255, 0, 0.5) 0%, 
-                    transparent 50% 
-                    ),
-                  radial-gradient(
-                    70% 130% at 115% -10%,
-                    rgba(0, 247, 255, 0.5) 0%, 
-                    transparent 50% 
-                    ),
-                  radial-gradient(
-                    60% 120% at 120% 25%,
-                    rgba(0, 247, 255, 0.5) 0%, 
-                    transparent 50% 
-                    )
-                `,
-                // transform: "translate3d(-20%, 75%, 0)",
-                pointerEvents: "none",
-                ...style,
-              }}
-            />
-          );
-        }}
-      />
-      {/* <AnimateKeyframes
-        play
-        iterationCount="infinite"
-        direction="alternate"
-        easeType="ease-in-out"
-        duration={10}
-        keyframes={[
-          {
-            0: "transform-origin: 0 100%; transform: scaleY(0.8)",
-          },
-          // {
-          //   50: "transform-origin: 0 100%; opacity: 0.6; transform: translate(20%, -15%, 0) scaleY(1.3)",
-          // },
-          // {
-          //   70: "transform-origin: 0 100%; transform: translate(15%, -25%, 0) scaleX(1.3)",
-          // },
-          {
-            100: "transform-origin: 0 100%; opacity: 0.7; transform: scaleX(0.8) scaleY(2) ",
-          },
-        ]}
-        render={({ style }) => {
-          return (
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                top: 0,
-                left: 0,
-                backgroundImage: `        
-                  radial-gradient(
-                    rgba(35, 146, 237, 0.7) 0%, 
-                    transparent 60% 
-                    )
-                `,
-                pointerEvents: "none",
-                ...style,
-              }}
-            />
-          );
-        }}
-      /> */}
-      {/* Bottom right linear gradient */}
-      <AnimateKeyframes
-        play
-        iterationCount="infinite"
-        direction="alternate"
-        easeType="ease-in-out"
-        duration={5}
-        keyframes={[
-          { 0: "opacity: 0.75" },
-          { 30: "opacity: 0.9" },
-          { 100: "opacity: 1" },
-        ]}
-        render={({ style }) => {
-          return (
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                top: 0,
-                left: 0,
-                backgroundImage: `
-                linear-gradient(135deg, transparent 80%, rgba(45, 11, 123, 0.9));        
-                `,
-                ...style,
-              }}
-            />
-          );
-        }}
-      />
-
-      <div className="flex justify-center p-8">
-        {/* <AnimateKeyframes
-          play
-          iterationCount="infinite"
-          direction="alternate"
-          easeType="ease-in"
-          duration={5}
-          keyframes={[
-            { 0: "opacity: 0.75" },
-            { 70: "opacity: 0.9" },
-            { 100: "opacity: 1" },
-          ]}
-          render={({ style }) => { 
-          return ( */}
-        <Logo fill="#3a287a" /*style={style}*/ width={80} />;
-        {/* )
-           }}
-        /> */}
+      <AnimatedBackground />
+      <div className={twStyles.logoContainer}>
+        <Logo fill="#3a287a" width={80} />;
       </div>
       <Board
         boardRef={boardRef}

@@ -19,6 +19,7 @@ import {
 } from "./utils";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
+import * as twStyles from "./styles";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -32,7 +33,7 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   activePieceRef
 ) {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-between p-4 max-w-4xl mx-auto">
+    <div className={twStyles.piecesContainer}>
       {pieces.map((piece, i) => {
         const isActivePiece = activePieceId === piece.id;
         const pieceProps: PieceType = {

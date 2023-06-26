@@ -2,6 +2,9 @@ import { RefObject } from "react";
 import { PlacedPiece, PreviewPiece } from "./types";
 import { Piece } from "./Pieces";
 import { Animate } from "react-simple-animate";
+import * as twStyles from "./styles";
+import boardStyles from "./board.module.css";
+import classnames from "classnames";
 
 export const Board = ({
   boardRef,
@@ -13,7 +16,7 @@ export const Board = ({
   prePlacedPieces: PlacedPiece[];
 }) => {
   return (
-    <div className="grid grid-cols-1 items-center justify-items-center p-4">
+    <div className={twStyles.boardWrapper}>
       <Animate
         play
         duration={0.4}
@@ -27,66 +30,53 @@ export const Board = ({
         }}
         easeType="ease-out"
       >
-      <div
-        className="p-4 rounded-3xl"
-        style={{
-          backgroundImage: `linear-gradient(135deg, #4c00c5, #2d2285)`,
-          boxShadow: `
-          rgb(255, 255, 255, 0.25) 0.5px 0.5px 0.3px 0.3px inset,
-          5px 5px 15px 0px rgb(1 1 1 / 0.45)
-          `,
-        }}
-      >
-        <div className="relative">
-          {prePlacedPieces.map((piece, i) => (
-              <Piece key={piece.id} index={i} piece={piece} setPieces={() => {}} />
-          ))}
-          <div className="absolute w-full h-full z-10">
-            <div className="inline-grid grid-cols-11" ref={boardRef}>
-              {[...Array(55)].map((_, i) => (
-                <span
-                  key={i}
-                  className={`boardCell w-16 h-16 `}
-                  data-board-cell={`${i % 11},${Math.floor(i / 11)}`}
-                />
-              ))}
+        <div
+          className={classnames(twStyles.boardContainer, boardStyles.boardBgrd)}
+        >
+          <div className="relative">
+            {prePlacedPieces.map((piece, i) => (
+              <Piece
+                key={piece.id}
+                index={i}
+                piece={piece}
+                setPieces={() => {}}
+              />
+            ))}
+            <div className={twStyles.boardCellWrapper}>
+              <div className={twStyles.boardCellContainer} ref={boardRef}>
+                {[...Array(55)].map((_, i) => (
+                  <span
+                    key={i}
+                    className={classnames("boardCell", twStyles.boardCell)}
+                    data-board-cell={`${i % 11},${Math.floor(i / 11)}`}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className={twStyles.boardCellContainer} ref={boardRef}>
+              {[...Array(55)].map((_, i) => {
+                const x = i % 11;
+                const y = Math.floor(i / 11);
+                const isPreview = previewPiece?.cells?.some(
+                  ([previewX, previewY]) => previewX === x && previewY === y
+                );
+
+                return (
+                  <span
+                    key={i}
+                    className={classnames(
+                      twStyles.boardCell,
+                      "rounded-full",
+                      boardStyles.boardCell,
+                      { [boardStyles.boardCellPreview]: isPreview }
+                    )}
+                    data-board-cell={`${x},${y}`}
+                  />
+                );
+              })}
             </div>
           </div>
-          <div className="inline-grid grid-cols-11" ref={boardRef}>
-            {[...Array(55)].map((_, i) => {
-              const x = i % 11;
-              const y = Math.floor(i / 11);
-              const isPreview = previewPiece?.cells?.some(
-                ([previewX, previewY]) => previewX === x && previewY === y
-              );
-
-              return (
-                <span
-                  key={i}
-                  className={`w-16 h-16 rounded-full
-                  `}
-                  style={{
-                    background: isPreview
-                      ? `rgba(255,255,255,0.5)`
-                      : `radial-gradient(
-                      circle at 20% 20%, 
-                      rgba(1,1,1,0.5) 2%, 
-                      rgba(1,1,1,0.2) 40%, 
-                      rgba(255,255,255,0.2) 79%,
-                      rgba(255,255,255,0.4) 80%,
-                      rgba(255,255,255,0.4) 100%
-                      )`,
-                    boxShadow: `
-                      rgb(255, 255, 255, 0.25) 0.5px 0.5px 0.3px 0.3px inset
-                      `,
-                  }}
-                  data-board-cell={`${x},${y}`}
-                />
-              );
-            })}
-          </div>
         </div>
-      </div>
       </Animate>
     </div>
   );

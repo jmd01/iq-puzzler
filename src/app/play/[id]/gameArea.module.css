@@ -1,0 +1,10 @@
+.gameArea {
+  background-image: radial-gradient(
+    circle at 5% 20%, 
+    rgba(255,255,255,0.1) 2%, 
+    rgba(255,255,255,0) 40%, 
+    rgba(255,255,255,0.05) 80%,
+    rgba(255,255,255,0) 100%
+    ),
+    linear-gradient(135deg, #04012f, #1e012f);
+}
