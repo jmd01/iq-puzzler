@@ -273,24 +273,6 @@ export const getIsPiecePlaceable = (
     return gameStateGrid[y] && gameStateGrid[y][x] === 0;
   });
 
-/**
- * On drag end, if the active piece is over the board and placeable, there will be a preview piece. This function will add the preview piece to the board
- */
-export function addPieceToBoard(
-  gameStateGrid: GameState["grid"],
-  previewPieceCell: PreviewPiece["cells"]
-): GameState["grid"] {
-  const updatedGrid = nestedCopy(gameStateGrid);
-  previewPieceCell.forEach(([x, y]) => {
-    if (updatedGrid[y][x] === 1) {
-      console.error(
-        `Trying to place piece on board at {x:${x}, y:${y}} but cell is already taken.`
-      );
-    }
-    updatedGrid[y][x] = 1;
-  });
-  return updatedGrid;
-}
 
 /**
  * On drag start, if the active piece is currently placed on the board, remove it
@@ -542,32 +524,3 @@ export function getDecimalPart(num: number) {
   return Number(decimalStr);
 }
 
-/**
- * Generate the initial grid based on the size of the board determined by the x and y parameters
- * Fill the array with zeros or ones to represent empty or filled cells. The grid is any array of rows (y) that contain an array of cells (x) eg a empty 2 column by 4 row grid would be represented as:
- * ```
- * [
- *  [0,0,0,0],
- *  [0,0,0,0],
- * ]
- * ```
- */
-export function generateGameState(
-  x: number,
-  y: number,
-  prePlacedPieces: PlacedPiece[]
-): GameState {
-  // Create an empty grid
-  let grid: [number][] = Array(y).fill(Array(x).fill(0));
-
-  // Fill it with the preplaced pieces
-  prePlacedPieces &&
-    prePlacedPieces.forEach(({ placedInCells }) => {
-      grid = addPieceToBoard(grid, placedInCells);
-    });
-
-  return {
-    grid,
-    complete: false,
-  };
-}

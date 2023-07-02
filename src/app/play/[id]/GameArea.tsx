@@ -13,12 +13,10 @@ import {
 } from "react";
 import type { Reducer } from "react";
 import {
-  addPieceToBoard,
   boardsCellsCoveredByPiece,
   calcPlacedPosition,
   calcUnplacedPosition,
   DRAG_START_THRESHOLD,
-  generateGameState,
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
   removePieceFromBoard,
@@ -30,6 +28,7 @@ import { AnimatedBackground } from "../AnimatedBackground";
 import gameAreaStyles from "./gameArea.module.css";
 import * as twStyles from "./styles";
 import { LevelComplete } from "./LevelComplete";
+import { addPieceToBoard, generateGameState } from "./sharedUtils";
 
 
 export type GameAreaDragState = {

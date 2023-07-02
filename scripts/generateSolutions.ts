@@ -4,7 +4,7 @@ import {
   getIsPiecePlaceable,
   getPieceOverCells,
   getRotatedAndFlippedShape,
-} from "../src/app/play/[id]/utils";
+} from "../src/app/play/[id]/sharedUtils";
 import { PrismaClient, SolutionPiece } from "@prisma/client";
 import { pieceOrientations } from "./pieceOrientations";
 

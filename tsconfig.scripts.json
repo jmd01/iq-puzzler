@@ -20,6 +20,6 @@
     "sourceMap": false,
     "baseUrl": ".",
   },
-  "include": ["./scripts/*.ts", "./src/app/play/[id]/utils.ts"],
+  "include": ["./scripts/*.ts", "./src/app/play/[id]/sharedUtils.ts"],
   "exclude": ["node_modules"]
 }
