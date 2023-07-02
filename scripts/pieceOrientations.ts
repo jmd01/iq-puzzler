@@ -1,0 +1,42 @@
+import { Piece, SolutionPiece } from "@prisma/client";
+
+const getPieceOrientations = (isFlippedX?: boolean) => [
+  {
+    rotation: 0,
+    isFlippedX: false,
+    isFlippedY: false,
+  },
+  {
+    rotation: 0.25,
+    isFlippedX: false,
+    isFlippedY: false,
+  },
+  {
+    rotation: 0.5,
+    isFlippedX: false,
+    isFlippedY: false,
+  },
+  {
+    rotation: 0.75,
+    isFlippedX: false,
+    isFlippedY: false,
+  },
+];
+
+export const pieceOrientations: Record<
+  Piece["id"],
+  Pick<SolutionPiece, "rotation" | "isFlippedX" | "isFlippedY">[]
+> = {
+  1: [...getPieceOrientations(), ...getPieceOrientations(true)],
+  2: getPieceOrientations(),
+  3: getPieceOrientations(),
+  4: [...getPieceOrientations(), ...getPieceOrientations(true)],
+  5: getPieceOrientations(),
+  6: [...getPieceOrientations(), ...getPieceOrientations(true)],
+  7: [...getPieceOrientations(), ...getPieceOrientations(true)],
+  8: [...getPieceOrientations(), ...getPieceOrientations(true)],
+  9: getPieceOrientations(),
+  10: [...getPieceOrientations(), ...getPieceOrientations(true)],
+  11: [...getPieceOrientations(), ...getPieceOrientations(true)],
+  12: getPieceOrientations(),
+};
