@@ -1,3 +1,4 @@
+import { backgroundOpacity, borderRadius } from "tailwindcss-classnames";
 import {
   borders,
   classnames as twClassnames,
@@ -12,6 +13,10 @@ import {
   gap,
   maxWidth,
   margin,
+  fontSize,
+  position,
+  textColor,
+  backgroundColor,
 } from "tailwindcss-classnames";
 
 export const boardWrapper = twClassnames(
@@ -56,3 +61,34 @@ export const piecesContainer = twClassnames(
   padding("p-4"),
   margin("mx-auto")
 );
+
+export const levelCompleteWrapper = twClassnames(
+  layout("absolute", "top-0", "left-0"),
+  zIndex("z-50"),
+  width("w-full"),
+  height("h-full"),
+  backgroundColor("bg-black"),
+  backgroundOpacity("bg-opacity-20")
+);
+
+export const levelCompleteContainer = twClassnames(
+  layout("flex"),
+  flexBox("items-center", "justify-center"),
+  width("w-full"),
+  height("h-full"),
+  padding("p-4")
+);
+
+export const levelCompleteBadge = twClassnames(
+  layout("flex"),
+  flexBox("flex-col", "items-center"),
+  borderRadius("rounded-t-lg", "rounded-b-xl"),
+  backgroundColor("bg-white")
+);
+
+export const levelCompleteStars = twClassnames(
+  layout("flex"),
+  flexBox("justify-center")
+);
+
+export const levelCompleteText = twClassnames(textColor("text-cyan-600"));

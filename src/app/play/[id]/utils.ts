@@ -1,4 +1,11 @@
-import type { GameState, Piece, PlacedPiece, PreviewPiece, Rotation } from "./types";
+import { boardCell } from "./styles";
+import type {
+  GameState,
+  Piece,
+  PlacedPiece,
+  PreviewPiece,
+  Rotation,
+} from "./types";
 
 export const CELL_SIZE = 64;
 export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;
@@ -115,7 +122,7 @@ function calcRotatedInitialPiecePosition(
  *
  *
  */
-function getRotatedShape(
+export function getRotatedShape(
   pieceShape: Piece["shape"],
   pieceRotation: Piece["rotation"]
 ): Piece["shape"] {
@@ -199,35 +206,22 @@ export function boardsCellsCoveredByPiece(
   // The board cell nearest the left side that the dragged piece is over
   const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
 
-  // The index of boards cells that the dragged piece is over
-  const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
-  const flippedShape = getFlippedShape(
-    rotatedShape,
+  const flippedShape = getRotatedAndFlippedShape(
+    pieceShape,
+    pieceRotation,
     pieceIsFlippedX,
     pieceIsFlippedY
   );
 
-  const pieceOverCells = flippedShape.reduce<[number, number][] | undefined>(
-    (acc, currentRow, y) => {
-      return currentRow.reduce<[number, number][] | undefined>(
-        (rowAcc, coversCell, x) => {
-          const cell: [number, number] = [
-            pieceOverBoardCellX + x,
-            pieceOverBoardCellY + y,
-          ];
-          return coversCell ? (rowAcc ? [...rowAcc, cell] : [cell]) : rowAcc;
-        },
-        acc
-      );
-    },
-    undefined
+  // The index of boards cells that the dragged piece is over
+  const pieceOverCells = getPieceOverCells(
+    [pieceOverBoardCellX, pieceOverBoardCellY],
+    flippedShape
   );
 
   if (pieceOverCells) {
     // Check all the cells the piece will cover are empty
-    const isPiecePlaceable = pieceOverCells.every(([x, y]) => {
-      return gameStateGrid[y] && gameStateGrid[y][x] === 0;
-    });
+    const isPiecePlaceable = getIsPiecePlaceable(pieceOverCells, gameStateGrid);
 
     if (isPiecePlaceable) {
       return {
@@ -238,6 +232,46 @@ export function boardsCellsCoveredByPiece(
     }
   }
 }
+
+export const getRotatedAndFlippedShape = (
+  pieceShape: Piece["shape"],
+  pieceRotation: Piece["rotation"],
+  pieceIsFlippedX: Piece["isFlippedX"],
+  pieceIsFlippedY: Piece["isFlippedY"]
+) => {
+  const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
+  return getFlippedShape(rotatedShape, pieceIsFlippedX, pieceIsFlippedY);
+};
+
+/**
+ * Get the cells on the board that a piece will cover if dropped on the board
+ * in the format [[x,y],[x,y],[x,y]]
+ */
+export const getPieceOverCells = (
+  boardCell: [number, number],
+  shape: number[][]
+): [number, number][] | undefined => {
+  return shape.reduce<[number, number][] | undefined>((acc, currentRow, y) => {
+    return currentRow.reduce<[number, number][] | undefined>(
+      (rowAcc, coversCell, x) => {
+        const cell: [number, number] = [boardCell[0] + x, boardCell[1] + y];
+        return coversCell ? (rowAcc ? [...rowAcc, cell] : [cell]) : rowAcc;
+      },
+      acc
+    );
+  }, undefined);
+};
+
+/**
+ * Check if all the cells the piece will cover are empty
+ */
+export const getIsPiecePlaceable = (
+  pieceOverCells: [number, number][],
+  gameStateGrid: [number][]
+): boolean =>
+  pieceOverCells.every(([x, y]) => {
+    return gameStateGrid[y] && gameStateGrid[y][x] === 0;
+  });
 
 /**
  * On drag end, if the active piece is over the board and placeable, there will be a preview piece. This function will add the preview piece to the board
@@ -326,10 +360,7 @@ export function calcPlacedPosition(
 
   return {
     x: boardBounds.left + previewPiece.x * CELL_SIZE - pieceInitialPosition.x,
-    y:
-      boardBounds.top +
-      previewPiece.y * CELL_SIZE -
-      pieceInitialPosition.y,
+    y: boardBounds.top + previewPiece.y * CELL_SIZE - pieceInitialPosition.y,
   };
 }
 

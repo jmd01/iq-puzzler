@@ -29,6 +29,7 @@ import type { GameState, Piece, PlacedPiece, PreviewPiece } from "./types";
 import { AnimatedBackground } from "../AnimatedBackground";
 import gameAreaStyles from "./gameArea.module.css";
 import * as twStyles from "./styles";
+import { LevelComplete } from "./LevelComplete";
 
 
 export type GameAreaDragState = {
@@ -314,7 +315,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           );
           setGameState({
             grid: updatedGrid,
-            complete,
+            complete: true,
           });
         }
       } else {
@@ -371,12 +372,6 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
 
   const onContextMenu = (event: MouseEvent) => event.preventDefault();
 
-  useLayoutEffect(() => {
-    if (gameState.complete) {
-      alert("You win!");
-    }
-  }, [gameState.complete]);
-
   // Fix the window size to 100% on first load
   useEffect(() => {
     if (gameAreaRef.current) {
@@ -403,7 +398,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
     >
       <AnimatedBackground />
       <div className={twStyles.logoContainer}>
-        <Logo fill="#3a287a" width={80} />;
+        <Logo fill="#3a287a" width={80} />
       </div>
       <Board
         boardRef={boardRef}
@@ -418,6 +413,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         ref={activePieceRef}
         boardBounds={boardBounds}
       />
+      {!gameState.complete ? <LevelComplete /> : null}
     </div>
   );
 };
