@@ -17,9 +17,9 @@
       "@/*": ["../src/*"]
     },
     "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": "."
+    "sourceMap": false,
+    "baseUrl": ".",
   },
-  "include": ["**/*.ts", "**/*.tsx", "../src/app/play/[id]/utils.ts"],
+  "include": ["./scripts/*.ts", "./src/app/play/[id]/utils.ts"],
   "exclude": ["node_modules"]
 }
