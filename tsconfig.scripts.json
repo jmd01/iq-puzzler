@@ -19,7 +19,7 @@
     "noImplicitAny": true,
     "sourceMap": false,
     "baseUrl": ".",
+    "noEmit": false
   },
-  "include": ["./scripts/*.ts", "./src/app/play/[id]/sharedUtils.ts"],
-  "exclude": ["node_modules"]
+  "include": ["./scripts/*.ts", "./src/app/play/[id]/sharedUtils.ts"]
 }

@@ -67,21 +67,27 @@ const placePiece = ({
   solutionPieces: GeneratedSolutionPiece[];
 }) => {
   const nextAvailableCell = getNextAvailableCell(boardStateGrid);
+  console.log({ nextAvailableCell, remainingPieces, hi: "hi" });
+  printBoard(boardStateGrid);
 
   if (!nextAvailableCell) {
     // found a solution
-    console.log(solutionPieces);
     solutions.push(solutionPieces);
+    console.log("found a solition", { solutionPieces, solutions });
     return;
   }
 
   remainingPieces.forEach((pieceId) => {
     const piece = allPieces.find((piece) => piece.id === pieceId);
+    // console.log({ pieceId, piece });
+
     if (!piece) {
       throw new Error(`Piece ${pieceId} not found`);
     }
 
     pieceOrientations[pieceId].forEach((pieceOrientation) => {
+
+
       // check if piece fits
       // if it does, add to boardState
       // else, generate next piece
@@ -126,9 +132,16 @@ const placePiece = ({
             solutionPieces: updatedSolutionPieces,
           });
         }
+        console.log("piece not placeable", {pieceId, pieceOrientation}); 
       }
     });
   });
 };
+
+const printBoard = (boardStateGrid: [number][]) => {
+  boardStateGrid.forEach((row) => {
+    console.log(row);
+  });
+}
 
 generate();

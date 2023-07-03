@@ -23,6 +23,13 @@
           "uriFormat": "%s",
           "action": "debugWithChrome"
         }
-      }
+      },
+      {
+        "name": "Next.js: debug scripts",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "node ./scripts/generateSolutions.js"
+      },
+
     ]
   }
