@@ -70,6 +70,6 @@ export type PreviewPiece = {
   cells: [number, number][];
 };
 export type GameState = {
-  grid: [number][];
+  grid: number[][];
   complete: boolean;
 };

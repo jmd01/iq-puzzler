@@ -19,7 +19,6 @@ import {
   DRAG_START_THRESHOLD,
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
-  removePieceFromBoard,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "./utils";
@@ -28,8 +27,11 @@ import { AnimatedBackground } from "../AnimatedBackground";
 import gameAreaStyles from "./gameArea.module.css";
 import * as twStyles from "./styles";
 import { LevelComplete } from "./LevelComplete";
-import { addPieceToBoard, generateGameState } from "./sharedUtils";
-
+import {
+  addPieceToBoard,
+  removePieceFromBoard,
+  generateGameState,
+} from "./sharedUtils";
 
 export type GameAreaDragState = {
   isMouseDown: boolean;

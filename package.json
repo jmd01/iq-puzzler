@@ -11,8 +11,7 @@
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "seed": "pnpm ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
-    "generateSolutionsTsNode": "pnpm ts-node scripts/generateSolutions.ts",
-    "generateSolutions": "pnpm tsc -p tsconfig.scripts.json && node ./scripts/generateSolutions.js",
+    "generateSolutions": "pnpm ts-node --project tsconfig.scripts.json scripts/generateSolutions.ts",
     "migrate": "pnpm prisma migrate dev"
   },
   "prisma": {

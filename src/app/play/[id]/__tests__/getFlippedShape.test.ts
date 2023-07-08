@@ -1,5 +1,5 @@
 import { test, expect, describe } from "vitest";
-import { getFlippedShape } from "../utils";
+import { getFlippedShape } from "../sharedUtils";
 
 describe("getFlippedShape", () => {
   test("pieceIsFlippedX", () => {

@@ -47,28 +47,28 @@ async function main() {
       },
     },
   });
-  const level2Res = await prisma.level.create({
-    data: {
-      difficulty: "EASY",
-      solutionId: 1,
-      solutionPieces: {
-        connect: [
-          {
-            id: 5,
-          },
-          {
-            id: 6,
-          },
-          {
-            id: 7,
-          },
-          {
-            id: 8,
-          },
-        ],
-      },
-    },
-  });
+  // const level2Res = await prisma.level.create({
+  //   data: {
+  //     difficulty: "EASY",
+  //     solutionId: 1,
+  //     solutionPieces: {
+  //       connect: [
+  //         {
+  //           id: 5,
+  //         },
+  //         {
+  //           id: 6,
+  //         },
+  //         {
+  //           id: 7,
+  //         },
+  //         {
+  //           id: 8,
+  //         },
+  //       ],
+  //     },
+  //   },
+  // });
 
   // console.log();
 }

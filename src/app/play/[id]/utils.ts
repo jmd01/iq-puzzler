@@ -1,3 +1,4 @@
+import { getRotatedAndFlippedShape } from "./sharedUtils";
 import { boardCell } from "./styles";
 import type {
   GameState,
@@ -122,28 +123,28 @@ function calcRotatedInitialPiecePosition(
  *
  *
  */
-export function getRotatedShape(
-  pieceShape: Piece["shape"],
-  pieceRotation: Piece["rotation"]
-): Piece["shape"] {
-  const pieceShapeClone = nestedCopy(pieceShape);
-  switch (getDecimalPart(pieceRotation)) {
-    case 0:
-      return pieceShapeClone;
-    case 25:
-      return pieceShapeClone[0].map((_, index) =>
-        pieceShapeClone.map((row) => row[index]).reverse()
-      );
-    case 5:
-      return [...pieceShapeClone.reverse()].map((row) => row.reverse());
-    case 75:
-      return pieceShapeClone[0].map((_, index) =>
-        pieceShapeClone.map((row) => row[row.length - 1 - index])
-      );
-    default:
-      return pieceShapeClone;
-  }
-}
+// export function getRotatedShape(
+//   pieceShape: Piece["shape"],
+//   pieceRotation: Piece["rotation"]
+// ): Piece["shape"] {
+//   const pieceShapeClone = nestedCopy(pieceShape);
+//   switch (getDecimalPart(pieceRotation)) {
+//     case 0:
+//       return pieceShapeClone;
+//     case 25:
+//       return pieceShapeClone[0].map((_, index) =>
+//         pieceShapeClone.map((row) => row[index]).reverse()
+//       );
+//     case 5:
+//       return [...pieceShapeClone.reverse()].map((row) => row.reverse());
+//     case 75:
+//       return pieceShapeClone[0].map((_, index) =>
+//         pieceShapeClone.map((row) => row[row.length - 1 - index])
+//       );
+//     default:
+//       return pieceShapeClone;
+//   }
+// }
 /**
  *  Flip a piece's shape array by x or y axis, eg flip y axis
  * ```
@@ -162,22 +163,22 @@ export function getRotatedShape(
  *
  *
  */
-export function getFlippedShape(
-  pieceShape: Piece["shape"],
-  pieceIsFlippedX: Piece["isFlippedX"],
-  pieceIsFlippedY: Piece["isFlippedY"]
-): Piece["shape"] {
-  let flippedShape = nestedCopy(pieceShape);
+// export function getFlippedShape(
+//   pieceShape: Piece["shape"],
+//   pieceIsFlippedX: Piece["isFlippedX"],
+//   pieceIsFlippedY: Piece["isFlippedY"]
+// ): Piece["shape"] {
+//   let flippedShape = nestedCopy(pieceShape);
 
-  if (pieceIsFlippedX) {
-    flippedShape = flippedShape.reverse();
-  }
-  if (pieceIsFlippedY) {
-    flippedShape = flippedShape.map((row) => row.reverse());
-  }
+//   if (pieceIsFlippedX) {
+//     flippedShape = flippedShape.reverse();
+//   }
+//   if (pieceIsFlippedY) {
+//     flippedShape = flippedShape.map((row) => row.reverse());
+//   }
 
-  return flippedShape;
-}
+//   return flippedShape;
+// }
 
 /**
  * When dragging a piece, calculate the cells on the board that a piece will cover if dropped on the board
@@ -233,15 +234,15 @@ export function boardsCellsCoveredByPiece(
   }
 }
 
-export const getRotatedAndFlippedShape = (
-  pieceShape: Piece["shape"],
-  pieceRotation: Piece["rotation"],
-  pieceIsFlippedX: Piece["isFlippedX"],
-  pieceIsFlippedY: Piece["isFlippedY"]
-) => {
-  const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
-  return getFlippedShape(rotatedShape, pieceIsFlippedX, pieceIsFlippedY);
-};
+// export const getRotatedAndFlippedShape = (
+//   pieceShape: Piece["shape"],
+//   pieceRotation: Piece["rotation"],
+//   pieceIsFlippedX: Piece["isFlippedX"],
+//   pieceIsFlippedY: Piece["isFlippedY"]
+// ) => {
+//   const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
+//   return getFlippedShape(rotatedShape, pieceIsFlippedX, pieceIsFlippedY);
+// };
 
 /**
  * Get the cells on the board that a piece will cover if dropped on the board
@@ -267,31 +268,11 @@ export const getPieceOverCells = (
  */
 export const getIsPiecePlaceable = (
   pieceOverCells: [number, number][],
-  gameStateGrid: [number][]
+  gameStateGrid: number[][]
 ): boolean =>
   pieceOverCells.every(([x, y]) => {
     return gameStateGrid[y] && gameStateGrid[y][x] === 0;
   });
-
-
-/**
- * On drag start, if the active piece is currently placed on the board, remove it
- */
-export function removePieceFromBoard(
-  gameStateGrid: GameState["grid"],
-  placedPieceCells: NonNullable<Piece["placedInCells"]>
-) {
-  const updatedGrid = nestedCopy(gameStateGrid);
-  placedPieceCells.forEach(([x, y]) => {
-    if (updatedGrid[y][x] === 0) {
-      console.error(
-        `Trying to remove piece from board at {x:${x}, y:${y}} but cell is not taken.`
-      );
-    }
-    updatedGrid[y][x] = 0;
-  });
-  return updatedGrid;
-}
 
 /**
  * Utility for merging refs eg where 2 or more separate refs need to be passed to a single element

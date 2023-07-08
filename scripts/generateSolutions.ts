@@ -4,9 +4,11 @@ import {
   getIsPiecePlaceable,
   getPieceOverCells,
   getRotatedAndFlippedShape,
+  nestedCopy,
 } from "../src/app/play/[id]/sharedUtils";
 import { PrismaClient, SolutionPiece } from "@prisma/client";
 import { pieceOrientations } from "./pieceOrientations";
+import { connect } from "http2";
 
 type GeneratedSolutionPiece = Omit<
   SolutionPiece,
@@ -20,15 +22,17 @@ const getPieces = async () => {
   return await prisma.piece.findMany();
 };
 
-const getNextAvailableCell = (
-  grid: [number][],
+export const getNextAvailableCell = (
+  grid: number[][],
   starting: [number, number] = [0, 0]
 ): [number, number] | false => {
-  let y = starting[1];
   let x = starting[0];
-  for (y; y <= grid.length; y++) {
-    for (x; x <= grid[0].length; x++) {
-      if (grid[x][y] === 0) {
+  let y = starting[1];
+  // console.log({ x, y });
+
+  for (y; y < grid.length; y++) {
+    for (x; x < grid[0].length; x++) {
+      if (grid[y][x] === 0) {
         return [x, y];
       }
     }
@@ -50,47 +54,69 @@ const generate = async () => {
   placePiece({
     allPieces,
     remainingPieces,
-    boardStateGrid,
+    boardGrid: boardStateGrid,
     solutionPieces: [],
   });
 };
 
-const placePiece = ({
+const placePiece = async ({
   allPieces,
   remainingPieces,
-  boardStateGrid,
+  boardGrid,
   solutionPieces,
+  previousAvailableCell,
 }: {
   allPieces: { id: number; shape: [number, number][] }[];
   remainingPieces: number[];
-  boardStateGrid: [number][];
+  boardGrid: number[][];
   solutionPieces: GeneratedSolutionPiece[];
+  previousAvailableCell?: [number, number];
 }) => {
-  const nextAvailableCell = getNextAvailableCell(boardStateGrid);
-  console.log({ nextAvailableCell, remainingPieces, hi: "hi" });
-  printBoard(boardStateGrid);
+  const nextAvailableCell = getNextAvailableCell(
+    boardGrid,
+    previousAvailableCell
+  );
+  // console.log({ nextAvailableCell, remainingPieces });
+  // printBoard(boardGrid);
 
   if (!nextAvailableCell) {
     // found a solution
-    solutions.push(solutionPieces);
-    console.log("found a solition", { solutionPieces, solutions });
+    // solutions.push(solutionPieces);
+    console.count("Found a solution!");
+    // console.log({ nextAvailableCell, remainingPieces });
+    // printBoard(boardGrid);
+    await prisma.solution.create({
+      data: {
+        solutionPieces: {
+          create: solutionPieces.map(
+            ({ rotation, isFlippedX, isFlippedY, placedInCells, pieceId }) => ({
+              rotation,
+              isFlippedX,
+              isFlippedY,
+              placedInCells: JSON.stringify(placedInCells),
+
+              piece: {
+                connect: { id: pieceId },
+              },
+            })
+          ),
+        },
+      },
+    });
     return;
   }
 
   remainingPieces.forEach((pieceId) => {
     const piece = allPieces.find((piece) => piece.id === pieceId);
-    // console.log({ pieceId, piece });
 
     if (!piece) {
       throw new Error(`Piece ${pieceId} not found`);
     }
 
+    // console.log("Current piece: ", pieceId);
+    // printShape(piece.shape);
+
     pieceOrientations[pieceId].forEach((pieceOrientation) => {
-
-
-      // check if piece fits
-      // if it does, add to boardState
-      // else, generate next piece
       const flippedShape = getRotatedAndFlippedShape(
         piece.shape,
         pieceOrientation.rotation,
@@ -101,9 +127,9 @@ const placePiece = ({
       const pieceOverCells = getPieceOverCells(nextAvailableCell, flippedShape);
 
       if (pieceOverCells) {
-        if (getIsPiecePlaceable(pieceOverCells, boardStateGrid)) {
+        if (getIsPiecePlaceable(pieceOverCells, boardGrid)) {
           const updatedSolutionPieces = [
-            ...solutionPieces,
+            ...nestedCopy(solutionPieces),
             {
               pieceId: piece.id,
               rotation: pieceOrientation.rotation,
@@ -114,34 +140,94 @@ const placePiece = ({
           ];
 
           // add piece to boardState
-          const updatedBoardStateGrid = addPieceToBoard(
-            boardStateGrid,
-            pieceOverCells
-          );
+          const updatedBoardGrid = addPieceToBoard(boardGrid, pieceOverCells);
 
           // remove piece from remainingPieces
           const updatedRemainingPieces = remainingPieces.filter(
             (id) => piece.id !== id
           );
 
-          // place next piece
-          placePiece({
-            allPieces,
-            remainingPieces: updatedRemainingPieces,
-            boardStateGrid: updatedBoardStateGrid,
-            solutionPieces: updatedSolutionPieces,
-          });
+          if (!hasUnfillableCells(updatedBoardGrid)) {
+            // console.log("Piece placed", {
+            //   id: piece.id,
+            //   pieceOrientation,
+            //   pieceOverCells,
+            // });
+            // console.log("Piece placed");
+            // printShape(flippedShape);
+            // printBoard(updatedBoardGrid);
+
+            // place next piece
+            placePiece({
+              allPieces,
+              remainingPieces: updatedRemainingPieces,
+              boardGrid: updatedBoardGrid,
+              solutionPieces: updatedSolutionPieces,
+              previousAvailableCell: [...nextAvailableCell],
+            });
+          }
         }
-        console.log("piece not placeable", {pieceId, pieceOrientation}); 
       }
     });
+    // console.log("Piece not placeable: ", pieceId);
   });
 };
 
-const printBoard = (boardStateGrid: [number][]) => {
+const printBoard = (boardStateGrid: number[][]) => {
+  console.log("boardStateGrid:");
   boardStateGrid.forEach((row) => {
-    console.log(row);
+    console.log(row.join(" "));
   });
-}
+  console.log(" ");
+};
+
+const printShape = (shape: number[][]) => {
+  console.log("Piece shape:");
+  shape.forEach((row) => {
+    console.log(row.join(" "));
+  });
+  console.log(" ");
+};
+
+/**
+ * Check if there are any cells that are not filled in but are surrounded by filled in cells
+ */
+const hasUnfillableCells = (grid: number[][]) => {
+  return grid.some((row, y) =>
+    row.some((cell, x) => {
+      return (
+        cell === 0 &&
+        getSurroundingCells(grid, x, y).every(([x, y]) => grid[y][x] === 1)
+      );
+    })
+  );
+};
+
+/**
+ * Get the grid position of the cells that are above below and to the left and right of the cell
+ */
+
+const getSurroundingCells = (
+  grid: number[][],
+  x: number,
+  y: number
+): [number, number][] => {
+  const surroundingCells: [number, number][] = [];
+
+  if (x > 0) {
+    surroundingCells.push([x - 1, y]);
+  }
+  if (y > 0) {
+    surroundingCells.push([x, y - 1]);
+  }
+  if (x < grid[0].length - 1) {
+    surroundingCells.push([x + 1, y]);
+  }
+  if (y < grid.length - 1) {
+    surroundingCells.push([x, y + 1]);
+  }
+
+  return surroundingCells;
+};
 
 generate();
