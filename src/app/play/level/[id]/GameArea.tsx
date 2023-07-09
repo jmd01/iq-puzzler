@@ -1,7 +1,7 @@
 "use client";
-import { Board } from "./Board";
-import Logo from "./Logo";
-import { Pieces } from "./Pieces";
+import { Board } from "../components/Board";
+import Logo from "../components/Logo";
+import { Pieces } from "../components/Pieces";
 import {
   useRef,
   useState,
@@ -21,30 +21,17 @@ import {
   isActivePieceOverBoard,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
-} from "./utils";
-import type { GameState, Piece, PlacedPiece, PreviewPiece } from "./types";
-import { AnimatedBackground } from "../AnimatedBackground";
-import gameAreaStyles from "./gameArea.module.css";
-import * as twStyles from "./styles";
+} from "../utils/utils";
+import type { GameState, Piece, PlacedPiece, PreviewPiece, GameAreaDragState } from "../types";
+import { AnimatedBackground } from "../components/AnimatedBackground";
+import gameAreaStyles from "../styles/gameArea.module.css";
+import * as twStyles from "../styles/styles";
 import { LevelComplete } from "./LevelComplete";
 import {
   addPieceToBoard,
   removePieceFromBoard,
   generateGameState,
-} from "./sharedUtils";
-
-export type GameAreaDragState = {
-  isMouseDown: boolean;
-  isDragging: boolean;
-  activePieceId?: Piece["id"];
-  onMouseDownPosition?: { x: number; y: number };
-  dragPosition?: { x: number; y: number };
-  /**
-   *  Render a preview of where the active piece will drop on the board.
-   * Will only exist if the current position of the piece is placeble
-   */
-  previewPiece?: PreviewPiece;
-};
+} from "../utils/sharedUtils";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,
@@ -316,7 +303,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           );
           setGameState({
             grid: updatedGrid,
-            complete: true,
+            complete,
           });
         }
       } else {
@@ -414,7 +401,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         ref={activePieceRef}
         boardBounds={boardBounds}
       />
-      {!gameState.complete ? <LevelComplete /> : null}
+      {gameState.complete ? <LevelComplete /> : null}
     </div>
   );
 };

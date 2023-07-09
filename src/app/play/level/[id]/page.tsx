@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { GameArea } from "./GameArea";
-import { PieceData, piecesDataSchema } from "./types";
-import { calcPlacedPosition } from "./utils";
+import { PieceData, piecesDataSchema } from "../types";
+import { calcPlacedPosition } from "../utils/utils";
 
 export async function generateStaticParams() {
   const levels = await prisma.level.findMany();

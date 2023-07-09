@@ -1,4 +1,4 @@
-import { Difficulty } from "../src/app/play/[id]/types";
+import { Difficulty } from "../src/app/play/level/types";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

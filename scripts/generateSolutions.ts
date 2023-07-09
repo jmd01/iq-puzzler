@@ -5,7 +5,7 @@ import {
   getPieceOverCells,
   getRotatedAndFlippedShape,
   nestedCopy,
-} from "../src/app/play/[id]/sharedUtils";
+} from "../src/app/play/level/utils/sharedUtils";
 import { PrismaClient, SolutionPiece } from "@prisma/client";
 import { pieceOrientations } from "./pieceOrientations";
 import { connect } from "http2";

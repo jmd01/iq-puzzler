@@ -1,4 +1,4 @@
-import { GameState, Piece, PlacedPiece, PreviewPiece } from "./types";
+import { GameState, Piece, PlacedPiece, PreviewPiece } from "../types";
 
 /**
  * Simple utility for deep copying an array.

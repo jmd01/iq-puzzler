@@ -8,18 +8,18 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { GameAreaDragState } from "./GameArea";
-import type { Piece as PieceType } from "./types";
+import { GameAreaDragState } from "../types";
+import type { Piece as PieceType } from "../types";
 import {
   getDecimalPart,
   isActivePieceOverBoard,
   mergeRefs,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
-} from "./utils";
+} from "../utils/utils";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
-import * as twStyles from "./styles";
+import * as twStyles from "../styles/styles";
 
 export type PiecesProps = {
   pieces: PieceType[];

@@ -1,9 +1,9 @@
 import { RefObject } from "react";
-import { PlacedPiece, PreviewPiece } from "./types";
+import { PlacedPiece, PreviewPiece } from "../types";
 import { Piece } from "./Pieces";
 import { Animate } from "react-simple-animate";
-import * as twStyles from "./styles";
-import boardStyles from "./board.module.css";
+import * as twStyles from "../styles/styles";
+import boardStyles from "../styles/board.module.css";
 import classnames from "classnames";
 
 export const Board = ({

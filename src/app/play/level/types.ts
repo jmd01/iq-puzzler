@@ -75,3 +75,16 @@ export type GameState = {
 };
 
 export type Difficulty = "EASY" | "INTERMEDIATE" | "EXPERT" | "WIZARD";
+
+export type GameAreaDragState = {
+  isMouseDown: boolean;
+  isDragging: boolean;
+  activePieceId?: Piece["id"];
+  onMouseDownPosition?: { x: number; y: number };
+  dragPosition?: { x: number; y: number };
+  /**
+   *  Render a preview of where the active piece will drop on the board.
+   * Will only exist if the current position of the piece is placeble
+   */
+  previewPiece?: PreviewPiece;
+};

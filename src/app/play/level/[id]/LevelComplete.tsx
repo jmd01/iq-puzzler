@@ -1,6 +1,6 @@
 import { Animate } from "react-simple-animate";
-import * as twStyles from "./styles";
-import { sigmarOne } from "../../fonts";
+import * as twStyles from "../styles/styles";
+import { sigmarOne } from "../../../fonts";
 import classnames from "classnames";
 
 export const LevelComplete = () => {

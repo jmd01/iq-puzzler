@@ -1,12 +1,10 @@
 import { getRotatedAndFlippedShape } from "./sharedUtils";
-import { boardCell } from "./styles";
 import type {
   GameState,
   Piece,
-  PlacedPiece,
   PreviewPiece,
   Rotation,
-} from "./types";
+} from "../types";
 
 export const CELL_SIZE = 64;
 export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;

@@ -1,6 +1,6 @@
-import { HTMLProps, MouseEventHandler, SVGProps } from "react";
-import { Piece } from "./types";
-import { CELL_SIZE, calcRadialGradient, calcShadow } from "./utils";
+import { HTMLProps, MouseEventHandler } from "react";
+import { Piece } from "../types";
+import { CELL_SIZE, calcRadialGradient, calcShadow } from "../utils/utils";
 
 export const PieceDiv = ({
   onClick,

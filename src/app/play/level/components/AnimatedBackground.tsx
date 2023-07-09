@@ -1,5 +1,5 @@
 import { AnimateKeyframes } from "react-simple-animate";
-import animatedBackgroundStyles from "./animatedBackground.module.css";
+import animatedBackgroundStyles from "../styles/animatedBackground.module.css";
 
 export const AnimatedBackground = () => (
   <>
