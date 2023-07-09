@@ -73,3 +73,5 @@ export type GameState = {
   grid: number[][];
   complete: boolean;
 };
+
+export type Difficulty = "EASY" | "INTERMEDIATE" | "EXPERT" | "WIZARD";

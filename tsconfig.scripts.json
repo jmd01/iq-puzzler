@@ -21,5 +21,5 @@
     "baseUrl": ".",
     "noEmit": false
   },
-  "include": ["./scripts/*.ts", "./src/app/play/[id]/sharedUtils.ts"]
+  "include": ["./scripts/*.ts", "./src/app/play/[id]/sharedUtils.ts", "./src/app/play/[id]/types.ts"]
 }
