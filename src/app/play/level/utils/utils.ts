@@ -1,10 +1,5 @@
 import { getRotatedAndFlippedShape } from "./sharedUtils";
-import type {
-  GameState,
-  Piece,
-  PreviewPiece,
-  Rotation,
-} from "../types";
+import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
 
 export const CELL_SIZE = 64;
 export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;
@@ -77,7 +72,8 @@ export function isActivePieceOverBoard(
 function calcRotatedInitialPiecePosition(
   pieceBounds: { width: number; height: number },
   pieceRotation: Piece["rotation"],
-  pieceInitialPosition: Piece["initialPosition"]
+  pieceInitialPosition: Piece["initialPosition"],
+  isPreplaced: boolean
 ): Piece["initialPosition"] {
   const isRotatedSideways =
     getDecimalPart(pieceRotation) === 25 ||
@@ -87,18 +83,33 @@ function calcRotatedInitialPiecePosition(
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
     const offsetY = (pieceBounds.width - pieceBounds.height) / 2;
 
-    const offsetInitialPositionByRotation =
-      pieceBounds.height > pieceBounds.width
+    if (isPreplaced) {
+      return pieceBounds.height > pieceBounds.width
+        ? {
+            x: pieceInitialPosition.x - Math.abs(offsetX),
+            y: pieceInitialPosition.y + Math.abs(offsetY),
+          }
+        : {
+            x: pieceInitialPosition.x + Math.abs(offsetX),
+            y: pieceInitialPosition.y - Math.abs(offsetY),
+          };
+    } else {
+      console.log(
+        pieceBounds.height > pieceBounds.width,
+        pieceBounds.height,
+        pieceBounds.width
+      );
+
+      return pieceBounds.height > pieceBounds.width
         ? {
             x: pieceInitialPosition.x + offsetX,
             y: pieceInitialPosition.y + offsetY,
           }
         : {
-            x: pieceInitialPosition.x - offsetX,
-            y: pieceInitialPosition.y - offsetY,
+            x: pieceInitialPosition.x + offsetX,
+            y: pieceInitialPosition.y + offsetY,
           };
-
-    return offsetInitialPositionByRotation;
+    }
   }
 
   return pieceInitialPosition;
@@ -314,7 +325,8 @@ export function calcPlacedPosition(
   const pieceInitialPosition = calcRotatedInitialPiecePosition(
     pieceBounds,
     piece.rotation,
-    piece.initialPosition
+    piece.initialPosition,
+    !!isPreplaced
   );
 
   const onloadAnimationOffset = isPreplaced ? 0 : 20;
@@ -502,4 +514,3 @@ export function getDecimalPart(num: number) {
   const decimalStr = num.toString().split(".")[1];
   return Number(decimalStr);
 }
-

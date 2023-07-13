@@ -1,29 +1,57 @@
 import { Difficulty } from "../src/app/play/level/types";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Solution, SolutionPiece } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 const getSolutions = async () => {
   return await prisma.solution.findMany({
-    include: {
-      solutionPieces: true,
-    },
+    // include: {
+    //   solutionPieces: true,
+    // },
   });
 };
 
+type SolutionWithPieces = Solution & {
+  // solutionPieces: SolutionPiece[];
+  difficulty: Difficulty;
+};
 /**
  * Create levels from all the solutions
  */
 getSolutions().then((solutions) => {
-  solutions.map(async (solution) => {
-    const difficulty = getDifficulty(solution.id);
+  const groupedSolutions = solutions.reduce<
+    Record<Difficulty, SolutionWithPieces[]>
+  >(
+    (acc, item) => {
+      const difficulty = getDifficulty(item.id);
+      return {
+        ...acc,
+        [difficulty]: [...acc[difficulty], { ...item, difficulty }],
+      };
+    },
+    {
+      EASY: [],
+      INTERMEDIATE: [],
+      EXPERT: [],
+      WIZARD: [],
+    }
+  );
+
+  const sortedSolutions = [
+    ...groupedSolutions.EASY,
+    ...groupedSolutions.INTERMEDIATE,
+    ...groupedSolutions.EXPERT,
+    ...groupedSolutions.WIZARD,
+  ];
+
+  sortedSolutions.map(async (solution, index) => {
     return await prisma.level.create({
       data: {
-        id: solution.id,
-        difficulty,
+        id: index + 1,
+        difficulty: solution.difficulty,
         solutionId: solution.id,
         solutionPieces: {
-          connect: getRandomSolutionPieces(difficulty).map((id) => ({
+          connect: getRandomSolutionPieces(solution.difficulty).map((id) => ({
             id,
           })),
         },
@@ -71,6 +99,6 @@ const getRandomSolutionPieces = (difficulty: Difficulty): number[] => {
     case "WIZARD":
       return shuffle().slice(0, 2);
     default:
-      throw new Error("Invalid difficulty");
+      throw new Error("Invalid difficulty:" + difficulty);
   }
 };

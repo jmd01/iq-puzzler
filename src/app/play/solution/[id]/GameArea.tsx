@@ -1,15 +1,15 @@
 "use client";
-import { Board } from "../../components/Board";
-import Logo from "../../components/Logo";
+import { Board } from "../../level/components/Board";
+import Logo from "../../level/components/Logo";
 import {
   useRef,
   useState,
   useEffect,
 } from "react";
-import type { Piece, PlacedPiece } from "../../types";
-import { AnimatedBackground } from "../../components/AnimatedBackground";
-import gameAreaStyles from "../../styles/gameArea.module.css";
-import * as twStyles from "../../styles/styles";
+import type { Piece, PlacedPiece } from "../../level/types";
+import { AnimatedBackground } from "../../level/components/AnimatedBackground";
+import gameAreaStyles from "../../level/styles/gameArea.module.css";
+import * as twStyles from "../../level/styles/styles";
 
 type GameAreaProps = {
   placedPieces: PlacedPiece[];

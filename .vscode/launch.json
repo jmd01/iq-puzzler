@@ -25,10 +25,16 @@
         }
       },
       {
-        "name": "Next.js: debug scripts",
+        "name": "Next.js: debug generateSolutions",
         "type": "node-terminal",
         "request": "launch",
         "command": "pnpm generateSolutions"
+      },
+      {
+        "name": "Next.js: debug createLevels",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "pnpm createLevels"
       },
 
     ]
