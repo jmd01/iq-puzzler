@@ -32,6 +32,7 @@ import {
   removePieceFromBoard,
   generateGameState,
 } from "../utils/sharedUtils";
+import ConfettiExplosion from "react-confetti-explosion";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,

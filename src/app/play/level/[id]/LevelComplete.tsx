@@ -10,6 +10,7 @@ import {
   faForwardStep,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Confetti } from "./Confetti";
 
 export const LevelComplete = ({ isVisible }: { isVisible: boolean }) => {
   return (
@@ -20,6 +21,11 @@ export const LevelComplete = ({ isVisible }: { isVisible: boolean }) => {
       }}
       className={twStyles.levelCompleteWrapper}
     >
+      {isVisible && (
+        <div style={{ height: "100%", width: "100%", position: "absolute" }}>
+          <Confetti />
+        </div>
+      )}
       <div className={twStyles.levelCompleteContainer}>
         <Animate
           play={isVisible}
@@ -62,7 +68,7 @@ export const LevelComplete = ({ isVisible }: { isVisible: boolean }) => {
                   end={{
                     transform: "scale(1) translateY(0px) rotate(0deg)",
                   }}
-                    easeType="ease-out"
+                  easeType="ease-out"
                 >
                   <Image src={"/star.svg"} width={100} height={96} alt="star" />
                 </Animate>
