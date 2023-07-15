@@ -303,7 +303,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           );
           setGameState({
             grid: updatedGrid,
-            complete,
+            complete: true,
           });
         }
       } else {
@@ -401,7 +401,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         ref={activePieceRef}
         boardBounds={boardBounds}
       />
-      {gameState.complete ? <LevelComplete /> : null}
+      <LevelComplete isVisible={gameState.complete} /> 
     </div>
   );
 };
