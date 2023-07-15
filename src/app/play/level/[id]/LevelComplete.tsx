@@ -21,11 +21,7 @@ export const LevelComplete = ({ isVisible }: { isVisible: boolean }) => {
       }}
       className={twStyles.levelCompleteWrapper}
     >
-      {isVisible && (
-        <div style={{ height: "100%", width: "100%", position: "absolute" }}>
-          <Confetti />
-        </div>
-      )}
+      {isVisible && <Confetti />}
       <div className={twStyles.levelCompleteContainer}>
         <Animate
           play={isVisible}

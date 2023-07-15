@@ -32,7 +32,6 @@ import {
   removePieceFromBoard,
   generateGameState,
 } from "../utils/sharedUtils";
-import ConfettiExplosion from "react-confetti-explosion";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,
@@ -304,7 +303,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           );
           setGameState({
             grid: updatedGrid,
-            complete: true,
+            complete,
           });
         }
       } else {
