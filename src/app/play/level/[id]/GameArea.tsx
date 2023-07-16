@@ -22,7 +22,13 @@ import {
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
 } from "../utils/utils";
-import type { GameState, Piece, PlacedPiece, PreviewPiece, GameAreaDragState } from "../types";
+import type {
+  GameState,
+  Piece,
+  PlacedPiece,
+  PreviewPiece,
+  GameAreaDragState,
+} from "../types";
 import { AnimatedBackground } from "../components/AnimatedBackground";
 import gameAreaStyles from "../styles/gameArea.module.css";
 import * as twStyles from "../styles/styles";
@@ -372,36 +378,38 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
   }, []);
 
   return (
-    <div
-      ref={gameAreaRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onClick={handleMouseUp}
-      onContextMenu={onContextMenu}
-      className={gameAreaStyles.gameArea}
-      style={{
-        width: gameAreaDims.width,
-        height: gameAreaDims.height,
-      }}
-    >
-      <AnimatedBackground />
-      <div className={twStyles.logoContainer}>
-        <Logo fill="#3a287a" width={80} />
+    <>
+      <div
+        ref={gameAreaRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onClick={handleMouseUp}
+        onContextMenu={onContextMenu}
+        className={gameAreaStyles.gameArea}
+        style={{
+          width: gameAreaDims.width,
+          height: gameAreaDims.height,
+        }}
+      >
+        <AnimatedBackground />
+        <div className={twStyles.logoContainer}>
+          <Logo fill="#3a287a" width={80} />
+        </div>
+        <Board
+          boardRef={boardRef}
+          previewPiece={state.previewPiece}
+          prePlacedPieces={prePlacedPieces}
+        />
+        <Pieces
+          pieces={pieces}
+          setPieces={setPieces}
+          activePieceId={state.activePieceId}
+          state={state}
+          ref={activePieceRef}
+          boardBounds={boardBounds}
+        />
       </div>
-      <Board
-        boardRef={boardRef}
-        previewPiece={state.previewPiece}
-        prePlacedPieces={prePlacedPieces}
-      />
-      <Pieces
-        pieces={pieces}
-        setPieces={setPieces}
-        activePieceId={state.activePieceId}
-        state={state}
-        ref={activePieceRef}
-        boardBounds={boardBounds}
-      />
-      <LevelComplete isVisible={gameState.complete} /> 
-    </div>
+      <LevelComplete isVisible={gameState.complete} />
+    </>
   );
 };

@@ -11,8 +11,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Confetti } from "./Confetti";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { memo } from "react";
 
-export const LevelComplete = ({ isVisible }: { isVisible: boolean }) => {
+export const LevelComplete = memo(function LevelComplete({
+  isVisible,
+}: {
+  isVisible: boolean;
+}) {
+  const params = useParams();
+
   return (
     <div
       style={{
@@ -122,40 +131,43 @@ export const LevelComplete = ({ isVisible }: { isVisible: boolean }) => {
                 style={{ background: "#d500ff" }}
                 className={twStyles.levelCompleteIconWrapper}
               >
-                <div
+                <Link
+                  href="/"
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
                 >
                   <FontAwesomeIcon icon={faHome} />
-                </div>
+                </Link>
               </div>
               <div
                 style={{ background: "#00deff" }}
                 className={twStyles.levelCompleteIconWrapper}
               >
-                <div
+                <button
+                  onClick={() => window.location.reload()}
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
                 >
                   <FontAwesomeIcon icon={faRotate} />
-                </div>
+                </button>
               </div>
               <div
                 style={{ background: "#fe0665" }}
                 className={twStyles.levelCompleteIconWrapper}
               >
-                <div
+                <Link
+                  href={`/play/level/${parseInt(params.id) + 1}`}
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
                 >
                   <FontAwesomeIcon icon={faForwardStep} />
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -163,4 +175,4 @@ export const LevelComplete = ({ isVisible }: { isVisible: boolean }) => {
       </div>
     </div>
   );
-};
+});
