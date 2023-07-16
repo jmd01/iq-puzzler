@@ -14,11 +14,28 @@ import { Confetti } from "./Confetti";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { memo } from "react";
+import {
+  addYears,
+  addMonths,
+  addDays,
+  addHours,
+  addMinutes,
+  differenceInYears,
+  differenceInMonths,
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+} from "date-fns";
 
 export const LevelComplete = memo(function LevelComplete({
   isVisible,
+  moves,
+  startDate,
 }: {
   isVisible: boolean;
+  moves: number;
+  startDate: Date;
 }) {
   const params = useParams();
 
@@ -119,8 +136,10 @@ export const LevelComplete = memo(function LevelComplete({
                   levelCompleteStyles.levelCompleteStatsValue
                 )}
               >
-                <div>50</div>
-                <div>4d 23h 15m 2s</div>
+                <div>{moves}</div>
+                <div>
+                  {completionTime(startDate)}
+                </div>
               </div>
             </div>
             <div
@@ -176,3 +195,29 @@ export const LevelComplete = memo(function LevelComplete({
     </div>
   );
 });
+
+const completionTime = (startDate: Date) => {
+  const y = new Date();
+  var x = startDate;
+
+  var temp;
+  temp = differenceInYears(y, x);
+  var result = temp ? temp + "y " : "";
+  x = addYears(x, temp);
+  temp = differenceInMonths(y, x);
+  result = temp ? result + temp + "m " : result;
+  x = addMonths(x, temp);
+  temp = differenceInDays(y, x);
+  result = temp ? result + temp + "d " : result;
+  x = addDays(x, temp);
+  temp = differenceInHours(y, x);
+  result = temp ? result + temp + "h " : result;
+  x = addHours(x, temp);
+  temp = differenceInMinutes(y, x);
+  result = temp ? result + temp + "m " : result;
+  x = addMinutes(x, temp);
+  temp = differenceInSeconds(y, x);
+  return result + temp + "s";
+};
+
+

@@ -7,6 +7,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { GameAreaDragState } from "../types";
 import type { Piece as PieceType } from "../types";
@@ -20,6 +21,7 @@ import {
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
 import * as twStyles from "../styles/styles";
+import { is } from "date-fns/locale";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -89,6 +91,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   } = piece;
   const isDragging = isActivePiece && !!dragPosition;
   const isPlaced = !!placedInCells;
+  const [isHovered, setIsHovered] = useState(false);
 
   const draggingTransform = {
     x: (dragPosition?.x ?? 0) - onMouseDownPosition.x,
@@ -171,6 +174,8 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const timeoutRef = useRef<number | undefined>(undefined);
+
   return (
     <div
       ref={mergeRefs([activePieceRef, ref])}
@@ -178,6 +183,8 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         position: piece.isLocked ? "absolute" : "relative",
         ...style,
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Animate
         key={piece.id}
@@ -197,6 +204,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         <PieceDiv
           onClick={onClickPath}
           hasBoxShadow={!isPlaced}
+          hasOutline={!isPlaced && isHovered}
           opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
           id={id.toString()}
           color={color}
@@ -206,6 +214,18 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
           rotation={rotation}
           isFlippedX={isFlippedX}
           isFlippedY={isFlippedY}
+          onMouseEnter={() => {
+            clearTimeout(timeoutRef.current);
+            setIsHovered(true);
+          }}
+          onMouseLeave={() => {
+            if (!isPlaced) {
+              timeoutRef.current = window.setTimeout(
+                () => setIsHovered(false),
+                100
+              );
+            }
+          }}
         />
       </Animate>
     </div>

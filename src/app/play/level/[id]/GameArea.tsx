@@ -196,6 +196,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       );
       if (activePiece && activePiece.placedInCells) {
         setGameState({
+          ...gameState,
           complete: false,
           grid: removePieceFromBoard(gameState.grid, activePiece.placedInCells),
         });
@@ -308,8 +309,10 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
             row.every((cell) => cell)
           );
           setGameState({
+            ...gameState,
             grid: updatedGrid,
             complete,
+            moves: gameState.moves + 1,
           });
         }
       } else {
@@ -340,6 +343,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
                 )
           );
           setGameState({
+            ...gameState,
             complete: false,
             grid: removePieceFromBoard(
               gameState.grid,
@@ -409,7 +413,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           boardBounds={boardBounds}
         />
       </div>
-      <LevelComplete isVisible={gameState.complete} />
+      <LevelComplete moves={gameState.moves} startDate={gameState.startDate} isVisible={gameState.complete} />
     </>
   );
 };

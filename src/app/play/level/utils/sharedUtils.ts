@@ -73,6 +73,8 @@ export function generateGameState(
   return {
     grid,
     complete: false,
+    moves: 0,
+    startDate: new Date(),
   };
 }
 

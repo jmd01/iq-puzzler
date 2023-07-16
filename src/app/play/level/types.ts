@@ -72,6 +72,8 @@ export type PreviewPiece = {
 export type GameState = {
   grid: number[][];
   complete: boolean;
+  moves: number;
+  startDate: Date;
 };
 
 export type Difficulty = "EASY" | "INTERMEDIATE" | "EXPERT" | "WIZARD";
