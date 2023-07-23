@@ -1,7 +1,7 @@
 import { test, expect, describe } from "vitest";
-import { getRotatedAndFlippedShape } from "../utils/sharedUtils";
+import { getPlacedRotatedAndFlippedShape } from "../utils/sharedUtils";
 
-describe("getRotatedAndFlippedShape", () => {
+describe("getPlacedRotatedAndFlippedShape", () => {
   test("pieceIsRotated 0.75", () => {
     const pieceShape = [
       [0, 1],
@@ -9,7 +9,7 @@ describe("getRotatedAndFlippedShape", () => {
       [1, 0],
     ];
 
-    const shape = getRotatedAndFlippedShape(pieceShape, 0.75, false, false);
+    const shape = getPlacedRotatedAndFlippedShape(pieceShape, 0.75, false, false);
     expect(shape).toEqual([
       [1, 1, 0],
       [0, 1, 1],

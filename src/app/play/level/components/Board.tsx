@@ -1,6 +1,6 @@
 import { RefObject } from "react";
 import { PlacedPiece, PreviewPiece } from "../types";
-import { Piece } from "./Pieces";
+import { PreplacedPiece } from "./Pieces";
 import { Animate } from "react-simple-animate";
 import * as twStyles from "../styles/styles";
 import boardStyles from "../styles/board.module.css";
@@ -35,11 +35,10 @@ export const Board = ({
         >
           <div className="relative">
             {prePlacedPieces.map((piece, i) => (
-              <Piece
+              <PreplacedPiece
                 key={piece.id}
                 index={i}
                 piece={piece}
-                setPieces={() => {}}
               />
             ))}
             <div className={twStyles.boardCellWrapper}>

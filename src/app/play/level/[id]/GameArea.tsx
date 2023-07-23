@@ -226,10 +226,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
             const previewPiece = boardsCellsCoveredByPiece(
               pieceBounds,
               boardBounds,
-              activePiece.shape,
-              activePiece.rotation,
-              activePiece.isFlippedX,
-              activePiece.isFlippedY,
+              activePiece.currentShape,
               gameState.grid
             );
             previewPiece &&
@@ -413,7 +410,11 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           boardBounds={boardBounds}
         />
       </div>
-      <LevelComplete moves={gameState.moves} startDate={gameState.startDate} isVisible={gameState.complete} />
+      <LevelComplete
+        moves={gameState.moves}
+        startDate={gameState.startDate}
+        isVisible={gameState.complete}
+      />
     </>
   );
 };

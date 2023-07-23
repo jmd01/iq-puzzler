@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
 import { GameArea } from "./GameArea";
 import { PieceData, piecesDataSchema } from "../../level/types";
-import { calcPlacedPosition } from "../../level/utils/utils";
-import { Level } from "@prisma/client";
+import { calcPlacedPosition, isRotatedSideways } from "../../level/utils/utils";
+import { getPlacedRotatedAndFlippedShape } from "../../level/utils/sharedUtils";
 
 export async function generateStaticParams() {
   const levels = await prisma.level.findMany();
@@ -48,7 +48,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           ...solutionPiece,
           placedInCells: placedInCellsParsed,
           ...piece,
-          layer: piece.id,  
+          layer: piece.id,
           shape: shapeParsed,
         };
       }
@@ -58,94 +58,69 @@ export default async function Page({ params }: { params: { id: string } }) {
   const result = piecesDataSchema.safeParse(allPieces);
 
   if (result.success) {
-    // Extract the preplaced piece for this level from all solution pieces
-    const placedPieces = result.data
-      // .filter((piece) =>
-      //   level?.solutionPieces?.find(
-      //     (solutionPiece) => solutionPiece.pieceId === piece.id
-      //   )
-      // )
-      .map(
-        ({
+    const placedPieces = result.data.map(
+      ({
+        id,
+        layer,
+        shape,
+        height,
+        width,
+        d,
+        color,
+        rotation,
+        isFlippedX,
+        isFlippedY,
+        placedInCells,
+      }) => {
+        const previewPiece = placedInCells.reduce(
+          (acc, [cellX, cellY]) => {
+            return {
+              x: cellX < acc.x ? cellX : acc.x,
+              y: cellY < acc.y ? cellY : acc.y,
+            };
+          },
+          { x: 10, y: 5 }
+        );
+
+        const currentShape = getPlacedRotatedAndFlippedShape(
+          shape,
+          rotation,
+          isFlippedX,
+          isFlippedY
+        );
+
+        return {
           id,
           layer,
           shape,
+          currentShape,
           height,
           width,
           d,
           color,
+          initialPosition: { x: 0, y: 0 },
+          position: calcPlacedPosition(
+            {
+              rotation: 0,
+              initialPosition: { x: 0, y: 0 },
+            },
+            isRotatedSideways(rotation) ? { height, width } : { width, height },
+            { top: 0, left: 0 },
+            previewPiece,
+            true
+          ),
+          isActivePiece: false,
+          droppedOnBoard: true,
+          isLocked: true,
           rotation,
           isFlippedX,
           isFlippedY,
           placedInCells,
-        }) => {
-          const previewPiece = placedInCells.reduce(
-            (acc, [cellX, cellY]) => {
-              return {
-                x: cellX < acc.x ? cellX : acc.x,
-                y: cellY < acc.y ? cellY : acc.y,
-              };
-            },
-            { x: 10, y: 5 }
-          );
-          return {
-            id,
-            layer,
-            shape,
-            height,
-            width,
-            d,
-            color,
-            initialPosition: { x: 0, y: 0 },
-            position: calcPlacedPosition(
-              {
-                rotation,
-                initialPosition: { x: 0, y: 0 },
-              },
-              { width, height },
-              { top: 0, left: 0 },
-              previewPiece,
-              true
-            ),
-            isActivePiece: false,
-            droppedOnBoard: true,
-            isLocked: true,
-            rotation,
-            isFlippedX,
-            isFlippedY,
-            placedInCells,
-          };
-        }
-      );
-    // Extract the game pieces for this levle and add the default values
-    // const unplacedPieces = result.data
-    //   .filter(
-    //     (piece) =>
-    //       !level?.solutionPieces?.find(
-    //         (solutionPiece) => solutionPiece.pieceId === piece.id
-    //       )
-    //   )
-    //   .map(({ id, shape, height, width, d, color }) => ({
-    //     id,
-    //     layer: id,
-    //     shape,
-    //     height,
-    //     width,
-    //     d,
-    //     color,
-    //     initialPosition: { x: 0, y: 0 },
-    //     position: { x: 0, y: 0 },
-    //     isActivePiece: false,
-    //     droppedOnBoard: false,
-    //     isLocked: false,
-    //     rotation: 0,
-    //     isFlippedX: false,
-    //     isFlippedY: false,
-    //   }));
-
-    return (
-      <GameArea placedPieces={placedPieces} unplacedPieces={[]} />
+        };
+      }
     );
+
+    return <GameArea placedPieces={placedPieces} unplacedPieces={[]} />;
   } else {
     return <>Error</>;
   }

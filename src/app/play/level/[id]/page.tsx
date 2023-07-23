@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import { GameArea } from "./GameArea";
 import { PieceData, piecesDataSchema } from "../types";
-import { calcPlacedPosition } from "../utils/utils";
+import { calcPlacedPosition, isRotatedSideways } from "../utils/utils";
+import { getPlacedRotatedAndFlippedShape } from "../utils/sharedUtils";
 
 export async function generateStaticParams() {
   const levels = await prisma.level.findMany();
@@ -47,7 +48,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           ...solutionPiece,
           placedInCells: placedInCellsParsed,
           ...piece,
-          layer: piece.id,  
+          layer: piece.id,
           shape: shapeParsed,
         };
       }
@@ -87,10 +88,19 @@ export default async function Page({ params }: { params: { id: string } }) {
             },
             { x: 10, y: 5 }
           );
+
+          const currentShape = getPlacedRotatedAndFlippedShape(
+            shape,
+            rotation,
+            isFlippedX,
+            isFlippedY
+          );
+
           return {
             id,
             layer,
             shape,
+            currentShape,
             height,
             width,
             d,
@@ -98,10 +108,12 @@ export default async function Page({ params }: { params: { id: string } }) {
             initialPosition: { x: 0, y: 0 },
             position: calcPlacedPosition(
               {
-                rotation,
+                rotation: 0,
                 initialPosition: { x: 0, y: 0 },
               },
-              { width, height },
+              isRotatedSideways(rotation)
+                ? { height, width }
+                : { width, height },
               { top: 0, left: 0 },
               previewPiece,
               true
@@ -128,6 +140,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         id,
         layer: id,
         shape,
+        currentShape: shape,
         height,
         width,
         d,

@@ -3,12 +3,11 @@ import {
   generateGameState,
   getIsPiecePlaceable,
   getPieceOverCells,
-  getRotatedAndFlippedShape,
+  getPlacedRotatedAndFlippedShape,
   nestedCopy,
 } from "../src/app/play/level/utils/sharedUtils";
 import { PrismaClient, SolutionPiece } from "@prisma/client";
 import { pieceOrientations } from "./pieceOrientations";
-import { connect } from "http2";
 
 type GeneratedSolutionPiece = Omit<
   SolutionPiece,
@@ -28,7 +27,6 @@ export const getNextAvailableCell = (
 ): [number, number] | false => {
   let x = starting[0];
   let y = starting[1];
-  // console.log({ x, y });
 
   for (y; y < grid.length; y++) {
     for (x; x < grid[0].length; x++) {
@@ -43,7 +41,6 @@ export const getNextAvailableCell = (
 
 const BOARD_SIZE = [11, 5];
 const boardStateGrid = generateGameState(BOARD_SIZE[0], BOARD_SIZE[1], []).grid;
-const solutions: GeneratedSolutionPiece[][] = [];
 
 const generate = async () => {
   const allPieces = (await getPieces()).map(({ id, shape }) => ({
@@ -76,15 +73,11 @@ const placePiece = async ({
     boardGrid,
     previousAvailableCell
   );
-  // console.log({ nextAvailableCell, remainingPieces });
-  // printBoard(boardGrid);
 
   if (!nextAvailableCell) {
     // found a solution
-    // solutions.push(solutionPieces);
     console.count("Found a solution!");
-    // console.log({ nextAvailableCell, remainingPieces });
-    // printBoard(boardGrid);
+
     await prisma.solution.create({
       data: {
         solutionPieces: {
@@ -113,11 +106,8 @@ const placePiece = async ({
       throw new Error(`Piece ${pieceId} not found`);
     }
 
-    // console.log("Current piece: ", pieceId);
-    // printShape(piece.shape);
-
     pieceOrientations[pieceId].forEach((pieceOrientation) => {
-      const flippedShape = getRotatedAndFlippedShape(
+      const flippedShape = getPlacedRotatedAndFlippedShape(
         piece.shape,
         pieceOrientation.rotation,
         pieceOrientation.isFlippedX,
@@ -148,15 +138,6 @@ const placePiece = async ({
           );
 
           if (!hasUnfillableCells(updatedBoardGrid)) {
-            // console.log("Piece placed", {
-            //   id: piece.id,
-            //   pieceOrientation,
-            //   pieceOverCells,
-            // });
-            // console.log("Piece placed");
-            // printShape(flippedShape);
-            // printBoard(updatedBoardGrid);
-
             // place next piece
             placePiece({
               allPieces,
@@ -206,7 +187,6 @@ const hasUnfillableCells = (grid: number[][]) => {
 /**
  * Get the grid position of the cells that are above below and to the left and right of the cell
  */
-
 const getSurroundingCells = (
   grid: number[][],
   x: number,

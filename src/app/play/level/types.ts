@@ -45,6 +45,7 @@ export type Piece = Omit<PieceData, "placedInCells"> & {
   /** If piece is pre-placed on board it should not be draggable */
   isLocked: boolean;
   placedInCells?: PreviewPiece["cells"];
+  currentShape: number[][];
 };
 
 export type PlacedPiece = Omit<Piece, "placedInCells"> & {

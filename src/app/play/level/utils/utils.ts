@@ -1,4 +1,4 @@
-import { getRotatedAndFlippedShape } from "./sharedUtils";
+import { getFlippedShape, getRotatedShape } from "./sharedUtils";
 import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
 
 export const CELL_SIZE = 64;
@@ -75,11 +75,7 @@ function calcRotatedInitialPiecePosition(
   pieceInitialPosition: Piece["initialPosition"],
   isPreplaced: boolean
 ): Piece["initialPosition"] {
-  const isRotatedSideways =
-    getDecimalPart(pieceRotation) === 25 ||
-    getDecimalPart(pieceRotation) === 75;
-
-  if (isRotatedSideways) {
+  if (isRotatedSideways(pieceRotation)) {
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
     const offsetY = (pieceBounds.width - pieceBounds.height) / 2;
 
@@ -115,79 +111,8 @@ function calcRotatedInitialPiecePosition(
   return pieceInitialPosition;
 }
 
-/**
- *  Rotate a piece's shape array by Rotation degrees eg Rotate by 0.25 / 90 degrees
- * ```
- *  0 1 0
- *  1 1 1
- *  0 1 0
- *  0 1 0
- * ```
- * becomes
- * ```
- *  0 0 1 0
- *  1 1 1 1
- *  0 0 1 0
- * ```
- *
- *
- */
-// export function getRotatedShape(
-//   pieceShape: Piece["shape"],
-//   pieceRotation: Piece["rotation"]
-// ): Piece["shape"] {
-//   const pieceShapeClone = nestedCopy(pieceShape);
-//   switch (getDecimalPart(pieceRotation)) {
-//     case 0:
-//       return pieceShapeClone;
-//     case 25:
-//       return pieceShapeClone[0].map((_, index) =>
-//         pieceShapeClone.map((row) => row[index]).reverse()
-//       );
-//     case 5:
-//       return [...pieceShapeClone.reverse()].map((row) => row.reverse());
-//     case 75:
-//       return pieceShapeClone[0].map((_, index) =>
-//         pieceShapeClone.map((row) => row[row.length - 1 - index])
-//       );
-//     default:
-//       return pieceShapeClone;
-//   }
-// }
-/**
- *  Flip a piece's shape array by x or y axis, eg flip y axis
- * ```
- *  0 1 0
- *  1 1 1
- *  0 1 0
- *  0 1 0
- * ```
- * becomes
- * ```
- *  0 1 0
- *  0 1 0
- *  1 1 1
- *  0 1 0
- * ```
- *
- *
- */
-// export function getFlippedShape(
-//   pieceShape: Piece["shape"],
-//   pieceIsFlippedX: Piece["isFlippedX"],
-//   pieceIsFlippedY: Piece["isFlippedY"]
-// ): Piece["shape"] {
-//   let flippedShape = nestedCopy(pieceShape);
-
-//   if (pieceIsFlippedX) {
-//     flippedShape = flippedShape.reverse();
-//   }
-//   if (pieceIsFlippedY) {
-//     flippedShape = flippedShape.map((row) => row.reverse());
-//   }
-
-//   return flippedShape;
-// }
+export const isRotatedSideways = (rotation: number) =>
+  getDecimalPart(rotation) === 25 || getDecimalPart(rotation) === 75;
 
 /**
  * When dragging a piece, calculate the cells on the board that a piece will cover if dropped on the board
@@ -196,10 +121,7 @@ function calcRotatedInitialPiecePosition(
 export function boardsCellsCoveredByPiece(
   pieceBounds: DOMRect,
   boardBounds: DOMRect,
-  pieceShape: Piece["shape"],
-  pieceRotation: Piece["rotation"],
-  pieceIsFlippedX: Piece["isFlippedX"],
-  pieceIsFlippedY: Piece["isFlippedY"],
+  pieceCurrentShape: Piece["shape"],
   gameStateGrid: GameState["grid"]
 ): PreviewPiece | undefined {
   const pieceTopRelativeToBoard = Math.max(
@@ -216,17 +138,10 @@ export function boardsCellsCoveredByPiece(
   // The board cell nearest the left side that the dragged piece is over
   const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
 
-  const flippedShape = getRotatedAndFlippedShape(
-    pieceShape,
-    pieceRotation,
-    pieceIsFlippedX,
-    pieceIsFlippedY
-  );
-
   // The index of boards cells that the dragged piece is over
   const pieceOverCells = getPieceOverCells(
     [pieceOverBoardCellX, pieceOverBoardCellY],
-    flippedShape
+    pieceCurrentShape
   );
 
   if (pieceOverCells) {
@@ -242,16 +157,6 @@ export function boardsCellsCoveredByPiece(
     }
   }
 }
-
-// export const getRotatedAndFlippedShape = (
-//   pieceShape: Piece["shape"],
-//   pieceRotation: Piece["rotation"],
-//   pieceIsFlippedX: Piece["isFlippedX"],
-//   pieceIsFlippedY: Piece["isFlippedY"]
-// ) => {
-//   const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
-//   return getFlippedShape(rotatedShape, pieceIsFlippedX, pieceIsFlippedY);
-// };
 
 /**
  * Get the cells on the board that a piece will cover if dropped on the board
@@ -329,8 +234,6 @@ export function calcPlacedPosition(
     !!isPreplaced
   );
 
-  const onloadAnimationOffset = isPreplaced ? 0 : 20;
-
   return {
     x: boardBounds.left + previewPiece.x * CELL_SIZE - pieceInitialPosition.x,
     y: boardBounds.top + previewPiece.y * CELL_SIZE - pieceInitialPosition.y,
@@ -363,24 +266,20 @@ export function updatePiecesWithRotatedPiece(
 ): Piece[] {
   return pieces.map((piece) => {
     if (piece.id === id) {
-      return {
+      const rotation = rotatePiece(piece.rotation, "clockwise");
+      const updatedPiece = {
         ...piece,
-        rotation: rotatePiece(
-          piece.rotation,
-          (piece.isFlippedX && piece.isFlippedY) ||
-            (!piece.isFlippedX && !piece.isFlippedY)
-            ? "clockwise"
-            : "anticlockwise"
-        ),
+        currentShape: getRotatedShape(piece.currentShape),
+        rotation,
         droppedOnBoard,
         isActivePiece: false,
         onMouseDownPosition: undefined,
         dragPosition: undefined,
         placedInCells: undefined,
       };
-    } else {
-      return piece;
+      return updatedPiece;
     }
+    return piece;
   });
 }
 
@@ -393,20 +292,34 @@ export function updatePiecesWithFlippedPiece(
   droppedOnBoard: boolean,
   plane: "x" | "y"
 ): Piece[] {
-  return pieces.map((piece) =>
-    piece.id === id
-      ? {
-          ...piece,
-          isFlippedX: plane === "x" ? !piece.isFlippedX : piece.isFlippedX,
-          isFlippedY: plane === "y" ? !piece.isFlippedY : piece.isFlippedY,
-          droppedOnBoard,
-          isActivePiece: false,
-          onMouseDownPosition: undefined,
-          dragPosition: undefined,
-          placedInCells: undefined,
-        }
-      : piece
-  );
+  return pieces.map((piece) => {
+    if (piece.id === id) {
+      // If rotation is .25 or .75 the flip will be in the opposite plane
+      const flippedPlane = isRotatedSideways(piece.rotation)
+        ? plane === "x"
+          ? "y"
+          : "x"
+        : plane;
+
+      const updatedPiece = {
+        ...piece,
+        currentShape: getFlippedShape(
+          piece.currentShape,
+          plane === "x",
+          plane === "y"
+        ),
+        isFlippedX: flippedPlane === "x" ? !piece.isFlippedX : piece.isFlippedX,
+        isFlippedY: flippedPlane === "y" ? !piece.isFlippedY : piece.isFlippedY,
+        droppedOnBoard,
+        isActivePiece: false,
+        onMouseDownPosition: undefined,
+        dragPosition: undefined,
+        placedInCells: undefined,
+      };
+      return updatedPiece;
+    }
+    return piece;
+  });
 }
 
 /**

@@ -101,22 +101,12 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   const x = isDragging ? draggingTransform.x + position.x : position.x;
   const y = isDragging ? draggingTransform.y + position.y : position.y;
 
-  const rotationDecimal = getDecimalPart(rotation);
-  const scaleX =
-    (isFlippedX && (rotationDecimal === 25 || rotationDecimal === 75)) ||
-    (isFlippedY && (rotationDecimal === 0 || rotationDecimal === 5))
-      ? -1
-      : 1;
-
-  const scaleY =
-    (isFlippedY && (rotationDecimal === 25 || rotationDecimal === 75)) ||
-    (isFlippedX && (rotationDecimal === 0 || rotationDecimal === 5))
-      ? -1
-      : 1;
+  const rotateX = isFlippedX ? 180 : 0;
+  const rotateY = isFlippedY ? 180 : 0;
 
   const style = useMemo(
     () => ({
-      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn) scaleX(${scaleX}) scaleY(${scaleY})`,
+      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
       /**
        * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
        * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
@@ -124,7 +114,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       zIndex: isPlaced ? 0 : 20 + piece.layer,
       transition: isDragging ? undefined : "transform 0.2s ease-out",
     }),
-    [isDragging, isPlaced, piece.layer, rotation, scaleX, scaleY, x, y]
+    [isDragging, isPlaced, piece.layer, rotateX, rotateY, rotation, x, y]
   );
 
   const ref = useRef<HTMLDivElement>(null);
@@ -231,3 +221,81 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     </div>
   );
 });
+
+export type PreplacedPieceProps = {
+  piece: PieceType;
+  index: number;
+};
+
+export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
+  function Piece({ piece, index }, activePieceRef) {
+    const {
+      id,
+      position,
+      color,
+      height,
+      width,
+      currentShape,
+    } = piece;
+
+
+    const x = position.x;
+    const y = position.y;
+
+    const style = useMemo(
+      () => ({
+        // transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        transform: `translateX(${x}px) translateY(${y}px)`,
+        /**
+         * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
+         * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
+         */
+        zIndex: 0,
+        transition: "transform 0.2s ease-out",
+      }),
+      [x, y]
+    );
+
+    const ref = useRef<HTMLDivElement>(null);
+
+    return (
+      <div
+        ref={mergeRefs([activePieceRef, ref])}
+        style={{
+          position: "absolute",
+          ...style,
+        }}
+      >
+        <Animate
+          key={piece.id}
+          play
+          duration={0.25}
+          delay={index * 0.03}
+          start={{
+            transform: "translateY(-20px)  scale(0)",
+            opacity: 0.5,
+          }}
+          end={{
+            transform: "translateX(0px) scale(1)",
+            opacity: 1,
+          }}
+          easeType="ease-out"
+        >
+          <PieceDiv
+            hasBoxShadow={false}
+            hasOutline={false}
+            opacity={1}
+            id={id.toString()}
+            color={color}
+            width={width}
+            height={height}
+            shape={currentShape}
+            rotation={0}
+            isFlippedX={false}
+            isFlippedY={false}
+          />
+        </Animate>
+      </div>
+    );
+  }
+);

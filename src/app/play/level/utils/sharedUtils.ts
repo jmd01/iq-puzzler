@@ -108,14 +108,19 @@ export const getPieceOverCells = (
   }, undefined);
 };
 
-export const getRotatedAndFlippedShape = (
+export const getPlacedRotatedAndFlippedShape = (
   pieceShape: Piece["shape"],
   pieceRotation: Piece["rotation"],
   pieceIsFlippedX: Piece["isFlippedX"],
   pieceIsFlippedY: Piece["isFlippedY"]
 ) => {
-  const rotatedShape = getRotatedShape(pieceShape, pieceRotation);
-  return getFlippedShape(rotatedShape, pieceIsFlippedX, pieceIsFlippedY);
+  const rotatedShape = getPlacedRotatedShape(pieceShape, pieceRotation);
+  const flippedShape = getFlippedShape(
+    rotatedShape,
+    pieceIsFlippedX,
+    pieceIsFlippedY
+  );
+  return flippedShape;
 };
 
 /**
@@ -132,14 +137,20 @@ export const getRotatedAndFlippedShape = (
  *  1 1 1 1
  *  0 0 1 0
  * ```
- *
- *
  */
-export function getRotatedShape(
+export function getRotatedShape(pieceShape: Piece["shape"]): Piece["shape"] {
+  const pieceShapeClone = nestedCopy(pieceShape);
+  return pieceShapeClone[0].map((_, index) =>
+    pieceShapeClone.map((row) => row[index]).reverse()
+  );
+}
+
+export function getPlacedRotatedShape(
   pieceShape: Piece["shape"],
   pieceRotation: Piece["rotation"]
 ): Piece["shape"] {
   const pieceShapeClone = nestedCopy(pieceShape);
+
   switch (getDecimalPart(pieceRotation)) {
     case 0:
       return pieceShapeClone;

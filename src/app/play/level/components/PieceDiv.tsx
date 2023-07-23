@@ -18,7 +18,7 @@ export const PieceDiv = ({
   hasOutline,
   onMouseEnter,
   onMouseLeave,
-}: Omit<HTMLProps<HTMLDivElement>, "shape"> & {
+}: Omit<HTMLProps<HTMLDivElement>, "shape" | "currentShape"> & {
   onClick?: MouseEventHandler<HTMLDivElement> | undefined;
   isPlaceable?: boolean;
   id: string;
@@ -31,8 +31,6 @@ export const PieceDiv = ({
   isFlippedY: boolean;
   hasOutline: boolean;
 }) => {
-  console.log({ hasOutline });
-
   return (
     <div style={{ width, height }}>
       {shape.map((row, y) => {
