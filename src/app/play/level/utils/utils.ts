@@ -390,8 +390,8 @@ export const calcRadialGradient = (
         : isFlippedX && isFlippedY
         ? "70% 30%"
         : isFlippedX
-        ? "70% 70%"
-        : "30% 30%";
+        ? "30% 30%"
+        : "70% 70%";
     case 5:
       return !isFlippedX && !isFlippedY
         ? "70% 70%"
@@ -406,8 +406,8 @@ export const calcRadialGradient = (
         : isFlippedX && isFlippedY
         ? "30% 70%"
         : isFlippedX
-        ? "30% 30%"
-        : "70% 70%";
+        ? "70% 70%"
+        : "30% 30%";
     default:
       return !isFlippedX && !isFlippedY
         ? "30% 30%"
