@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg width="314.5" height="314.5" version="1.1" viewBox="171.44 73.5 314.5 314.5" xml:space="preserve"
+	xmlns="http://www.w3.org/2000/svg">
+	<g transform="translate(328.69 230.75)">
+		<g vector-effect="non-scaling-stroke" style="">
+			<g transform="scale(8.0921)">
+				<path transform="translate(0)" d="m-19-10.939c0-4.452 3.609-8.061 8.061-8.061h21.878c4.452 0 8.061 3.609 8.061 8.061v21.878c0 4.452-3.609 8.061-8.061 8.061h-21.878c-4.452 0-8.061-3.609-8.061-8.061z" fill="#fff" stroke="#3910c5" stroke-width="7" vector-effect="non-scaling-stroke"/>
+			</g>
+			<g transform="matrix(8.0921 0 0 8.0921 -.30251 -2.6501e-5)">
+				<linearGradient id="b" x1="19" x2="19" y1=".21626" y2="37.413" gradientTransform="translate(-19 -19)" gradientUnits="userSpaceOnUse">
+					<stop stop-color="#65F4FF" offset="0"/>
+					<stop stop-color="#63F988" offset=".8259"/>
+					<stop stop-color="#FFEA12" stop-opacity=".43137" offset="1"/>
+				</linearGradient>
+				<path transform="translate(0)" d="m-19-10.939c0-4.452 3.609-8.061 8.061-8.061h21.878v0c4.452 0 8.061 3.609 8.061 8.061v21.878 0c0 4.452-3.609 8.061-8.061 8.061h-21.878v0c-4.452 0-8.061-3.609-8.061-8.061z" fill="url(#b)" stroke-linecap="round" stroke-width="0" vector-effect="non-scaling-stroke"/>
+			</g>
+			<g transform="scale(7.7632)">
+				<path transform="translate(0)" d="m-19-10.939c0-4.452 3.609-8.061 8.061-8.061h21.878c4.452 0 8.061 3.609 8.061 8.061v21.878c0 4.452-3.609 8.061-8.061 8.061h-21.878c-4.452 0-8.061-3.609-8.061-8.061z" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="6" vector-effect="non-scaling-stroke"/>
+			</g>
+			<g transform="matrix(3.0219 0 0 3.0219 0 -30.391)">
+				<linearGradient id="c" x1="33.046" x2="33.046" y1="-.82728" y2="50.504" gradientUnits="userSpaceOnUse">
+					<stop stop-color="#7F5BFF" stop-opacity=".98824" offset="0"/>
+					<stop stop-color="#4E389C" offset="1"/>
+				</linearGradient>
+				<path transform="translate(-33.046 -25.5)" d="m0 5c0-2.76 2.24-5 5-5s5 2.24 5 5v0.00277 39.997c0 2.76-2.24 5-5 5s-5-2.24-5-5v-1e-5zm58.022 45-3.7534-3.7534c-3.8264 2.379-8.3414 3.7534-13.176 3.7534-0.16705 0-0.33371-0.00164-0.49998-0.00491-0.16628 0.00327-0.33297 0.00491-0.50003 0.00491-13.8 0-25-11.2-25-25s11.2-25 25-25c0.16705 0 0.33371 0.00164 0.49998 0.00491 0.16628-0.00327 0.33297-0.00491 0.50003-0.00491 13.8 0 25 11.2 25 25 0 5.3509-1.6839 10.311-4.5503 14.379l3.5503 3.5503-0.03097 0.03097c0.64655 0.84261 1.031 1.8967 1.031 3.0401 0 2.76-2.24 5-5 5-1.1434 0-2.1975-0.38442-3.0401-1.031l-0.03097 0.03097zm-2.9289-25c0-8.1127-6.4512-14.728-14.5-14.992-8.0488 0.26404-14.5 6.8791-14.5 14.992 0 8.1127 6.4512 14.728 14.5 14.992 8.0488-0.26404 14.5-6.8791 14.5-14.992z" fill="url(#c)" stroke="#251a4b" stroke-width="4" vector-effect="non-scaling-stroke"/>
+			</g>
+			<g transform="matrix(2.9059 0 0 2.9059 -.30251 86.065)">
+				<linearGradient id="a" x1="34.24" x2="34.24" y2="16.44" gradientTransform="translate(233.22 194.47)" gradientUnits="userSpaceOnUse">
+					<stop stop-color="#795AE7" offset="0"/>
+					<stop stop-color="#654BBF" offset="1"/>
+				</linearGradient>
+				<path transform="translate(-267.46 -202.69)" d="m236.8 210.67h-3.58v-16.2h5.44q1.46 0 2.4 0.55t1.4 1.6 0.46 2.55q0 1.88-0.62 2.87t-1.68 1.37-2.38 0.38h-1.44v6.88zm0-13.68v4.3h1.2q0.66 0 1-0.24t0.45-0.72 0.11-1.22q0-0.62-0.09-1.09t-0.43-0.75-1.06-0.28h-1.18zm12.58 13.92q-1.86 0-2.91-0.61t-1.47-1.78-0.42-2.87v-11.18h3.54v11.72q0 0.5 0.08 1t0.35 0.82 0.83 0.32q0.58 0 0.84-0.32t0.33-0.82 0.07-1v-11.72h3.56v11.18q0 1.7-0.43 2.87t-1.47 1.78-2.9 0.61zm14.04-0.24h-7.52v-2.16l3.96-11.62h-3.78v-2.42h7.3v2.02l-4.02 11.76h4.06v2.42zm8.72 0h-7.52v-2.16l3.96-11.62h-3.78v-2.42h7.3v2.02l-4.02 11.76h4.06v2.42zm9.02 0h-7.3v-16.2h3.58v13.78h3.72v2.42zm8.78 0h-7.32v-16.2h7.28v2.44h-3.7v4.02h2.82v2.48h-2.82v4.84h3.74v2.42zm5.26 0h-3.58v-16.2h4.46q1.64 0 2.84 0.36t1.87 1.29 0.67 2.63q0 1-0.16 1.78t-0.59 1.35-1.23 0.95l2.22 7.84h-3.7l-1.78-7.26h-1.02v7.26zm0-13.8v4.48h1q0.76 0 1.18-0.27t0.59-0.78 0.17-1.23q0-1.04-0.38-1.62t-1.4-0.58h-1.16z" fill="url(#a)" stroke="#251a4b" vector-effect="non-scaling-stroke"/>
+			</g>
+		</g>
+	</g>
+</svg>

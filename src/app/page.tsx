@@ -1,113 +1,344 @@
-import Image from 'next/image'
+"use client";
+import Logo2 from "./play/assets/iq-puzzler-logo-splash-2-min.svg";
+import { AnimatedBackground } from "./play/level/components/AnimatedBackground";
+import gameAreaStyles from "./play/level/styles/gameArea.module.css";
+import * as twStyles from "./play/level/styles/styles";
+import { PieceData, pieces, row } from "./pieces";
+import { useMemo } from "react";
+import { Animate } from "react-simple-animate";
+import { PieceDiv } from "./play/level/components/PieceDiv";
+import { useResizeDetector } from "react-resize-detector";
+import homeStyles from "./home.module.css";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div
+      className={gameAreaStyles.gameArea}
+      style={{ width: "100%", height: "100%" }}
+    >
+      <AnimatedBackground />
+      {/* <div className={twStyles.logoContainer}>
+        <Logo width={200} />
+      </div>
+      <div className={twStyles.logoContainer}>
+        <Logo1 width={200} />
+      </div> */}
+      <div className={twStyles.logoContainer}>
+        <span className={homeStyles.logo}>
+          <Logo2 width={200} />
+        </span>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <Pieces />
+    </div>
+  );
+}
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+const Pieces = () => {
+  const { width: resizeWidth, ref } = useResizeDetector();
+  const width = resizeWidth || 0;
+  const scale = getScale(width);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+  // const xSpacing = 40;
+  // const offset = 0 * scale;
+  // const halfWidth = window.innerWidth / 2;
+  // const piecesCount = Math.ceil(window.innerWidth / 60);
+  // console.log(piecesCount);
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+  // const rows = useMemo(() => {
+  //   return [...Array(3)].map((_, i) => {
+  //     let piecesRow = [];
+  //     for (let j = 0; j < 1; j++) {
+  //       const pieceIndex = i % 2 === 0 ? j % 12 : 11 - (j % 12);
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+  //       const pieceLeft: Piece = {
+  //         ...pieces[pieceIndex],
+  //         position: {
+  //           x:
+  //             (halfWidth - j * xSpacing - pieces[pieceIndex].width - offset) /
+  //             (scale - i * 0.2),
+  //           y: i * -50,
+  //         },
+  //         rotation: Math.random() * 360,
+  //       };
+  //       const pieceRight: Piece = {
+  //         ...pieces[pieceIndex],
+  //         position: {
+  //           x: (halfWidth + (j * xSpacing - offset)) / scale,
+  //           y: i * -50,
+  //         },
+  //         rotation: Math.random() * 360,
+  //       };
+
+  //       console.log(
+  //         i,
+  //         j,
+  //         halfWidth,
+  //         j * xSpacing,
+  //         halfWidth + (j * xSpacing - offset)
+  //       );
+
+  //       piecesRow.push(
+  //         <PreplacedPiece piece={pieceLeft} index={j} key={`${i}-${j}-left`} />,
+  //         <PreplacedPiece
+  //           piece={pieceRight}
+  //           index={j}
+  //           key={`${i}-${j}-right`}
+  //         />
+  //       );
+  //     }
+  //     return (
+  //       <div
+  //         id={`row-${i}`}
+  //         style={{
+  //           position: "absolute",
+  //           zIndex: 5 - i,
+  //           transform: `scale(${1 - i * 0.15})`,
+  //         }}
+  //         key={i}
+  //       >
+  //         {piecesRow}
+  //       </div>
+  //     );
+  //   });
+  // }, [halfWidth, offset, xSpacing]);
+  console.log({ resizeWidth, width });
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        transform: `scale(${scale})`,
+        bottom: getBottom(width),
+        position: "absolute",
+        width: "100%",
+      }}
+    >
+      <Row1 width={width} />
+      <Row2 width={width} />
+      <Row3 width={width} />
+    </div>
+  );
+};
+
+const Row1 = ({ width }: { width: number }) => {
+  const pieceCount = getPieceCount(width);
+  return (
+    <div
+      id="row1"
+      style={{
+        zIndex: 5,
+        position: "relative",
+      }}
+    >
+      {row.slice(0, pieceCount).map(({ id, position, rotation }, index) => {
+        const piece = pieces.find((piece) => piece.id === id);
+        return piece ? (
+          <Piece
+            index={index}
+            piece={{ ...piece, rotation, position }}
+            key={index}
+          />
+        ) : null;
+      })}
+    </div>
+  );
+};
+
+const Row2 = ({ width }: { width: number }) => {
+  const pieceCount = getPieceCount(width);
+  return (
+    <div
+      id="row2"
+      style={{
+        transform: "translateY(-20px) scale(0.8)",
+        zIndex: 4,
+        position: "relative",
+      }}
+    >
+      {row.slice(0, pieceCount).map(({ id, position, rotation }, index) => {
+        const piece = pieces.find((piece) => piece.id === id);
+        return piece ? (
+          <Piece
+            index={index}
+            piece={{
+              ...piece,
+              rotation: Math.random() * 0.05 * (Math.random() > 0.5 ? 1 : -1),
+              position,
+              color: shadeHexColor(piece.color, -0.1),
+            }}
+            key={index}
+          />
+        ) : null;
+      })}
+    </div>
+  );
+};
+
+const Row3 = ({ width }: { width: number }) => {
+  const pieceCount = getPieceCount(width);
+  return (
+    <div
+      id="row2"
+      style={{
+        transform: "translateY(-40px) scale(0.6)",
+        zIndex: 3,
+        position: "relative",
+      }}
+    >
+      {row.slice(0, pieceCount).map(({ id, position, rotation }, index) => {
+        const piece = pieces.find((piece) => piece.id === id);
+        return piece ? (
+          <Piece
+            index={index}
+            piece={{
+              ...piece,
+              rotation,
+              position,
+              color: shadeHexColor(piece.color, -0.2),
+            }}
+            key={index}
+          />
+        ) : null;
+      })}
+    </div>
+  );
+};
+
+type PreplacedPieceProps = {
+  piece: PieceData;
+  index: number;
+};
+
+const Piece = ({ piece, index }: PreplacedPieceProps) => {
+  const { id, position, color, height, width, currentShape, rotation } = piece;
+
+  const x = position.x;
+  const y = position.y;
+
+  const style = useMemo(
+    () => ({
+      transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn)`,
+      transition: "transform 0.2s ease-out",
+    }),
+    [rotation, x, y]
+  );
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        ...style,
+      }}
+    >
+      {/* <Animate
+        key={piece.id}
+        play
+        duration={0.25}
+        delay={index * 0.03}
+        start={{
+          transform: "translateY(-20px)  scale(0)",
+          opacity: 0.5,
+        }}
+        end={{
+          transform: "translateX(0px) scale(1)",
+          opacity: 1,
+        }}
+        easeType="ease-out"
+      > */}
+      <PieceDiv
+        hasBoxShadow={false}
+        hasOutline={false}
+        opacity={1}
+        id={id.toString()}
+        color={color}
+        width={width}
+        height={height}
+        shape={currentShape}
+        rotation={rotation}
+        isFlippedX={false}
+        isFlippedY={false}
+      />
+      {/* </Animate> */}
+    </div>
+  );
+};
+
+const getPieceCount = (width: number) => {
+  switch (true) {
+    case width <= 300:
+      return 9;
+    case width <= 400:
+      return 12;
+    case width <= 500:
+      return 13;
+    case width <= 600:
+      return 16;
+    case width <= 800:
+      return 16;
+    case width <= 1000:
+      return 18;
+    case width <= 1500:
+      return 28;
+    case width <= 2000:
+      return 55;
+    case width <= 2500:
+      return 55;
+    default:
+      return 65;
+  }
+};
+
+const getScale = (width: number) => {
+  switch (true) {
+    case width <= 300:
+      return 0.9;
+    case width <= 400:
+      return 1;
+    case width <= 500:
+      return 1.1;
+    case width <= 600:
+      return 1.2;
+    case width <= 800:
+      return 1.4;
+    default:
+      return 1.5;
+  }
+};
+
+const getBottom = (width: number) => {
+  switch (true) {
+    case width <= 300:
+      return 90;
+    case width <= 400:
+      return 100;
+    case width <= 500:
+      return 105;
+    case width <= 600:
+      return 115;
+    case width <= 800:
+      return 130;
+    default:
+      return 140;
+  }
+};
+
+function shadeHexColor(color: string, percent: number) {
+  var f = parseInt(color.slice(1), 16),
+    t = percent < 0 ? 0 : 255,
+    p = percent < 0 ? percent * -1 : percent,
+    R = f >> 16,
+    G = (f >> 8) & 0x00ff,
+    B = f & 0x0000ff;
+  return (
+    "#" +
+    (
+      0x1000000 +
+      (Math.round((t - R) * p) + R) * 0x10000 +
+      (Math.round((t - G) * p) + G) * 0x100 +
+      (Math.round((t - B) * p) + B)
+    )
+      .toString(16)
+      .slice(1)
+  );
 }

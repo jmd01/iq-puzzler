@@ -236,6 +236,7 @@ export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
       height,
       width,
       currentShape,
+      rotation = 0
     } = piece;
 
 
@@ -245,7 +246,7 @@ export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
     const style = useMemo(
       () => ({
         // transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-        transform: `translateX(${x}px) translateY(${y}px)`,
+        transform: `translateX(${x}px) translateY(${y}px) rotate(${rotation}turn)`,
         /**
          * Render unplaced pieces above board cells so they can be picked up again if they are dropped on the board but not placed
          * Render placed pieces below board cells as we listen for clicks on the board cells and determine active piece from the coords of the click
@@ -253,7 +254,7 @@ export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
         zIndex: 0,
         transition: "transform 0.2s ease-out",
       }),
-      [x, y]
+      [rotation, x, y]
     );
 
     const ref = useRef<HTMLDivElement>(null);
@@ -290,7 +291,7 @@ export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
             width={width}
             height={height}
             shape={currentShape}
-            rotation={0}
+            rotation={rotation}
             isFlippedX={false}
             isFlippedY={false}
           />
@@ -299,3 +300,4 @@ export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
     );
   }
 );
+

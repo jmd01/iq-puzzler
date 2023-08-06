@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" style={{ height: "100vh" }}>
-      <body className={inter.className} style={{ height: "100vh" }}>
+      <body className={inter.className} style={{ height: "100vh", overflow: "hidden" }}>
         {children}
       </body>
     </html>

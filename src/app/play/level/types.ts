@@ -46,6 +46,7 @@ export type Piece = Omit<PieceData, "placedInCells"> & {
   isLocked: boolean;
   placedInCells?: PreviewPiece["cells"];
   currentShape: number[][];
+  rotation?: Rotation;
 };
 
 export type PlacedPiece = Omit<Piece, "placedInCells"> & {

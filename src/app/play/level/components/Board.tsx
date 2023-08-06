@@ -15,6 +15,8 @@ export const Board = ({
   previewPiece: PreviewPiece | undefined;
   prePlacedPieces: PlacedPiece[];
 }) => {
+  console.log(prePlacedPieces);
+
   return (
     <div className={twStyles.boardWrapper}>
       <Animate
@@ -38,7 +40,7 @@ export const Board = ({
               <PreplacedPiece
                 key={piece.id}
                 index={i}
-                piece={piece}
+                piece={{ ...piece, rotation: 0 }}
               />
             ))}
             <div className={twStyles.boardCellWrapper}>

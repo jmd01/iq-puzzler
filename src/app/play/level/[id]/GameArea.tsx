@@ -8,7 +8,6 @@ import {
   MouseEvent,
   useCallback,
   useReducer,
-  useLayoutEffect,
   useEffect,
 } from "react";
 import type { Reducer } from "react";
@@ -99,6 +98,9 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   }
 };
 
+const pickUpAudio = new Audio("../../assets/CLAV9.wav");
+const dropUpAudio = new Audio("../../assets/CLAV10.wav");
+
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
   unplacedPieces: Piece[];
@@ -184,6 +186,10 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
             DRAG_START_THRESHOLD)
       )
         return;
+
+        console.log("onmousemove");
+        
+      pickUpAudio.play();
 
       dispatch({
         type: "DRAG_MOVE",
@@ -294,6 +300,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
             }
           })
         );
+
+        dropUpAudio.play();
 
         // If piece was dropped on the board in a placeable position, add it to the board grid and check if grid is full (i.e game complete)
         if (state.previewPiece) {

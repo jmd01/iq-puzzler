@@ -1,5 +1,6 @@
 import { getFlippedShape, getRotatedShape } from "./sharedUtils";
 import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
+import { ro } from "date-fns/locale";
 
 export const CELL_SIZE = 64;
 export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;
@@ -383,7 +384,8 @@ export const calcRadialGradient = (
   isFlippedX: boolean,
   isFlippedY: boolean
 ): string => {
-  switch (getDecimalPart(rotation)) {
+  const decimalPart = getDecimalPart(rotation);
+  switch (decimalPart) {
     case 25:
       return !isFlippedX && !isFlippedY
         ? "30% 70%"
@@ -408,7 +410,7 @@ export const calcRadialGradient = (
         : isFlippedX
         ? "70% 70%"
         : "30% 30%";
-    default:
+    case 0:
       return !isFlippedX && !isFlippedY
         ? "30% 30%"
         : isFlippedX && isFlippedY
@@ -416,6 +418,16 @@ export const calcRadialGradient = (
         : isFlippedX
         ? "30% 70%"
         : "70% 30%";
+    default:
+      if (rotation >= 0) {
+        const x = getRotationX(rotation);
+        const y = getRotationY(rotation);
+        return `${x}% ${y}%`;
+      } else {
+        const y = getRotationX(rotation);
+        const x = getRotationY(rotation);
+        return `${x}% ${y}%`;
+      }
   }
 };
 
@@ -426,4 +438,43 @@ export function getDecimalPart(num: number) {
 
   const decimalStr = num.toString().split(".")[1];
   return Number(decimalStr);
+}
+
+function getRotationX(rotation: number): number {
+  const absRotation = Math.abs(rotation);
+  switch (true) {
+    case absRotation >= 0 && absRotation <= 0.125: {
+      // 30 down to 20
+      return 30 - ((absRotation - 0) / 0.125) * 10;
+    }
+    case absRotation > 0.125 && absRotation <= 0.625: {
+      // 20 up to 80
+      return 20 + ((absRotation - 0.125) / 0.5) * 60;
+    }
+    case absRotation > 0.625 && absRotation <= 1: {
+      // 80 down to 70
+      return 80 - ((absRotation - 0.625) / 0.125) * 10;
+    }
+  }
+
+  return 0;
+}
+
+function getRotationY(rotation: number): number {
+  const absRotation = Math.abs(rotation);
+  switch (true) {
+    case absRotation >= 0 && absRotation <= 0.375: {
+      // 30 up to 80
+      return 30 + ((absRotation - 0) / 0.375) * 50;
+    }
+    case absRotation > 0.375 && absRotation <= 0.875: {
+      // 80 down to 20
+      return 80 - ((absRotation - 0.375) / 0.5) * 60;
+    }
+    case absRotation > 0.875 && absRotation <= 1: {
+      // 20 up to 30
+      return 20 + ((absRotation - 0.875) / 0.125) * 10;
+    }
+  }
+  return 0;
 }
