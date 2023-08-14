@@ -13,7 +13,6 @@ import { faForwardStep, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import classnames from "classnames";
-import levelCompleteStyles from "./play/level/styles/levelComplete.module.css";
 import { sigmarOne } from "./fonts";
 
 export default function Home() {
@@ -25,10 +24,11 @@ export default function Home() {
         style={{ height: `calc(100% - 240px)` }}
       >
         <div className={homeStyles.logoWrapper}>
-          <Logo height={240} style={{maxWidth: "90%"}} />
+          <Logo height={240} style={{ maxWidth: "90%" }} />
         </div>
         <PlayButton />
       </div>
+      <FallingPieces />
       <Pieces />
     </div>
   );
@@ -50,6 +50,50 @@ const PlayButton = () => {
         </Link>
       </div>
     </div>
+  );
+};
+
+const FallingPieces = () => {
+  return (
+    <>
+      <div
+        id={homeStyles.fallingPiece1}
+        className={homeStyles.fallingPiece}
+      >
+        <Piece index={1} piece={{ ...pieces[0], rotation: 0.2 }} />
+      </div>
+      <div
+        id={homeStyles.fallingPiece2}
+        className={homeStyles.fallingPiece}
+      >
+        <Piece index={1} piece={{ ...pieces[1], rotation: 0.6 }} />
+      </div>
+      <div
+        id={homeStyles.fallingPiece3}
+        className={homeStyles.fallingPiece}
+      >
+        <Piece index={1} piece={{ ...pieces[5], rotation: 0.6 }} />
+      </div>
+
+      <div
+        id={homeStyles.fallingPiece4}
+        className={homeStyles.fallingPiece}
+      >
+        <Piece index={1} piece={{ ...pieces[4], rotation: 0.4 }} />
+      </div>
+      <div
+        id={homeStyles.fallingPiece5}
+        className={homeStyles.fallingPiece}
+      >
+        <Piece index={1} piece={{ ...pieces[3], rotation: 0.5 }} />
+      </div>
+      <div
+        id={homeStyles.fallingPiece6}
+        className={homeStyles.fallingPiece}
+      >
+        <Piece index={1} piece={{ ...pieces[6], rotation: 0.3 }} />
+      </div>
+    </>
   );
 };
 
