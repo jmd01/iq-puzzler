@@ -1,5 +1,55 @@
-.logo {
-  border-radius: 40px;
-  box-shadow: rgb(76 0 197 / 0.8) -5px -4px 17px -7px inset, 5px 5px 30px 10px rgb(1 1 1 / 1);
+.homeStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
 }
 
+.logoWrapper {
+  margin-top: 150px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+}
+
+.startButtonWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.piecesWrappper {
+  position: absolute;
+  width: 100%;
+}
+
+.startButtonBorder {
+  background-color: linear-gradient(135deg, #d500ff, #00deff, #fe0665);
+
+}
+
+.startButton {
+  border-radius: 50px;
+  margin: 8px;
+  border: 2px solid #fff;
+  background: linear-gradient(90deg, #d500ff, #00deff, #fe0665);
+  padding: 12px 24px;
+  display: inline-flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  font-style: italic;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  transition: background-color 0.5s ease;
+  background-size: 200% 200%;
+  position: relative;
+  z-index: 10;
+}
+
+.startButton:hover {
+  background: linear-gradient(135deg, #fe0665, #d500ff, #00deff);
+}

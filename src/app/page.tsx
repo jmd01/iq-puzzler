@@ -1,117 +1,70 @@
 "use client";
-import Logo2 from "./play/assets/iq-puzzler-logo-splash-2-min.svg";
+import Logo from "./play/assets/logo-final-1-min.svg";
 import { AnimatedBackground } from "./play/level/components/AnimatedBackground";
 import gameAreaStyles from "./play/level/styles/gameArea.module.css";
 import * as twStyles from "./play/level/styles/styles";
 import { PieceData, pieces, row } from "./pieces";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./play/level/components/PieceDiv";
 import { useResizeDetector } from "react-resize-detector";
 import homeStyles from "./home.module.css";
+import { faForwardStep, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
+import classnames from "classnames";
+import levelCompleteStyles from "./play/level/styles/levelComplete.module.css";
+import { sigmarOne } from "./fonts";
 
 export default function Home() {
   return (
-    <div
-      className={gameAreaStyles.gameArea}
-      style={{ width: "100%", height: "100%" }}
-    >
+    <div className={classnames(gameAreaStyles.gameArea)}>
       <AnimatedBackground />
-      {/* <div className={twStyles.logoContainer}>
-        <Logo width={200} />
+      <div
+        className={homeStyles.homeStack}
+        style={{ height: `calc(100% - 240px)` }}
+      >
+        <div className={homeStyles.logoWrapper}>
+          <Logo height={240} style={{maxWidth: "90%"}} />
+        </div>
+        <PlayButton />
       </div>
-      <div className={twStyles.logoContainer}>
-        <Logo1 width={200} />
-      </div> */}
-      <div className={twStyles.logoContainer}>
-        <span className={homeStyles.logo}>
-          <Logo2 width={200} />
-        </span>
-      </div>
-
       <Pieces />
     </div>
   );
 }
 
-const Pieces = () => {
+const PlayButton = () => {
+  return (
+    <div className={homeStyles.startButtonWrapper}>
+      <div className={homeStyles.startButtonBorder}>
+        <Link
+          href={`/play/level/1`}
+          className={classnames(homeStyles.startButton, sigmarOne.className)}
+        >
+          <span>PLAY</span>
+          <FontAwesomeIcon
+            icon={faPlay}
+            style={{ filter: `drop-shadow(1px 1px 0 #000)` }}
+          />
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const Pieces = memo(function Pieces() {
   const { width: resizeWidth, ref } = useResizeDetector();
   const width = resizeWidth || 0;
   const scale = getScale(width);
 
-  // const xSpacing = 40;
-  // const offset = 0 * scale;
-  // const halfWidth = window.innerWidth / 2;
-  // const piecesCount = Math.ceil(window.innerWidth / 60);
-  // console.log(piecesCount);
-
-  // const rows = useMemo(() => {
-  //   return [...Array(3)].map((_, i) => {
-  //     let piecesRow = [];
-  //     for (let j = 0; j < 1; j++) {
-  //       const pieceIndex = i % 2 === 0 ? j % 12 : 11 - (j % 12);
-
-  //       const pieceLeft: Piece = {
-  //         ...pieces[pieceIndex],
-  //         position: {
-  //           x:
-  //             (halfWidth - j * xSpacing - pieces[pieceIndex].width - offset) /
-  //             (scale - i * 0.2),
-  //           y: i * -50,
-  //         },
-  //         rotation: Math.random() * 360,
-  //       };
-  //       const pieceRight: Piece = {
-  //         ...pieces[pieceIndex],
-  //         position: {
-  //           x: (halfWidth + (j * xSpacing - offset)) / scale,
-  //           y: i * -50,
-  //         },
-  //         rotation: Math.random() * 360,
-  //       };
-
-  //       console.log(
-  //         i,
-  //         j,
-  //         halfWidth,
-  //         j * xSpacing,
-  //         halfWidth + (j * xSpacing - offset)
-  //       );
-
-  //       piecesRow.push(
-  //         <PreplacedPiece piece={pieceLeft} index={j} key={`${i}-${j}-left`} />,
-  //         <PreplacedPiece
-  //           piece={pieceRight}
-  //           index={j}
-  //           key={`${i}-${j}-right`}
-  //         />
-  //       );
-  //     }
-  //     return (
-  //       <div
-  //         id={`row-${i}`}
-  //         style={{
-  //           position: "absolute",
-  //           zIndex: 5 - i,
-  //           transform: `scale(${1 - i * 0.15})`,
-  //         }}
-  //         key={i}
-  //       >
-  //         {piecesRow}
-  //       </div>
-  //     );
-  //   });
-  // }, [halfWidth, offset, xSpacing]);
-  console.log({ resizeWidth, width });
-
   return (
     <div
       ref={ref}
+      className={homeStyles.piecesWrappper}
       style={{
         transform: `scale(${scale})`,
         bottom: getBottom(width),
-        position: "absolute",
-        width: "100%",
       }}
     >
       <Row1 width={width} />
@@ -119,7 +72,7 @@ const Pieces = () => {
       <Row3 width={width} />
     </div>
   );
-};
+});
 
 const Row1 = ({ width }: { width: number }) => {
   const pieceCount = getPieceCount(width);
@@ -277,9 +230,9 @@ const getPieceCount = (width: number) => {
     case width <= 800:
       return 16;
     case width <= 1000:
-      return 18;
-    case width <= 1500:
       return 28;
+    case width <= 1500:
+      return 55;
     case width <= 2000:
       return 55;
     case width <= 2500:
