@@ -4,7 +4,7 @@ import { AnimatedBackground } from "./play/level/components/AnimatedBackground";
 import gameAreaStyles from "./play/level/styles/gameArea.module.css";
 import * as twStyles from "./play/level/styles/styles";
 import { PieceData, pieces, row } from "./pieces";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./play/level/components/PieceDiv";
 import { useResizeDetector } from "react-resize-detector";
@@ -15,7 +15,11 @@ import Link from "next/link";
 import classnames from "classnames";
 import { sigmarOne } from "./fonts";
 
+const music = new Audio("./assets/TR-5166-A_-blur-_tunereel.com_preview.mp3");
+
 export default function Home() {
+  const [hasMusic, setHasMusic]  = useState(true)
+
   return (
     <div className={classnames(gameAreaStyles.gameArea)}>
       <AnimatedBackground />

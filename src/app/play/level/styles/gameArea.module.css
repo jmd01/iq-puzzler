@@ -1,12 +1,48 @@
 .gameArea {
   height: 100%;
   width: 100%;
-  background-image: radial-gradient(
-    circle at 5% 20%, 
-    rgba(255,255,255,0.1) 2%, 
-    rgba(255,255,255,0) 40%, 
-    rgba(255,255,255,0.05) 80%,
-    rgba(255,255,255,0) 100%
-    ),
+  background-image: radial-gradient(circle at 5% 20%,
+      rgba(255, 255, 255, 0.1) 2%,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0.05) 80%,
+      rgba(255, 255, 255, 0) 100%),
     linear-gradient(135deg, #04012f, #1e012f);
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-column-gap: 5px;
+  justify-items: center;
+  padding: 2rem;
+}
+
+.logoContainer {
+  grid-column-start: 2;
+}
+
+.toolbar {
+  margin-left: auto;
+  font-size: 40px;
+  display: flex;
+  gap: 24px;
+}
+
+.toolbarButton {
+  width: 50px;
+}
+
+.toolbarButton svg {
+  filter: drop-shadow(1px 1px 0 #000);
+}
+
+.helpTooltip {
+  position: absolute;
+  top: 100px;
+  right: 2rem;
+  width: 300px;
+  height: 400px;
+  z-index: 100;
+  background-color: #fff;
+  border-radius: 12px;
 }

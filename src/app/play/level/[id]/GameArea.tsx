@@ -30,13 +30,13 @@ import type {
 } from "../types";
 import { AnimatedBackground } from "../components/AnimatedBackground";
 import gameAreaStyles from "../styles/gameArea.module.css";
-import * as twStyles from "../styles/styles";
 import { LevelComplete } from "./LevelComplete";
 import {
   addPieceToBoard,
   removePieceFromBoard,
   generateGameState,
 } from "../utils/sharedUtils";
+import { TopSection } from "./TopSection";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,
@@ -98,8 +98,8 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   }
 };
 
-const pickUpAudio = new Audio("../../assets/CLAV9.wav");
-const dropUpAudio = new Audio("../../assets/CLAV10.wav");
+// const pickUpAudio = new Audio("../../assets/CLAV9.wav");
+// const dropUpAudio = new Audio("../../assets/CLAV10.wav");
 
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
@@ -187,9 +187,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       )
         return;
 
-        console.log("onmousemove");
-        
-      pickUpAudio.play();
+      // pickUpAudio.play();
 
       dispatch({
         type: "DRAG_MOVE",
@@ -301,7 +299,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           })
         );
 
-        dropUpAudio.play();
+        // dropUpAudio.play();
 
         // If piece was dropped on the board in a placeable position, add it to the board grid and check if grid is full (i.e game complete)
         if (state.previewPiece) {
@@ -401,9 +399,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         }}
       >
         <AnimatedBackground />
-        <div className={twStyles.logoContainer}>
-          <Logo fill="#3a287a" width={80} />
-        </div>
+        <TopSection />
         <Board
           boardRef={boardRef}
           previewPiece={state.previewPiece}
