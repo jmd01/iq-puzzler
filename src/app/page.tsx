@@ -4,7 +4,7 @@ import { AnimatedBackground } from "./play/level/components/AnimatedBackground";
 import gameAreaStyles from "./play/level/styles/gameArea.module.css";
 import * as twStyles from "./play/level/styles/styles";
 import { PieceData, pieces, row } from "./pieces";
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./play/level/components/PieceDiv";
 import { useResizeDetector } from "react-resize-detector";
@@ -15,10 +15,8 @@ import Link from "next/link";
 import classnames from "classnames";
 import { sigmarOne } from "./fonts";
 
-const music = new Audio("./assets/TR-5166-A_-blur-_tunereel.com_preview.mp3");
 
 export default function Home() {
-  const [hasMusic, setHasMusic]  = useState(true)
 
   return (
     <div className={classnames(gameAreaStyles.gameArea)}>
@@ -60,41 +58,23 @@ const PlayButton = () => {
 const FallingPieces = () => {
   return (
     <>
-      <div
-        id={homeStyles.fallingPiece1}
-        className={homeStyles.fallingPiece}
-      >
+      <div id={homeStyles.fallingPiece1} className={homeStyles.fallingPiece}>
         <Piece index={1} piece={{ ...pieces[0], rotation: 0.2 }} />
       </div>
-      <div
-        id={homeStyles.fallingPiece2}
-        className={homeStyles.fallingPiece}
-      >
+      <div id={homeStyles.fallingPiece2} className={homeStyles.fallingPiece}>
         <Piece index={1} piece={{ ...pieces[1], rotation: 0.6 }} />
       </div>
-      <div
-        id={homeStyles.fallingPiece3}
-        className={homeStyles.fallingPiece}
-      >
+      <div id={homeStyles.fallingPiece3} className={homeStyles.fallingPiece}>
         <Piece index={1} piece={{ ...pieces[5], rotation: 0.6 }} />
       </div>
 
-      <div
-        id={homeStyles.fallingPiece4}
-        className={homeStyles.fallingPiece}
-      >
+      <div id={homeStyles.fallingPiece4} className={homeStyles.fallingPiece}>
         <Piece index={1} piece={{ ...pieces[4], rotation: 0.4 }} />
       </div>
-      <div
-        id={homeStyles.fallingPiece5}
-        className={homeStyles.fallingPiece}
-      >
+      <div id={homeStyles.fallingPiece5} className={homeStyles.fallingPiece}>
         <Piece index={1} piece={{ ...pieces[3], rotation: 0.5 }} />
       </div>
-      <div
-        id={homeStyles.fallingPiece6}
-        className={homeStyles.fallingPiece}
-      >
+      <div id={homeStyles.fallingPiece6} className={homeStyles.fallingPiece}>
         <Piece index={1} piece={{ ...pieces[6], rotation: 0.3 }} />
       </div>
     </>

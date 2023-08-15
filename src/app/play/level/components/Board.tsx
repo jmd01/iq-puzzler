@@ -15,8 +15,6 @@ export const Board = ({
   previewPiece: PreviewPiece | undefined;
   prePlacedPieces: PlacedPiece[];
 }) => {
-  console.log(prePlacedPieces);
-
   return (
     <div className={twStyles.boardWrapper}>
       <Animate

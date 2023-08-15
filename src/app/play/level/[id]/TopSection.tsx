@@ -59,7 +59,7 @@ export const TopSection = () => {
             color={isOpenHelp || hoverHelp ? "#3a2879" : "#2d1976"}
           />
         </button>
-        <div className={gameAreaStyles.helpTooltip}>help</div>
+        {isOpenHelp && <div className={gameAreaStyles.helpTooltip}>help</div>}
       </div>
     </div>
   );
