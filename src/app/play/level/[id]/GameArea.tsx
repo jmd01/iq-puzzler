@@ -1,4 +1,3 @@
-"use client";
 import { Board } from "../components/Board";
 import { Pieces } from "../components/Pieces";
 import {
@@ -106,18 +105,6 @@ type GameAreaProps = {
 };
 export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
   const [hasMusic, setHasMusic] = useState(true);
-  const musicRef = useRef<HTMLAudioElement>(
-    
-  );
-
-  useEffect(() => {
-    if (!musicRef.current) {
-      musicRef.current = new Audio("/TR-5166-A_-blur-_tunereel.com_preview.mp3")
-      console.log("playing");
-      
-      musicRef.current.play();
-    }
-  }, []);
 
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(11, 5, placedPieces)
@@ -431,6 +418,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         moves={gameState.moves}
         startDate={gameState.startDate}
         isVisible={gameState.complete}
+        // musicRef={musicRef}
       />
     </>
   );

@@ -32,10 +32,12 @@ export const LevelComplete = memo(function LevelComplete({
   isVisible,
   moves,
   startDate,
+  // musicRef,
 }: {
   isVisible: boolean;
   moves: number;
   startDate: Date;
+  // musicRef: React.MutableRefObject<HTMLAudioElement | undefined>;
 }) {
   const params = useParams();
 
@@ -137,9 +139,7 @@ export const LevelComplete = memo(function LevelComplete({
                 )}
               >
                 <div>{moves}</div>
-                <div>
-                  {completionTime(startDate)}
-                </div>
+                <div>{completionTime(startDate)}</div>
               </div>
             </div>
             <div
@@ -180,6 +180,9 @@ export const LevelComplete = memo(function LevelComplete({
               >
                 <Link
                   href={`/play/level/${parseInt(params.id) + 1}`}
+                  // onClick={() => {
+                  //    musicRef.current?.pause();
+                  // }}
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
@@ -219,5 +222,3 @@ const completionTime = (startDate: Date) => {
   temp = differenceInSeconds(y, x);
   return result + temp + "s";
 };
-
-

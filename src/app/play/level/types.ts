@@ -92,3 +92,22 @@ export type GameAreaDragState = {
    */
   previewPiece?: PreviewPiece;
 };
+
+export const levelSchema = z
+  .object({
+    id: z.number(),
+    difficulty: z.string(),
+    solutionId: z.number(),
+    solutionPieces: z.array(
+      z.object({
+        id: z.number(),
+        pieceId: z.number(),
+        rotation: z.number(),
+        isFlippedX: z.boolean(),
+        isFlippedY: z.boolean(),
+        placedInCells: z.string(),
+        solutionId: z.number(),
+      })
+    ),
+  })
+  .nullable();
