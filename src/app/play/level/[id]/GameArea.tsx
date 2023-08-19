@@ -6,7 +6,6 @@ import {
   MouseEvent,
   useCallback,
   useReducer,
-  useEffect,
 } from "react";
 import type { Reducer } from "react";
 import {
@@ -26,15 +25,12 @@ import type {
   PreviewPiece,
   GameAreaDragState,
 } from "../types";
-import { AnimatedBackground } from "../components/AnimatedBackground";
-import gameAreaStyles from "../styles/gameArea.module.css";
 import { LevelComplete } from "./LevelComplete";
 import {
   addPieceToBoard,
   removePieceFromBoard,
   generateGameState,
 } from "../utils/sharedUtils";
-import { TopSection } from "./TopSection";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,
@@ -113,19 +109,10 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
   const [prePlacedPieces] = useState(placedPieces);
   const [pieces, setPieces] = useState(unplacedPieces);
 
-  const [gameAreaDims, setGameAreaDims] = useState<{
-    width: number | string;
-    height: number | string;
-  }>({
-    height: "100%",
-    width: "100%",
-  });
-
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
   >(reducer, initialState);
 
-  const gameAreaRef = useRef<HTMLDivElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const activePieceRef = useRef<HTMLDivElement>(null);
 
@@ -373,33 +360,14 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
 
   const onContextMenu = (event: MouseEvent) => event.preventDefault();
 
-  // Fix the window size to 100% on first load
-  useEffect(() => {
-    if (gameAreaRef.current) {
-      const { width, height } = gameAreaRef.current?.getBoundingClientRect();
-      setGameAreaDims({
-        width,
-        height,
-      });
-    }
-  }, []);
-
   return (
     <>
       <div
-        ref={gameAreaRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onClick={handleMouseUp}
         onContextMenu={onContextMenu}
-        className={gameAreaStyles.gameArea}
-        style={{
-          width: gameAreaDims.width,
-          height: gameAreaDims.height,
-        }}
       >
-        <AnimatedBackground />
-        <TopSection />
         <Board
           boardRef={boardRef}
           previewPiece={state.previewPiece}

@@ -20,9 +20,7 @@ export default function Level({ level }: { level: number }) {
     error: false,
     loading: true,
   });
-  // console.count("level");
 
-  // const id = params.id;
   useEffect(() => {
     const getPieces = () => {
       fetch(`/play/level/${level}/api`)
