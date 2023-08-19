@@ -12,8 +12,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export const TopSection = () => {
-  const [hasMusic, setHasMusic] = useState(false);
+export const TopSection = ({hasMusic, toggleMusic}: {
+  hasMusic: boolean;
+  toggleMusic: () => void;
+}) => {
   const [hasFx, setHasFx] = useState(false);
   const [isOpenHelp, setIsOpenHelp] = useState(false);
   const [hoverMusic, setHoverMusic] = useState(false);
@@ -27,7 +29,7 @@ export const TopSection = () => {
       </div>
       <div className={gameAreaStyles.toolbar}>
         <button
-          onClick={() => setHasMusic(!hasMusic)}
+          onClick={() => toggleMusic()}
           onMouseEnter={() => setHoverMusic(!hasMusic)}
           onMouseLeave={() => setHoverMusic(hasMusic)}
           className={gameAreaStyles.toolbarButton}

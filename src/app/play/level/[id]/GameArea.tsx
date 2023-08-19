@@ -386,7 +386,6 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         moves={gameState.moves}
         startDate={gameState.startDate}
         isVisible={gameState.complete}
-        // musicRef={musicRef}
       />
     </>
   );

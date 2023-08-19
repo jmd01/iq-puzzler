@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TopSection } from "./level/[id]/TopSection";
 import { AnimatedBackground } from "./level/components/AnimatedBackground";
 import gameAreaStyles from "./level/styles/gameArea.module.css";
@@ -9,6 +9,29 @@ export default function PlayLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { gameAreaDims, gameAreaRef } = useSetGameArea();
+  const { audioContextRef, hasMusic, toggleMusic } = useMusic();
+
+  return (
+    <div
+      ref={gameAreaRef}
+      className={gameAreaStyles.gameArea}
+      style={{
+        width: gameAreaDims.width,
+        height: gameAreaDims.height,
+      }}
+      onClick={() => {
+        audioContextRef.current?.resume();
+      }}
+    >
+      <AnimatedBackground />
+      <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
+      {children}
+    </div>
+  );
+}
+
+const useSetGameArea = () => {
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const [gameAreaDims, setGameAreaDims] = useState<{
     width: number | string;
@@ -29,8 +52,33 @@ export default function PlayLayout({
     }
   }, []);
 
+  return {
+    gameAreaRef,
+    gameAreaDims,
+  };
+};
+
+const useMusic = () => {
+  const [hasMusic, setHasMusic] = useState(
+    typeof window !== "undefined" &&
+      window.localStorage.getItem("hasMusic") === "true"
+  );
+
+  const toggleMusic = useCallback(() => {
+    setHasMusic(!hasMusic);
+    localStorage.setItem("hasMusic", String(!hasMusic));
+
+    if (audioContextRef.current && gainNodeRef.current) {
+      gainNodeRef.current.gain.exponentialRampToValueAtTime(
+        hasMusic ? 0.01 : 1.0,
+        audioContextRef.current.currentTime + 2
+      );
+    }
+  }, [hasMusic]);
+
   const audioContextRef = useRef<AudioContext>();
   const audioNodeRef = useRef<AudioBufferSourceNode>();
+  const gainNodeRef = useRef<GainNode>();
 
   // Create audio and fade it in on first level loaded. Audio will loop seamlessly and will continue playing on transitioning between levels
   // TODO If loading straight to a level page (rather than from the home page), Google will prevent audio from playing since no user interactions have taken place
@@ -51,40 +99,36 @@ export default function PlayLayout({
               audioNodeRef.current.buffer = decodedBuffer;
               audioNodeRef.current.loop = true;
 
-              const gainNode = audioContextRef.current.createGain();
-              gainNode.gain.value = 0.01;
+              gainNodeRef.current = audioContextRef.current.createGain();
+              gainNodeRef.current.gain.value = 0.01;
 
-              audioNodeRef.current.connect(gainNode);
-              gainNode.connect(audioContextRef.current.destination);
+              audioNodeRef.current.connect(gainNodeRef.current);
+              gainNodeRef.current.connect(audioContextRef.current.destination);
 
               // Start playing
               audioNodeRef.current.start();
 
-              // Fade in
-              gainNode.gain.exponentialRampToValueAtTime(
-                1.0,
-                audioContextRef.current.currentTime + 4
-              );
+              if (hasMusic) {
+                // Fade in
+                gainNodeRef.current.gain.exponentialRampToValueAtTime(
+                  1.0,
+                  audioContextRef.current.currentTime + 4
+                );
+              }
             }
           });
         });
     }
 
     return () => audioNodeRef.current?.stop();
+
+    // Only run on first render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <div
-      ref={gameAreaRef}
-      className={gameAreaStyles.gameArea}
-      style={{
-        width: gameAreaDims.width,
-        height: gameAreaDims.height,
-      }}
-    >
-      <AnimatedBackground />
-      <TopSection />
-      {children}
-    </div>
-  );
-}
+  return {
+    audioContextRef,
+    hasMusic,
+    toggleMusic,
+  };
+};
