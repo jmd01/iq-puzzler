@@ -1,12 +1,6 @@
 import { Board } from "../components/Board";
 import { Pieces } from "../components/Pieces";
-import {
-  useRef,
-  useState,
-  MouseEvent,
-  useCallback,
-  useReducer,
-} from "react";
+import { useRef, useState, MouseEvent, useCallback, useReducer } from "react";
 import type { Reducer } from "react";
 import {
   boardsCellsCoveredByPiece,
@@ -92,16 +86,11 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
   }
 };
 
-// const pickUpAudio = new Audio("../../assets/CLAV9.wav");
-// const dropUpAudio = new Audio("../../assets/CLAV10.wav");
-
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
   unplacedPieces: Piece[];
 };
 export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
-  const [hasMusic, setHasMusic] = useState(true);
-
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(11, 5, placedPieces)
   );
@@ -174,8 +163,6 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       )
         return;
 
-      // pickUpAudio.play();
-
       dispatch({
         type: "DRAG_MOVE",
         position: { x: event.clientX, y: event.clientY },
@@ -220,11 +207,19 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
               activePiece.currentShape,
               gameState.grid
             );
-            previewPiece &&
+
+            if (
+              previewPiece &&
+              JSON.stringify(state?.previewPiece) !==
+                JSON.stringify(previewPiece)
+            ) {
               dispatch({
                 type: "DRAG_OVER_BOARD",
                 previewPiece,
               });
+
+              new Audio("/over-board.mp3").play();
+            }
             return;
           }
         }
@@ -239,10 +234,10 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       boardBounds,
       gameState,
       pieces,
-      setPieces,
       state.activePieceId,
       state.isMouseDown,
       state.onMouseDownPosition,
+      state?.previewPiece,
     ]
   );
 
@@ -286,8 +281,6 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           })
         );
 
-        // dropUpAudio.play();
-
         // If piece was dropped on the board in a placeable position, add it to the board grid and check if grid is full (i.e game complete)
         if (state.previewPiece) {
           const updatedGrid = addPieceToBoard(
@@ -304,9 +297,14 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
             complete,
             moves: gameState.moves + 1,
           });
+          new Audio("/place.mp3").play();
+        } else {
+          new Audio("/drop.mp3").play();
         }
       } else {
         // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
+        new Audio("/transform.mp3").play();
+
         const activePiece = pieces.find(
           (piece) => piece.id === state.activePieceId
         );

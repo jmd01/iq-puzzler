@@ -70,8 +70,8 @@ const useMusic = () => {
 
     if (audioContextRef.current && gainNodeRef.current) {
       gainNodeRef.current.gain.exponentialRampToValueAtTime(
-        hasMusic ? 0.01 : 1.0,
-        audioContextRef.current.currentTime + 2
+        hasMusic ? 0.0000001 : 1.0,
+        audioContextRef.current.currentTime + 1
       );
     }
   }, [hasMusic]);

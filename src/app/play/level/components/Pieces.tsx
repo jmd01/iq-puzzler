@@ -125,9 +125,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
 
       const pieceBounds = ref.current?.getBoundingClientRect();
 
-      !isDragging &&
-        pieceBounds &&
-        boardBounds &&
+      if (!isDragging && pieceBounds && boardBounds) {
         setPieces((pieces) =>
           event.ctrlKey || event.metaKey || event.shiftKey
             ? updatePiecesWithFlippedPiece(
@@ -142,6 +140,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
                 isActivePieceOverBoard(pieceBounds, boardBounds)
               )
         );
+      }
     },
     [boardBounds, id, isDragging, piece.isLocked, setPieces]
   );
@@ -236,9 +235,8 @@ export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
       height,
       width,
       currentShape,
-      rotation = 0
+      rotation = 0,
     } = piece;
-
 
     const x = position.x;
     const y = position.y;
@@ -300,4 +298,3 @@ export const PreplacedPiece = forwardRef<HTMLDivElement, PreplacedPieceProps>(
     );
   }
 );
-

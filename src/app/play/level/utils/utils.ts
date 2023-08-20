@@ -60,7 +60,7 @@ export function isActivePieceOverBoard(
 ) {
   return (
     pieceBounds.top > boardBounds.top - DRAG_OVER_BOARD_BUFFER &&
-    pieceBounds.left > boardBounds.top - DRAG_OVER_BOARD_BUFFER &&
+    pieceBounds.left > boardBounds.left - DRAG_OVER_BOARD_BUFFER &&
     pieceBounds.bottom < boardBounds.bottom + DRAG_OVER_BOARD_BUFFER &&
     pieceBounds.right < boardBounds.right + DRAG_OVER_BOARD_BUFFER
   );
