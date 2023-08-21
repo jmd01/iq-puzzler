@@ -60,16 +60,17 @@ export const logoContainer = twClassnames(
 
 export const piecesContainer = twClassnames(
   layout("flex"),
-  flexBox("flex-wrap", "items-center", "justify-between"),
+  flexBox(
+    "flex-wrap",
+    "items-center",
+    "justify-center",
+  ),
   gap("gap-4"),
-  maxWidth("max-w-4xl"),
   padding("p-4"),
-  margin("mx-auto")
 );
 
 export const levelCompleteWrapper = twClassnames(
   layout("absolute", "top-0", "left-0"),
-  // zIndex("z-50"),
   width("w-full"),
   height("h-full"),
   backgroundColor("bg-black"),
@@ -103,17 +104,17 @@ export const levelCompleteMiddleStar = twClassnames(translate("translate-y-6"));
 
 export const levelCompleteText = twClassnames(
   fontSize("text-4xl"),
-  padding("py-6"),
+  padding("py-6")
 );
 
 export const levelCompleteIcons = twClassnames(
   layout("flex"),
   flexBox("justify-center"),
-  gap("gap-4"),
+  gap("gap-4")
 );
 
 export const levelCompleteIconWrapper = twClassnames(
-  borderRadius("rounded-full"),
+  borderRadius("rounded-full")
 );
 export const levelCompleteIcon = twClassnames(
   layout("flex"),
