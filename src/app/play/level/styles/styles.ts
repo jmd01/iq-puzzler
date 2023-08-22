@@ -50,8 +50,6 @@ export const boardCellContainer = twClassnames(
   grid("grid-cols-11")
 );
 
-export const boardCell = twClassnames(width("w-16"), height("h-16"));
-
 export const logoContainer = twClassnames(
   layout("flex"),
   flexBox("justify-center"),

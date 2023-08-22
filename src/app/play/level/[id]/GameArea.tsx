@@ -6,6 +6,7 @@ import {
   boardsCellsCoveredByPiece,
   calcPlacedPosition,
   calcUnplacedPosition,
+  CELL_SIZE,
   DRAG_START_THRESHOLD,
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
@@ -196,7 +197,9 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         const pieceBounds = activePieceRef.current.getBoundingClientRect();
 
         // If active piece is over the board, determine if it is in a placeable position. If it is, render a preview of where it will drop
-        if (isActivePieceOverBoard(pieceBounds, boardBounds)) {
+        // console.log(isActivePieceOverBoard(pieceBounds, boardBounds));
+        
+        if (isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE)) {
           const activePiece = pieces.find(
             ({ id }) => id === state.activePieceId
           );
@@ -321,13 +324,13 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
               ? updatePiecesWithFlippedPiece(
                   pieces,
                   state.activePieceId,
-                  isActivePieceOverBoard(pieceBounds, boardBounds),
+                  isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE),
                   event.ctrlKey || event.metaKey ? "x" : "y"
                 )
               : updatePiecesWithRotatedPiece(
                   pieces,
                   state.activePieceId,
-                  isActivePieceOverBoard(pieceBounds, boardBounds)
+                  isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE)
                 )
           );
           setGameState({

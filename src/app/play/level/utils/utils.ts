@@ -1,9 +1,7 @@
 import { getFlippedShape, getRotatedShape } from "./sharedUtils";
 import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
-import { ro } from "date-fns/locale";
 
 export const CELL_SIZE = 64;
-export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;
 export const DRAG_START_THRESHOLD = 5;
 
 /**
@@ -56,13 +54,15 @@ const getPlacedPieceIdFromCell = (
  */
 export function isActivePieceOverBoard(
   pieceBounds: DOMRect,
-  boardBounds: DOMRect
+  boardBounds: DOMRect,
+  cellSize: number
 ) {
+  const dragOverBoardBuffer = cellSize / 2;
   return (
-    pieceBounds.top > boardBounds.top - DRAG_OVER_BOARD_BUFFER &&
-    pieceBounds.left > boardBounds.left - DRAG_OVER_BOARD_BUFFER &&
-    pieceBounds.bottom < boardBounds.bottom + DRAG_OVER_BOARD_BUFFER &&
-    pieceBounds.right < boardBounds.right + DRAG_OVER_BOARD_BUFFER
+    pieceBounds.top > boardBounds.top - dragOverBoardBuffer &&
+    pieceBounds.left > boardBounds.left - dragOverBoardBuffer &&
+    pieceBounds.bottom < boardBounds.bottom + dragOverBoardBuffer &&
+    pieceBounds.right < boardBounds.right + dragOverBoardBuffer
   );
 }
 

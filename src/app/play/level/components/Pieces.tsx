@@ -12,6 +12,7 @@ import {
 import { GameAreaDragState } from "../types";
 import type { Piece as PieceType } from "../types";
 import {
+  CELL_SIZE,
   getDecimalPart,
   isActivePieceOverBoard,
   mergeRefs,
@@ -83,10 +84,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     onMouseDownPosition = { x: 0, y: 0 },
     dragPosition,
     placedInCells,
-    d,
     color,
-    height,
-    width,
     shape,
   } = piece;
   const isDragging = isActivePiece && !!dragPosition;
@@ -131,13 +129,13 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
             ? updatePiecesWithFlippedPiece(
                 pieces,
                 id,
-                isActivePieceOverBoard(pieceBounds, boardBounds),
+                isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE),
                 event.ctrlKey || event.metaKey ? "x" : "y"
               )
             : updatePiecesWithRotatedPiece(
                 pieces,
                 id,
-                isActivePieceOverBoard(pieceBounds, boardBounds)
+                isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE)
               )
         );
       }
@@ -197,8 +195,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
           opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
           id={id.toString()}
           color={color}
-          width={width}
-          height={height}
           shape={shape}
           rotation={rotation}
           isFlippedX={isFlippedX}

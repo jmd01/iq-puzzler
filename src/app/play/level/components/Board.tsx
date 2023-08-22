@@ -5,6 +5,7 @@ import { Animate } from "react-simple-animate";
 import * as twStyles from "../styles/styles";
 import boardStyles from "../styles/board.module.css";
 import classnames from "classnames";
+import { CELL_SIZE } from "../utils/utils";
 
 export const Board = ({
   boardRef,
@@ -46,8 +47,12 @@ export const Board = ({
                 {[...Array(55)].map((_, i) => (
                   <span
                     key={i}
-                    className={classnames("boardCell", twStyles.boardCell)}
+                    className={classnames("boardCell")}
                     data-board-cell={`${i % 11},${Math.floor(i / 11)}`}
+                    style={{
+                      width: CELL_SIZE,
+                      height: CELL_SIZE,
+                    }}
                   />
                 ))}
               </div>
@@ -64,12 +69,15 @@ export const Board = ({
                   <span
                     key={i}
                     className={classnames(
-                      twStyles.boardCell,
                       "rounded-full",
                       boardStyles.boardCell,
                       { [boardStyles.boardCellPreview]: isPreview }
                     )}
                     data-board-cell={`${x},${y}`}
+                    style={{
+                      width: CELL_SIZE,
+                      height: CELL_SIZE,
+                    }}
                   />
                 );
               })}

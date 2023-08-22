@@ -6,8 +6,6 @@ export const PieceDiv = ({
   onClick,
   isPlaceable,
   id,
-  height,
-  width,
   color,
   shape,
   opacity,
@@ -32,7 +30,7 @@ export const PieceDiv = ({
   hasOutline: boolean;
 }) => {
   return (
-    <div style={{ width, height }}>
+    <div style={{ width: CELL_SIZE * shape[0].length, height: CELL_SIZE * shape.length }}>
       {shape.map((row, y) => {
         // Create a div or spacer for each cell in the piece
         return row.map((isFilledCell, x) =>
