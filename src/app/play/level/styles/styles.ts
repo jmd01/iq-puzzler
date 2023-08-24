@@ -22,14 +22,13 @@ import {
   textColor,
   backgroundColor,
 } from "tailwindcss-classnames";
-import { transform } from "typescript";
 
 export const boardWrapper = twClassnames(
   layout("grid"),
   grid(
     "grid-cols-1",
     flexBox("items-center", "justify-items-center"),
-    spacing("p-4")
+    // spacing("p-4")
   )
 );
 

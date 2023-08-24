@@ -1,3 +1,19 @@
+/* .boardWrapper {
+  padding: 0;
+}
+
+@media (min-width: 600px) {
+  .boardWrapper {
+    padding: 4px;
+  }
+}
+
+@media (min-width: 800px) {
+  .boardWrapper {
+    padding: 16px;
+  }
+} */
+
 .boardBgrd {
   background-image: linear-gradient(135deg, #4c00c5, #2d2285);
   box-shadow: rgb(255, 255, 255, 0.25) 0.5px 0.5px 0.3px 0.3px inset,

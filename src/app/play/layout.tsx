@@ -1,62 +1,70 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  use,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { TopSection } from "./level/[id]/TopSection";
 import { AnimatedBackground } from "./level/components/AnimatedBackground";
 import gameAreaStyles from "./level/styles/gameArea.module.css";
+import { GameContext } from "./GameContext";
+import { useResizeDetector } from "react-resize-detector";
 
 export default function PlayLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { gameAreaDims, gameAreaRef } = useSetGameArea();
+  const { width, height, ref: gameAreaRef } = useResizeDetector();
   const { audioContextRef, hasMusic, toggleMusic } = useMusic();
 
+  const cellSize = useMemo(() => {
+    if (!(width && height)) {
+      return 64;
+    }
+    switch (true) {
+      case width < 400:
+        return height < 700 ? 24 : 28;
+      case width < 600:
+        return height < 700 ? 30 : 34;
+      case width < 800:
+        return height < 890 ? 40 : 44;
+      case width < 1000:
+        return height < 900 ? 42 : 50;
+      case width < 1200:
+        return height < 980 ? 48 : 56;
+      case width < 1500:
+        return height < 930 ? 54 : 62;
+      default:
+        return height < 880 ? 58 : 64;
+    }
+  }, [width, height]);
+
   return (
-    <div
-      ref={gameAreaRef}
-      className={gameAreaStyles.gameArea}
-      style={{
-        width: gameAreaDims.width,
-        height: gameAreaDims.height,
-      }}
-      onClick={() => {
-        audioContextRef.current?.resume();
-      }}
-    >
-      <AnimatedBackground />
-      <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
-      {children}
-    </div>
+    <GameContext.Provider value={{ cellSize }}>
+      <div
+        ref={gameAreaRef}
+        className={gameAreaStyles.gameArea}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+        onClick={() => {
+          audioContextRef.current?.resume();
+        }}
+      >
+        <AnimatedBackground />
+        <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
+        {children}
+      </div>
+    </GameContext.Provider>
   );
 }
-
-const useSetGameArea = () => {
-  const gameAreaRef = useRef<HTMLDivElement>(null);
-  const [gameAreaDims, setGameAreaDims] = useState<{
-    width: number | string;
-    height: number | string;
-  }>({
-    height: "100%",
-    width: "100%",
-  });
-
-  // Fix the window size to 100% on first load
-  useEffect(() => {
-    if (gameAreaRef.current) {
-      const { width, height } = gameAreaRef.current?.getBoundingClientRect();
-      setGameAreaDims({
-        width,
-        height,
-      });
-    }
-  }, []);
-
-  return {
-    gameAreaRef,
-    gameAreaDims,
-  };
-};
 
 const useMusic = () => {
   const [hasMusic, setHasMusic] = useState(

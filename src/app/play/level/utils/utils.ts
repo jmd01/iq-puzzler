@@ -1,7 +1,7 @@
 import { getFlippedShape, getRotatedShape } from "./sharedUtils";
 import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
 
-export const CELL_SIZE = 64;
+// export const CELL_SIZE = 64;
 export const DRAG_START_THRESHOLD = 5;
 
 /**
@@ -123,7 +123,8 @@ export function boardsCellsCoveredByPiece(
   pieceBounds: DOMRect,
   boardBounds: DOMRect,
   pieceCurrentShape: Piece["shape"],
-  gameStateGrid: GameState["grid"]
+  gameStateGrid: GameState["grid"],
+  cellSize: number
 ): PreviewPiece | undefined {
   const pieceTopRelativeToBoard = Math.max(
     pieceBounds.top - boardBounds.top,
@@ -135,9 +136,9 @@ export function boardsCellsCoveredByPiece(
   );
 
   // The board cell nearest the top side that the dragged piece is over
-  const pieceOverBoardCellY = Math.round(pieceTopRelativeToBoard / CELL_SIZE);
+  const pieceOverBoardCellY = Math.round(pieceTopRelativeToBoard / cellSize);
   // The board cell nearest the left side that the dragged piece is over
-  const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
+  const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / cellSize);
 
   // The index of boards cells that the dragged piece is over
   const pieceOverCells = getPieceOverCells(
@@ -226,7 +227,8 @@ export function calcPlacedPosition(
   pieceBounds: { width: number; height: number },
   boardBounds: { top: number; left: number },
   previewPiece: { x: number; y: number },
-  isPreplaced?: boolean
+  cellSize: number,
+  isPreplaced?: boolean,
 ) {
   const pieceInitialPosition = calcRotatedInitialPiecePosition(
     pieceBounds,
@@ -236,8 +238,8 @@ export function calcPlacedPosition(
   );
 
   return {
-    x: boardBounds.left + previewPiece.x * CELL_SIZE - pieceInitialPosition.x,
-    y: boardBounds.top + previewPiece.y * CELL_SIZE - pieceInitialPosition.y,
+    x: boardBounds.left + previewPiece.x * cellSize - pieceInitialPosition.x,
+    y: boardBounds.top + previewPiece.y * cellSize - pieceInitialPosition.y,
   };
 }
 

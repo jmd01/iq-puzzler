@@ -107,6 +107,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             isRotatedSideways(rotation) ? { height, width } : { width, height },
             { top: 0, left: 0 },
             previewPiece,
+            64, // TODO: cellSize
             true
           ),
           isActivePiece: false,

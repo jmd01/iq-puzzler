@@ -5,7 +5,7 @@ import { Animate } from "react-simple-animate";
 import * as twStyles from "../styles/styles";
 import boardStyles from "../styles/board.module.css";
 import classnames from "classnames";
-import { CELL_SIZE } from "../utils/utils";
+import { useGameContext } from "../../GameContext";
 
 export const Board = ({
   boardRef,
@@ -16,8 +16,11 @@ export const Board = ({
   previewPiece: PreviewPiece | undefined;
   prePlacedPieces: PlacedPiece[];
 }) => {
+  const cellSize = useGameContext().cellSize;
   return (
-    <div className={twStyles.boardWrapper}>
+    <div
+      className={classnames(twStyles.boardWrapper, boardStyles.boardWrapper)}
+    >
       <Animate
         play
         duration={0.4}
@@ -50,8 +53,8 @@ export const Board = ({
                     className={classnames("boardCell")}
                     data-board-cell={`${i % 11},${Math.floor(i / 11)}`}
                     style={{
-                      width: CELL_SIZE,
-                      height: CELL_SIZE,
+                      width: cellSize,
+                      height: cellSize,
                     }}
                   />
                 ))}
@@ -75,8 +78,8 @@ export const Board = ({
                     )}
                     data-board-cell={`${x},${y}`}
                     style={{
-                      width: CELL_SIZE,
-                      height: CELL_SIZE,
+                      width: cellSize,
+                      height: cellSize,
                     }}
                   />
                 );

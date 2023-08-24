@@ -4,6 +4,7 @@ import { Piece, PlacedPiece, levelSchema, piecesDataSchema } from "../types";
 import { calcPlacedPosition, isRotatedSideways } from "../utils/utils";
 import { getPlacedRotatedAndFlippedShape } from "../utils/sharedUtils";
 import { useEffect, useState } from "react";
+import { useGameContext } from "../../GameContext";
 
 export default function Level({ level }: { level: number }) {
   const [levelData, setLevelData] = useState<{
@@ -20,6 +21,8 @@ export default function Level({ level }: { level: number }) {
     error: false,
     loading: true,
   });
+
+  const cellSize = useGameContext().cellSize;
 
   useEffect(() => {
     const getPieces = () => {
@@ -93,6 +96,7 @@ export default function Level({ level }: { level: number }) {
                         : { width, height },
                       { top: 0, left: 0 },
                       previewPiece,
+                      cellSize,
                       true
                     ),
                     isActivePiece: false,
@@ -132,8 +136,6 @@ export default function Level({ level }: { level: number }) {
                 isFlippedY: false,
               }));
 
-            console.log({ placedPieces, unplacedPieces });
-
             setLevelData({
               data: {
                 placedPieces,
@@ -143,7 +145,6 @@ export default function Level({ level }: { level: number }) {
               loading: false,
             });
           } else {
-            console.log({ allPiecesResult, levelResult });
             setLevelData({
               data: undefined,
               error: true,
@@ -152,8 +153,6 @@ export default function Level({ level }: { level: number }) {
           }
         })
         .catch((e) => {
-          console.log({ e });
-
           setLevelData({
             data: undefined,
             error: true,
@@ -162,7 +161,7 @@ export default function Level({ level }: { level: number }) {
         });
     };
     getPieces();
-  }, [level]);
+  }, [cellSize, level]);
 
   if (levelData.data) {
     return (

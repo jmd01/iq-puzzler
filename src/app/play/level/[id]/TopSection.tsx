@@ -25,7 +25,7 @@ export const TopSection = ({hasMusic, toggleMusic}: {
   return (
     <div className={gameAreaStyles.topSection}>
       <div className={gameAreaStyles.logoContainer}>
-        <Logo fill="#3a287a" width={80} />
+        <Logo fill="#3a287a"/>
       </div>
       <div className={gameAreaStyles.toolbar}>
         <button

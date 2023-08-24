@@ -12,8 +12,6 @@ import {
 import { GameAreaDragState } from "../types";
 import type { Piece as PieceType } from "../types";
 import {
-  CELL_SIZE,
-  getDecimalPart,
   isActivePieceOverBoard,
   mergeRefs,
   updatePiecesWithFlippedPiece,
@@ -22,7 +20,9 @@ import {
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
 import * as twStyles from "../styles/styles";
-import { is } from "date-fns/locale";
+import { useGameContext } from "../../GameContext";
+import classnames from "classnames";
+import piecesStyles from "../styles/gameArea.module.css";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -36,7 +36,12 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   activePieceRef
 ) {
   return (
-    <div className={twStyles.piecesContainer}>
+    <div
+      className={classnames(
+        twStyles.piecesContainer,
+        piecesStyles.piecesContainer
+      )}
+    >
       {pieces.map((piece, i) => {
         const isActivePiece = activePieceId === piece.id;
         const pieceProps: PieceType = {
@@ -74,6 +79,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   { piece, setPieces, boardBounds, index },
   activePieceRef
 ) {
+  const cellSize = useGameContext().cellSize;
   const {
     id,
     position,
@@ -129,18 +135,18 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
             ? updatePiecesWithFlippedPiece(
                 pieces,
                 id,
-                isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE),
+                isActivePieceOverBoard(pieceBounds, boardBounds, cellSize),
                 event.ctrlKey || event.metaKey ? "x" : "y"
               )
             : updatePiecesWithRotatedPiece(
                 pieces,
                 id,
-                isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE)
+                isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)
               )
         );
       }
     },
-    [boardBounds, id, isDragging, piece.isLocked, setPieces]
+    [boardBounds, cellSize, id, isDragging, piece.isLocked, setPieces]
   );
 
   useEffect(() => {

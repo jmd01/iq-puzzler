@@ -1,12 +1,19 @@
 import { Board } from "../components/Board";
 import { Pieces } from "../components/Pieces";
-import { useRef, useState, MouseEvent, useCallback, useReducer } from "react";
+import {
+  useRef,
+  useState,
+  MouseEvent,
+  useCallback,
+  useReducer,
+  useContext,
+} from "react";
 import type { Reducer } from "react";
 import {
   boardsCellsCoveredByPiece,
   calcPlacedPosition,
   calcUnplacedPosition,
-  CELL_SIZE,
+  // CELL_SIZE,
   DRAG_START_THRESHOLD,
   getPieceIdOnMouseDown,
   isActivePieceOverBoard,
@@ -26,6 +33,7 @@ import {
   removePieceFromBoard,
   generateGameState,
 } from "../utils/sharedUtils";
+import { useGameContext } from "../../GameContext";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,
@@ -95,6 +103,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
   const [gameState, setGameState] = useState<GameState>(
     generateGameState(11, 5, placedPieces)
   );
+  const cellSize = useGameContext().cellSize;
 
   const [prePlacedPieces] = useState(placedPieces);
   const [pieces, setPieces] = useState(unplacedPieces);
@@ -198,8 +207,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
 
         // If active piece is over the board, determine if it is in a placeable position. If it is, render a preview of where it will drop
         // console.log(isActivePieceOverBoard(pieceBounds, boardBounds));
-        
-        if (isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE)) {
+
+        if (isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)) {
           const activePiece = pieces.find(
             ({ id }) => id === state.activePieceId
           );
@@ -208,7 +217,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
               pieceBounds,
               boardBounds,
               activePiece.currentShape,
-              gameState.grid
+              gameState.grid,
+              cellSize
             );
 
             if (
@@ -235,6 +245,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
     },
     [
       boardBounds,
+      cellSize,
       gameState,
       pieces,
       state.activePieceId,
@@ -266,7 +277,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
                       piece,
                       pieceBounds,
                       boardBounds,
-                      state.previewPiece
+                      state.previewPiece,
+                      cellSize
                     )
                   : calcUnplacedPosition(
                       piece,
@@ -324,13 +336,13 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
               ? updatePiecesWithFlippedPiece(
                   pieces,
                   state.activePieceId,
-                  isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE),
+                  isActivePieceOverBoard(pieceBounds, boardBounds, cellSize),
                   event.ctrlKey || event.metaKey ? "x" : "y"
                 )
               : updatePiecesWithRotatedPiece(
                   pieces,
                   state.activePieceId,
-                  isActivePieceOverBoard(pieceBounds, boardBounds, CELL_SIZE)
+                  isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)
                 )
           );
           setGameState({
@@ -352,14 +364,16 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       state.activePieceId,
       state.dragPosition,
       state.onMouseDownPosition,
-      setPieces,
       pieces,
       boardBounds,
+      cellSize,
       gameState,
     ]
   );
 
   const onContextMenu = (event: MouseEvent) => event.preventDefault();
+
+  // const gameAreaRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -368,6 +382,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         onMouseMove={handleMouseMove}
         onClick={handleMouseUp}
         onContextMenu={onContextMenu}
+        // ref={gameAreaRef}
       >
         <Board
           boardRef={boardRef}
