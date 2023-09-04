@@ -1,10 +1,15 @@
 "use client";
 import { GameArea } from "./GameArea";
 import { Piece, PlacedPiece, levelSchema, piecesDataSchema } from "../types";
-import { calcPlacedPosition, isRotatedSideways } from "../utils/utils";
+import {
+  calcPlacedPosition,
+  getPlacedInCellsTopLeft,
+  isRotatedSideways,
+} from "../utils/utils";
 import { getPlacedRotatedAndFlippedShape } from "../utils/sharedUtils";
 import { useEffect, useState } from "react";
 import { useGameContext } from "../../GameContext";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 export default function Level({ level }: { level: number }) {
   const [levelData, setLevelData] = useState<{
@@ -23,19 +28,16 @@ export default function Level({ level }: { level: number }) {
   });
 
   const cellSize = useGameContext().cellSize;
+  const localStorage = useLocalStorage(level);
 
   useEffect(() => {
     const getPieces = () => {
       fetch(`/play/level/${level}/api`)
         .then((res) => res.json())
         .then(({ allPieces, level }) => {
-          console.log({ allPieces, level });
-
           // Ensure JSON.parsed() shape and placedInCells arrays are valid
           const allPiecesResult = piecesDataSchema.safeParse(allPieces);
           const levelResult = levelSchema.safeParse(level);
-
-          console.log({ allPiecesResult, levelResult });
 
           if (allPiecesResult.success && levelResult.success) {
             // Extract the preplaced piece for this level from all solution pieces
@@ -59,15 +61,7 @@ export default function Level({ level }: { level: number }) {
                   isFlippedY,
                   placedInCells,
                 }) => {
-                  const previewPiece = placedInCells.reduce(
-                    (acc, [cellX, cellY]) => {
-                      return {
-                        x: cellX < acc.x ? cellX : acc.x,
-                        y: cellY < acc.y ? cellY : acc.y,
-                      };
-                    },
-                    { x: 10, y: 5 }
-                  );
+                  const previewPiece = getPlacedInCellsTopLeft(placedInCells);
 
                   const currentShape = getPlacedRotatedAndFlippedShape(
                     shape,
@@ -88,6 +82,7 @@ export default function Level({ level }: { level: number }) {
                     initialPosition: { x: 0, y: 0 },
                     position: calcPlacedPosition(
                       {
+                        id,
                         rotation: 0,
                         initialPosition: { x: 0, y: 0 },
                       },
@@ -109,7 +104,7 @@ export default function Level({ level }: { level: number }) {
                   };
                 }
               );
-            // Extract the game pieces for this levle and add the default values
+            // Extract the game pieces for this level and add the default values
             const unplacedPieces = allPiecesResult.data
               .filter(
                 (piece) =>
@@ -134,7 +129,19 @@ export default function Level({ level }: { level: number }) {
                 rotation: 0,
                 isFlippedX: false,
                 isFlippedY: false,
-              }));
+              }))
+              .map((piece) => {
+                const localStoragePiece = localStorage
+                  .getLocalStorage()
+                  ?.placedPieces?.find((p) => p.id === piece.id);
+                if (localStoragePiece) {
+                  return {
+                    ...piece,
+                    ...localStoragePiece,
+                  };
+                }
+                return piece;
+              });
 
             setLevelData({
               data: {
@@ -168,6 +175,8 @@ export default function Level({ level }: { level: number }) {
       <GameArea
         placedPieces={levelData.data.placedPieces}
         unplacedPieces={levelData.data.unplacedPieces}
+        initialLocalStorageData={localStorage.getLocalStorage()}
+        level={level}
       />
     );
   } else {

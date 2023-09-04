@@ -25,7 +25,7 @@ export default function PlayLayout({
 
   const cellSize = useMemo(() => {
     if (!(width && height)) {
-      return 64;
+      return 0;
     }
     switch (true) {
       case width < 400:
@@ -45,8 +45,19 @@ export default function PlayLayout({
     }
   }, [width, height]);
 
+  const value = useMemo(
+    () => ({
+      cellSize,
+      width: width || 0,
+      height: height || 0,
+    }),
+    [cellSize, height, width]
+  );
+
   return (
-    <GameContext.Provider value={{ cellSize }}>
+    <GameContext.Provider
+      value={value}
+    >
       <div
         ref={gameAreaRef}
         className={gameAreaStyles.gameArea}
@@ -60,7 +71,7 @@ export default function PlayLayout({
       >
         <AnimatedBackground />
         <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
-        {children}
+        {width && height && cellSize ? children : null}
       </div>
     </GameContext.Provider>
   );

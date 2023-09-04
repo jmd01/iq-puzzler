@@ -68,7 +68,7 @@ export function isActivePieceOverBoard(
 
 /**
  * When a piece is rotated, if it is not a square shape then it's position will change relative to the screen.
- * This function calculates the new position of the piece so that it can be positioned relative to the board and it's initial position when placed
+ * This function calculates the new position of the piece so that it can be positioned relative to both the board and it's initial position when placed
  */
 function calcRotatedInitialPiecePosition(
   pieceBounds: { width: number; height: number },
@@ -221,6 +221,7 @@ export function nestedCopy<T>(array: T) {
  */
 export function calcPlacedPosition(
   piece: {
+    id: number;
     rotation: Piece["rotation"];
     initialPosition: Piece["initialPosition"];
   },
@@ -228,7 +229,7 @@ export function calcPlacedPosition(
   boardBounds: { top: number; left: number },
   previewPiece: { x: number; y: number },
   cellSize: number,
-  isPreplaced?: boolean,
+  isPreplaced?: boolean
 ) {
   const pieceInitialPosition = calcRotatedInitialPiecePosition(
     pieceBounds,
@@ -236,6 +237,8 @@ export function calcPlacedPosition(
     piece.initialPosition,
     !!isPreplaced
   );
+
+  piece.id === 12 && console.log({ pieceInitialPosition });
 
   return {
     x: boardBounds.left + previewPiece.x * cellSize - pieceInitialPosition.x,
@@ -479,4 +482,16 @@ function getRotationY(rotation: number): number {
     }
   }
   return 0;
+}
+
+export function getPlacedInCellsTopLeft(placedInCells: [number, number][]) {
+  return placedInCells.reduce(
+    (acc, [cellX, cellY]) => {
+      return {
+        x: cellX < acc.x ? cellX : acc.x,
+        y: cellY < acc.y ? cellY : acc.y,
+      };
+    },
+    { x: 10, y: 5 }
+  );
 }

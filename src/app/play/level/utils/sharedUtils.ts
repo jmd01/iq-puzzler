@@ -1,3 +1,4 @@
+import { LevelLocalStorage } from "../[id]/hooks/useLocalStorage";
 import { GameState, Piece, PlacedPiece, PreviewPiece } from "../types";
 
 /**
@@ -59,22 +60,31 @@ export function removePieceFromBoard(
 export function generateGameState(
   x: number,
   y: number,
-  prePlacedPieces: PlacedPiece[]
+  prePlacedPieces: PlacedPiece[],
+  localStorage?: LevelLocalStorage
 ): GameState {
   // Create an empty grid
-  let grid: number[][] = Array(y).fill(Array(x).fill(0));
+  const generateGrid = () => {
+    if (localStorage?.grid) {
+      return localStorage.grid;
+    }
 
-  // Fill it with the preplaced pieces
-  prePlacedPieces &&
-    prePlacedPieces.forEach(({ placedInCells }) => {
-      grid = addPieceToBoard(grid, placedInCells);
-    });
+    let grid: number[][] = Array(y).fill(Array(x).fill(0));
+
+    // Fill it with the preplaced pieces
+    if (prePlacedPieces && !localStorage?.grid) {
+      prePlacedPieces.forEach(({ placedInCells }) => {
+        grid = addPieceToBoard(grid, placedInCells);
+      });
+    }
+    return grid;
+  };
 
   return {
-    grid,
-    complete: false,
-    moves: 0,
-    startDate: new Date(),
+    grid: generateGrid(),
+    complete: !!localStorage?.complete,
+    moves: localStorage?.moves || 0,
+    startDate: localStorage?.startDate || new Date(),
   };
 }
 

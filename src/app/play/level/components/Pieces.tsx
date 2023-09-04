@@ -12,10 +12,12 @@ import {
 import { GameAreaDragState } from "../types";
 import type { Piece as PieceType } from "../types";
 import {
+  calcPlacedPosition,
   isActivePieceOverBoard,
   mergeRefs,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
+  getPlacedInCellsTopLeft,
 } from "../utils/utils";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
@@ -23,6 +25,8 @@ import * as twStyles from "../styles/styles";
 import { useGameContext } from "../../GameContext";
 import classnames from "classnames";
 import piecesStyles from "../styles/gameArea.module.css";
+import { LevelLocalStorage } from "../[id]/hooks/useLocalStorage";
+import { pieces } from "@/app/pieces";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -30,9 +34,19 @@ export type PiecesProps = {
   activePieceId: PieceType["id"] | undefined;
   state: GameAreaDragState;
   boardBounds: DOMRect | undefined;
+  boardAnimationComplete: boolean;
+  localStorageData?: LevelLocalStorage;
 };
 export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
-  { pieces, setPieces, activePieceId, state, boardBounds },
+  {
+    pieces,
+    setPieces,
+    activePieceId,
+    state,
+    boardBounds,
+    boardAnimationComplete,
+    localStorageData,
+  },
   activePieceRef
 ) {
   return (
@@ -61,6 +75,8 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
             setPieces={setPieces}
             ref={isActivePiece ? activePieceRef : undefined}
             boardBounds={boardBounds}
+            boardAnimationComplete={boardAnimationComplete}
+            localStorageData={localStorageData}
           />
         );
       })}
@@ -72,14 +88,23 @@ export type PieceProps = {
   piece: PieceType;
   setPieces: Dispatch<SetStateAction<PieceType[]>>;
   boardBounds?: DOMRect;
+  boardAnimationComplete: boolean;
   index: number;
+  localStorageData?: LevelLocalStorage;
 };
 
 export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
-  { piece, setPieces, boardBounds, index },
+  {
+    piece,
+    setPieces,
+    boardBounds,
+    boardAnimationComplete,
+    index,
+    localStorageData,
+  },
   activePieceRef
 ) {
-  const cellSize = useGameContext().cellSize;
+  const { cellSize, width, height } = useGameContext();
   const {
     id,
     position,
@@ -150,27 +175,49 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
   );
 
   useEffect(() => {
-    const initialPosition = ref.current?.getBoundingClientRect();
-    if (initialPosition) {
+    const pieceBounds = ref.current?.getBoundingClientRect();
+
+    if (pieceBounds && boardAnimationComplete) {
       setPieces((pieces) =>
-        pieces.map((piece) =>
-          piece.id === id
-            ? {
+        pieces
+          .map((piece) => {
+            return piece.id === id
+              ? {
+                  ...piece,
+                  initialPosition: {
+                    x: pieceBounds.x,
+                    y: pieceBounds.y,
+                  },
+                }
+              : piece;
+          })
+          .map((piece) => {
+            // Restore placed pieces from local storage to their correct position
+            if (piece.placedInCells && boardBounds) {
+              return {
                 ...piece,
-                initialPosition: { x: initialPosition.x, y: initialPosition.y },
-              }
-            : piece
-        )
+                position: calcPlacedPosition(
+                  piece,
+                  pieceBounds,
+                  boardBounds,
+                  getPlacedInCellsTopLeft(piece.placedInCells),
+                  cellSize
+                ),
+              };
+            }
+            return piece;
+          })
       );
     }
-    // Only run on first render
+    // Only run on first render or when window is resized
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cellSize, width, height, boardAnimationComplete]);
 
   const timeoutRef = useRef<number | undefined>(undefined);
 
   return (
     <div
+      id={`piece-${id}`}
       ref={mergeRefs([activePieceRef, ref])}
       style={{
         position: piece.isLocked ? "absolute" : "relative",

@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 import { PlacedPiece, PreviewPiece } from "../types";
 import { PreplacedPiece } from "./Pieces";
 import { Animate } from "react-simple-animate";
@@ -11,10 +11,12 @@ export const Board = ({
   boardRef,
   previewPiece,
   prePlacedPieces,
+  setBoardAnimationComplete,
 }: {
   boardRef: RefObject<HTMLDivElement>;
   previewPiece: PreviewPiece | undefined;
   prePlacedPieces: PlacedPiece[];
+  setBoardAnimationComplete: Dispatch<SetStateAction<boolean>>;
 }) => {
   const cellSize = useGameContext().cellSize;
   return (
@@ -33,6 +35,7 @@ export const Board = ({
           transform: "scale(1) translateY(0px)",
         }}
         easeType="ease-out"
+        onComplete={() => setBoardAnimationComplete(true)}
       >
         <div
           className={classnames(twStyles.boardContainer, boardStyles.boardBgrd)}

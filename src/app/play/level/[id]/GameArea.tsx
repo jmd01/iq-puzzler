@@ -6,7 +6,9 @@ import {
   MouseEvent,
   useCallback,
   useReducer,
-  useContext,
+  useEffect,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import type { Reducer } from "react";
 import {
@@ -16,6 +18,7 @@ import {
   // CELL_SIZE,
   DRAG_START_THRESHOLD,
   getPieceIdOnMouseDown,
+  getPlacedInCellsTopLeft,
   isActivePieceOverBoard,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
@@ -34,6 +37,10 @@ import {
   generateGameState,
 } from "../utils/sharedUtils";
 import { useGameContext } from "../../GameContext";
+import {
+  LevelLocalStorage,
+  useLocalStorage,
+} from "../[id]/hooks/useLocalStorage";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,
@@ -98,15 +105,27 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
   unplacedPieces: Piece[];
+  initialLocalStorageData?: LevelLocalStorage;
+  level: number;
 };
-export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
-  const [gameState, setGameState] = useState<GameState>(
-    generateGameState(11, 5, placedPieces)
+export const GameArea = ({
+  placedPieces,
+  unplacedPieces,
+  initialLocalStorageData,
+  level,
+}: GameAreaProps) => {
+  const [gameState, setGameState] = useGameState(
+    level,
+    placedPieces,
+    initialLocalStorageData
   );
-  const cellSize = useGameContext().cellSize;
 
-  const [prePlacedPieces] = useState(placedPieces);
+  const { cellSize } = useGameContext();
+
   const [pieces, setPieces] = useState(unplacedPieces);
+  const [boardAnimationComplete, setBoardAnimationComplete] = useState(false);
+
+  const { setLocalStoragePlacedPieces } = useLocalStorage(level);
 
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
@@ -248,6 +267,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       cellSize,
       gameState,
       pieces,
+      setGameState,
       state.activePieceId,
       state.isMouseDown,
       state.onMouseDownPosition,
@@ -368,12 +388,15 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       boardBounds,
       cellSize,
       gameState,
+      setGameState,
     ]
   );
 
   const onContextMenu = (event: MouseEvent) => event.preventDefault();
 
-  // const gameAreaRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setLocalStoragePlacedPieces(pieces);
+  }, [pieces, setLocalStoragePlacedPieces]);
 
   return (
     <>
@@ -382,21 +405,25 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         onMouseMove={handleMouseMove}
         onClick={handleMouseUp}
         onContextMenu={onContextMenu}
-        // ref={gameAreaRef}
       >
         <Board
           boardRef={boardRef}
           previewPiece={state.previewPiece}
-          prePlacedPieces={prePlacedPieces}
+          prePlacedPieces={placedPieces}
+          setBoardAnimationComplete={setBoardAnimationComplete}
         />
-        <Pieces
-          pieces={pieces}
-          setPieces={setPieces}
-          activePieceId={state.activePieceId}
-          state={state}
-          ref={activePieceRef}
-          boardBounds={boardBounds}
-        />
+        {/* {boardBounds && ( */}
+          <Pieces
+            pieces={pieces}
+            setPieces={setPieces}
+            activePieceId={state.activePieceId}
+            state={state}
+            ref={activePieceRef}
+            boardBounds={boardBounds}
+            boardAnimationComplete={boardAnimationComplete}
+            localStorageData={initialLocalStorageData}
+          />
+        {/* )} */}
       </div>
       <LevelComplete
         moves={gameState.moves}
@@ -406,3 +433,45 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
     </>
   );
 };
+
+const useGameState = (
+  level: number,
+  placedPieces: PlacedPiece[],
+  initialLocalStorageData?: LevelLocalStorage
+): [GameState, (gameState: GameState) => void] => {
+  const [gameState, setGameState] = useState<GameState>(
+    generateGameState(11, 5, placedPieces, initialLocalStorageData)
+  );
+
+  const { setLocalStorageGameState } = useLocalStorage(level);
+
+  const setGameStateAndLocalStorage = (gameState: GameState) => {
+    setLocalStorageGameState(gameState);
+    setGameState(gameState);
+  };
+
+  return [gameState, setGameStateAndLocalStorage];
+};
+
+// const usePieces = (
+//   level: number,
+//   unplacedPieces: Piece[]
+// ): [Piece[], Dispatch<SetStateAction<Piece[]>>] => {
+//   const [pieces, setPieces] = useState(unplacedPieces);
+//   const { setLocalStoragePlacedPieces } = useLocalStorage(level);
+
+//   // const setPiecesAndLocalStorage = (
+//   //   value: Dispatch<SetStateAction<Piece[]>>
+//   // ) => {
+//   //   setLocalStoragePlacedPieces(pieces);
+//   //   console.log("usePieces", pieces);
+
+//   //   setPieces(pieces);
+//   // };
+
+//   useEffect(() => {
+//     setLocalStoragePlacedPieces(pieces);
+//   }, [pieces, setLocalStoragePlacedPieces]);
+
+//   return [pieces, setPieces];
+// };
