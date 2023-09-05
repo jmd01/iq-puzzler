@@ -18,6 +18,7 @@ import {
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
   getPlacedInCellsTopLeft,
+  calcRotatedInitialPiecePosition,
 } from "../utils/utils";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
@@ -35,7 +36,7 @@ export type PiecesProps = {
   state: GameAreaDragState;
   boardBounds: DOMRect | undefined;
   boardAnimationComplete: boolean;
-  localStorageData?: LevelLocalStorage;
+  initialLocalStorageData?: LevelLocalStorage;
 };
 export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   {
@@ -45,10 +46,12 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
     state,
     boardBounds,
     boardAnimationComplete,
-    localStorageData,
+    initialLocalStorageData,
   },
   activePieceRef
 ) {
+  console.log({ pieces });
+
   return (
     <div
       className={classnames(
@@ -76,7 +79,7 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
             ref={isActivePiece ? activePieceRef : undefined}
             boardBounds={boardBounds}
             boardAnimationComplete={boardAnimationComplete}
-            localStorageData={localStorageData}
+            initialLocalStorageData={initialLocalStorageData}
           />
         );
       })}
@@ -90,7 +93,7 @@ export type PieceProps = {
   boardBounds?: DOMRect;
   boardAnimationComplete: boolean;
   index: number;
-  localStorageData?: LevelLocalStorage;
+  initialLocalStorageData?: LevelLocalStorage;
 };
 
 export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
@@ -100,7 +103,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     boardBounds,
     boardAnimationComplete,
     index,
-    localStorageData,
+    initialLocalStorageData,
   },
   activePieceRef
 ) {
@@ -184,10 +187,13 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
             return piece.id === id
               ? {
                   ...piece,
-                  initialPosition: {
-                    x: pieceBounds.x,
-                    y: pieceBounds.y,
-                  },
+                  // If piece was preplaced from local storage and was rotated, djust the initial position, otherwise just use initial position
+                  initialPosition: calcRotatedInitialPiecePosition(
+                    pieceBounds,
+                    piece.rotation,
+                    pieceBounds,
+                    true
+                  ),
                 }
               : piece;
           })

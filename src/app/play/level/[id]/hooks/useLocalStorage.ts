@@ -2,7 +2,7 @@ import { GameState, Piece } from "../../types";
 
 export type LocalStoragePiece = Pick<
   Piece,
-  "id" | "rotation" | "isFlippedX" | "isFlippedY" | "placedInCells"
+  "id" | "rotation" | "isFlippedX" | "isFlippedY" | "placedInCells" | "currentShape"
 >;
 export type LevelLocalStorage = GameState & {
   level: number;
@@ -56,6 +56,7 @@ export const useLocalStorage = (levelId: number) => {
             isFlippedX: p.isFlippedX,
             isFlippedY: p.isFlippedY,
             placedInCells: p.placedInCells,
+            currentShape: p.currentShape,
           })),
       })
     );
