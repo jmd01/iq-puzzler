@@ -412,18 +412,16 @@ export const GameArea = ({
           prePlacedPieces={placedPieces}
           setBoardAnimationComplete={setBoardAnimationComplete}
         />
-        {/* {boardBounds && ( */}
-          <Pieces
-            pieces={pieces}
-            setPieces={setPieces}
-            activePieceId={state.activePieceId}
-            state={state}
-            ref={activePieceRef}
-            boardBounds={boardBounds}
-            boardAnimationComplete={boardAnimationComplete}
-            localStorageData={initialLocalStorageData}
-          />
-        {/* )} */}
+        <Pieces
+          pieces={pieces}
+          setPieces={setPieces}
+          activePieceId={state.activePieceId}
+          state={state}
+          ref={activePieceRef}
+          boardBounds={boardBounds}
+          boardAnimationComplete={boardAnimationComplete}
+          initialLocalStorageData={initialLocalStorageData}
+        />
       </div>
       <LevelComplete
         moves={gameState.moves}

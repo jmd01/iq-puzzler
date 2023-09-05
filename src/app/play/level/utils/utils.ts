@@ -70,7 +70,7 @@ export function isActivePieceOverBoard(
  * When a piece is rotated, if it is not a square shape then it's position will change relative to the screen.
  * This function calculates the new position of the piece so that it can be positioned relative to both the board and it's initial position when placed
  */
-function calcRotatedInitialPiecePosition(
+export function calcRotatedInitialPiecePosition(
   pieceBounds: { width: number; height: number },
   pieceRotation: Piece["rotation"],
   pieceInitialPosition: Piece["initialPosition"],
@@ -91,12 +91,6 @@ function calcRotatedInitialPiecePosition(
             y: pieceInitialPosition.y - Math.abs(offsetY),
           };
     } else {
-      console.log(
-        pieceBounds.height > pieceBounds.width,
-        pieceBounds.height,
-        pieceBounds.width
-      );
-
       return pieceBounds.height > pieceBounds.width
         ? {
             x: pieceInitialPosition.x + offsetX,
@@ -238,7 +232,7 @@ export function calcPlacedPosition(
     !!isPreplaced
   );
 
-  piece.id === 12 && console.log({ pieceInitialPosition });
+  // piece.id === 12 && console.log({ pieceInitialPosition });
 
   return {
     x: boardBounds.left + previewPiece.x * cellSize - pieceInitialPosition.x,

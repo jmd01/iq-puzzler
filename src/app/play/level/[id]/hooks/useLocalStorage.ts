@@ -11,9 +11,25 @@ export type LevelLocalStorage = GameState & {
 
 export const useLocalStorage = (levelId: number) => {
   const localStorageKey = `level-${levelId}`;
+
   const getLocalStorage = (): LevelLocalStorage | undefined => {
     const localStorage = window.localStorage.getItem(localStorageKey);
-    return localStorage ? JSON.parse(localStorage) : undefined;
+    if (localStorage) {
+      try {
+        const parsedLocalStorage = JSON.parse(localStorage);
+        const startDate =
+          "startDate" in parsedLocalStorage
+            ? new Date(parsedLocalStorage.startDate)
+            : undefined;
+            
+        return {
+          ...parsedLocalStorage,
+          startDate,
+        };
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   const setLocalStorage = (localStorage: LevelLocalStorage) => {
@@ -44,20 +60,6 @@ export const useLocalStorage = (levelId: number) => {
       })
     );
   };
-  // const setLocalStoragePlacedPieces = (piece: LocalStoragePiece) => {
-  //   const localStorage = getLocalStorage();
-  //   window.localStorage.setItem(
-  //     localStorageKey,
-  //     JSON.stringify({
-  //       ...localStorage,
-  //       placedPieces: localStorage?.placedPieces?.some((p) => p.id === piece.id)
-  //         ? localStorage?.placedPieces?.map((p) =>
-  //             p.id === piece.id ? piece : p
-  //           )
-  //         : [...(localStorage?.placedPieces || []), piece],
-  //     })
-  //   );
-  // };
 
   const clearLocalStorage = () => {
     window.localStorage.removeItem(localStorageKey);
