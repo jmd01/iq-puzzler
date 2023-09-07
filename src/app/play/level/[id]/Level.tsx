@@ -27,7 +27,7 @@ export default function Level({ level }: { level: number }) {
     loading: true,
   });
 
-  const cellSize = useGameContext().cellSize;
+  const { cellSize } = useGameContext();
   const localStorage = useLocalStorage(level);
 
   useEffect(() => {
@@ -168,6 +168,8 @@ export default function Level({ level }: { level: number }) {
         });
     };
     getPieces();
+    // Don't run on localStorage change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cellSize, level]);
 
   if (levelData.data) {

@@ -450,26 +450,3 @@ const useGameState = (
 
   return [gameState, setGameStateAndLocalStorage];
 };
-
-// const usePieces = (
-//   level: number,
-//   unplacedPieces: Piece[]
-// ): [Piece[], Dispatch<SetStateAction<Piece[]>>] => {
-//   const [pieces, setPieces] = useState(unplacedPieces);
-//   const { setLocalStoragePlacedPieces } = useLocalStorage(level);
-
-//   // const setPiecesAndLocalStorage = (
-//   //   value: Dispatch<SetStateAction<Piece[]>>
-//   // ) => {
-//   //   setLocalStoragePlacedPieces(pieces);
-//   //   console.log("usePieces", pieces);
-
-//   //   setPieces(pieces);
-//   // };
-
-//   useEffect(() => {
-//     setLocalStoragePlacedPieces(pieces);
-//   }, [pieces, setLocalStoragePlacedPieces]);
-
-//   return [pieces, setPieces];
-// };

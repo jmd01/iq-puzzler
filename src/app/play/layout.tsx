@@ -1,26 +1,38 @@
 "use client";
-import {
-  createContext,
-  use,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TopSection } from "./level/[id]/TopSection";
 import { AnimatedBackground } from "./level/components/AnimatedBackground";
 import gameAreaStyles from "./level/styles/gameArea.module.css";
 import { GameContext } from "./GameContext";
 import { useResizeDetector } from "react-resize-detector";
+import { usePrevious } from "./hooks/usePrevious";
 
 export default function PlayLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { width, height, ref: gameAreaRef } = useResizeDetector();
+  const {
+    width,
+    height,
+    ref: gameAreaRef,
+  } = useResizeDetector({
+    refreshMode: "debounce",
+    refreshRate: 200,
+    onResize: (width, height) => {
+      if (width && height && cellSize && prev?.width && prev?.height)
+        location.reload();
+    },
+  });
+
+  const prev = usePrevious<{
+    width: number | undefined;
+    height: number | undefined;
+  }>({
+    width,
+    height,
+  });
+
   const { audioContextRef, hasMusic, toggleMusic } = useMusic();
 
   const cellSize = useMemo(() => {
@@ -55,9 +67,7 @@ export default function PlayLayout({
   );
 
   return (
-    <GameContext.Provider
-      value={value}
-    >
+    <GameContext.Provider value={value}>
       <div
         ref={gameAreaRef}
         className={gameAreaStyles.gameArea}
