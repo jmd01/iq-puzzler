@@ -1,62 +1,91 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TopSection } from "./level/[id]/TopSection";
 import { AnimatedBackground } from "./level/components/AnimatedBackground";
 import gameAreaStyles from "./level/styles/gameArea.module.css";
+import { GameContext } from "./GameContext";
+import { useResizeDetector } from "react-resize-detector";
+import { usePrevious } from "./hooks/usePrevious";
 
 export default function PlayLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { gameAreaDims, gameAreaRef } = useSetGameArea();
-  const { audioContextRef, hasMusic, toggleMusic } = useMusic();
-
-  return (
-    <div
-      ref={gameAreaRef}
-      className={gameAreaStyles.gameArea}
-      style={{
-        width: gameAreaDims.width,
-        height: gameAreaDims.height,
-      }}
-      onClick={() => {
-        audioContextRef.current?.resume();
-      }}
-    >
-      <AnimatedBackground />
-      <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
-      {children}
-    </div>
-  );
-}
-
-const useSetGameArea = () => {
-  const gameAreaRef = useRef<HTMLDivElement>(null);
-  const [gameAreaDims, setGameAreaDims] = useState<{
-    width: number | string;
-    height: number | string;
-  }>({
-    height: "100%",
-    width: "100%",
+  const {
+    width,
+    height,
+    ref: gameAreaRef,
+  } = useResizeDetector({
+    refreshMode: "debounce",
+    refreshRate: 200,
+    onResize: (width, height) => {
+      if (width && height && cellSize && prev?.width && prev?.height)
+        location.reload();
+    },
   });
 
-  // Fix the window size to 100% on first load
-  useEffect(() => {
-    if (gameAreaRef.current) {
-      const { width, height } = gameAreaRef.current?.getBoundingClientRect();
-      setGameAreaDims({
-        width,
-        height,
-      });
-    }
-  }, []);
+  const prev = usePrevious<{
+    width: number | undefined;
+    height: number | undefined;
+  }>({
+    width,
+    height,
+  });
 
-  return {
-    gameAreaRef,
-    gameAreaDims,
-  };
-};
+  const { audioContextRef, hasMusic, toggleMusic } = useMusic();
+
+  const cellSize = useMemo(() => {
+    if (!(width && height)) {
+      return 0;
+    }
+    switch (true) {
+      case width < 400:
+        return height < 700 ? 24 : 28;
+      case width < 600:
+        return height < 700 ? 30 : 34;
+      case width < 800:
+        return height < 890 ? 40 : 44;
+      case width < 1000:
+        return height < 900 ? 42 : 50;
+      case width < 1200:
+        return height < 980 ? 48 : 56;
+      case width < 1500:
+        return height < 930 ? 54 : 62;
+      default:
+        return height < 880 ? 58 : 64;
+    }
+  }, [width, height]);
+
+  const value = useMemo(
+    () => ({
+      cellSize,
+      width: width || 0,
+      height: height || 0,
+    }),
+    [cellSize, height, width]
+  );
+
+  return (
+    <GameContext.Provider value={value}>
+      <div
+        ref={gameAreaRef}
+        className={gameAreaStyles.gameArea}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+        onClick={() => {
+          audioContextRef.current?.resume();
+        }}
+      >
+        <AnimatedBackground />
+        <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
+        {width && height && cellSize ? children : null}
+      </div>
+    </GameContext.Provider>
+  );
+}
 
 const useMusic = () => {
   const [hasMusic, setHasMusic] = useState(

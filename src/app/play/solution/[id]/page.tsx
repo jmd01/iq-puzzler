@@ -101,12 +101,14 @@ export default async function Page({ params }: { params: { id: string } }) {
           initialPosition: { x: 0, y: 0 },
           position: calcPlacedPosition(
             {
+              id,
               rotation: 0,
               initialPosition: { x: 0, y: 0 },
             },
             isRotatedSideways(rotation) ? { height, width } : { width, height },
             { top: 0, left: 0 },
             previewPiece,
+            64, // TODO: cellSize
             true
           ),
           isActivePiece: false,

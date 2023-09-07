@@ -15,22 +15,13 @@ import {
   zIndex,
   padding,
   gap,
-  maxWidth,
-  margin,
   fontSize,
-  position,
-  textColor,
   backgroundColor,
 } from "tailwindcss-classnames";
-import { transform } from "typescript";
 
 export const boardWrapper = twClassnames(
   layout("grid"),
-  grid(
-    "grid-cols-1",
-    flexBox("items-center", "justify-items-center"),
-    spacing("p-4")
-  )
+  grid("grid-cols-1", flexBox("items-center", "justify-items-center"))
 );
 
 export const boardContainer = twClassnames(
@@ -50,8 +41,6 @@ export const boardCellContainer = twClassnames(
   grid("grid-cols-11")
 );
 
-export const boardCell = twClassnames(width("w-16"), height("h-16"));
-
 export const logoContainer = twClassnames(
   layout("flex"),
   flexBox("justify-center"),
@@ -60,16 +49,13 @@ export const logoContainer = twClassnames(
 
 export const piecesContainer = twClassnames(
   layout("flex"),
-  flexBox("flex-wrap", "items-center", "justify-between"),
+  flexBox("flex-wrap", "items-center", "justify-center"),
   gap("gap-4"),
-  maxWidth("max-w-4xl"),
-  padding("p-4"),
-  margin("mx-auto")
+  padding("p-4")
 );
 
 export const levelCompleteWrapper = twClassnames(
   layout("absolute", "top-0", "left-0"),
-  // zIndex("z-50"),
   width("w-full"),
   height("h-full"),
   backgroundColor("bg-black"),
@@ -103,17 +89,17 @@ export const levelCompleteMiddleStar = twClassnames(translate("translate-y-6"));
 
 export const levelCompleteText = twClassnames(
   fontSize("text-4xl"),
-  padding("py-6"),
+  padding("py-6")
 );
 
 export const levelCompleteIcons = twClassnames(
   layout("flex"),
   flexBox("justify-center"),
-  gap("gap-4"),
+  gap("gap-4")
 );
 
 export const levelCompleteIconWrapper = twClassnames(
-  borderRadius("rounded-full"),
+  borderRadius("rounded-full")
 );
 export const levelCompleteIcon = twClassnames(
   layout("flex"),

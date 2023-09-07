@@ -1,6 +1,13 @@
 import { Board } from "../components/Board";
 import { Pieces } from "../components/Pieces";
-import { useRef, useState, MouseEvent, useCallback, useReducer } from "react";
+import {
+  useRef,
+  useState,
+  MouseEvent,
+  useCallback,
+  useReducer,
+  useEffect,
+} from "react";
 import type { Reducer } from "react";
 import {
   boardsCellsCoveredByPiece,
@@ -25,6 +32,11 @@ import {
   removePieceFromBoard,
   generateGameState,
 } from "../utils/sharedUtils";
+import { useGameContext } from "../../GameContext";
+import {
+  LevelLocalStorage,
+  useLocalStorage,
+} from "../[id]/hooks/useLocalStorage";
 
 const initialState: GameAreaDragState = {
   isMouseDown: false,
@@ -89,14 +101,27 @@ const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
   unplacedPieces: Piece[];
+  initialLocalStorageData?: LevelLocalStorage;
+  level: number;
 };
-export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
-  const [gameState, setGameState] = useState<GameState>(
-    generateGameState(11, 5, placedPieces)
+export const GameArea = ({
+  placedPieces,
+  unplacedPieces,
+  initialLocalStorageData,
+  level,
+}: GameAreaProps) => {
+  const [gameState, setGameState] = useGameState(
+    level,
+    placedPieces,
+    initialLocalStorageData
   );
 
-  const [prePlacedPieces] = useState(placedPieces);
+  const { cellSize } = useGameContext();
+
   const [pieces, setPieces] = useState(unplacedPieces);
+  const [boardAnimationComplete, setBoardAnimationComplete] = useState(false);
+
+  const { setLocalStoragePlacedPieces } = useLocalStorage(level);
 
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
@@ -196,7 +221,7 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         const pieceBounds = activePieceRef.current.getBoundingClientRect();
 
         // If active piece is over the board, determine if it is in a placeable position. If it is, render a preview of where it will drop
-        if (isActivePieceOverBoard(pieceBounds, boardBounds)) {
+        if (isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)) {
           const activePiece = pieces.find(
             ({ id }) => id === state.activePieceId
           );
@@ -205,7 +230,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
               pieceBounds,
               boardBounds,
               activePiece.currentShape,
-              gameState.grid
+              gameState.grid,
+              cellSize
             );
 
             if (
@@ -232,8 +258,10 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
     },
     [
       boardBounds,
+      cellSize,
       gameState,
       pieces,
+      setGameState,
       state.activePieceId,
       state.isMouseDown,
       state.onMouseDownPosition,
@@ -263,7 +291,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
                       piece,
                       pieceBounds,
                       boardBounds,
-                      state.previewPiece
+                      state.previewPiece,
+                      cellSize
                     )
                   : calcUnplacedPosition(
                       piece,
@@ -321,13 +350,13 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
               ? updatePiecesWithFlippedPiece(
                   pieces,
                   state.activePieceId,
-                  isActivePieceOverBoard(pieceBounds, boardBounds),
+                  isActivePieceOverBoard(pieceBounds, boardBounds, cellSize),
                   event.ctrlKey || event.metaKey ? "x" : "y"
                 )
               : updatePiecesWithRotatedPiece(
                   pieces,
                   state.activePieceId,
-                  isActivePieceOverBoard(pieceBounds, boardBounds)
+                  isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)
                 )
           );
           setGameState({
@@ -349,14 +378,20 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       state.activePieceId,
       state.dragPosition,
       state.onMouseDownPosition,
-      setPieces,
       pieces,
       boardBounds,
+      cellSize,
       gameState,
+      setGameState,
     ]
   );
 
   const onContextMenu = (event: MouseEvent) => event.preventDefault();
+
+  // Sync placed pices to local storage whenever pieces changes
+  useEffect(() => {
+    setLocalStoragePlacedPieces(pieces);
+  }, [pieces, setLocalStoragePlacedPieces]);
 
   return (
     <>
@@ -369,7 +404,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
         <Board
           boardRef={boardRef}
           previewPiece={state.previewPiece}
-          prePlacedPieces={prePlacedPieces}
+          prePlacedPieces={placedPieces}
+          setBoardAnimationComplete={setBoardAnimationComplete}
         />
         <Pieces
           pieces={pieces}
@@ -378,6 +414,8 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
           state={state}
           ref={activePieceRef}
           boardBounds={boardBounds}
+          boardAnimationComplete={boardAnimationComplete}
+          initialLocalStorageData={initialLocalStorageData}
         />
       </div>
       <LevelComplete
@@ -387,4 +425,23 @@ export const GameArea = ({ placedPieces, unplacedPieces }: GameAreaProps) => {
       />
     </>
   );
+};
+
+const useGameState = (
+  level: number,
+  placedPieces: PlacedPiece[],
+  initialLocalStorageData?: LevelLocalStorage
+): [GameState, (gameState: GameState) => void] => {
+  const [gameState, setGameState] = useState<GameState>(
+    generateGameState(11, 5, placedPieces, initialLocalStorageData)
+  );
+
+  const { setLocalStorageGameState } = useLocalStorage(level);
+
+  const setGameStateAndLocalStorage = (gameState: GameState) => {
+    setLocalStorageGameState(gameState);
+    setGameState(gameState);
+  };
+
+  return [gameState, setGameStateAndLocalStorage];
 };

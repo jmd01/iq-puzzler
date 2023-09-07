@@ -12,16 +12,21 @@ import {
 import { GameAreaDragState } from "../types";
 import type { Piece as PieceType } from "../types";
 import {
-  getDecimalPart,
+  calcPlacedPosition,
   isActivePieceOverBoard,
   mergeRefs,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
+  getPlacedInCellsTopLeft,
+  calcRotatedInitialPiecePosition,
 } from "../utils/utils";
 import { Animate } from "react-simple-animate";
 import { PieceDiv } from "./PieceDiv";
 import * as twStyles from "../styles/styles";
-import { is } from "date-fns/locale";
+import { useGameContext } from "../../GameContext";
+import classnames from "classnames";
+import piecesStyles from "../styles/gameArea.module.css";
+import { LevelLocalStorage } from "../[id]/hooks/useLocalStorage";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -29,13 +34,29 @@ export type PiecesProps = {
   activePieceId: PieceType["id"] | undefined;
   state: GameAreaDragState;
   boardBounds: DOMRect | undefined;
+  boardAnimationComplete: boolean;
+  initialLocalStorageData?: LevelLocalStorage;
 };
 export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
-  { pieces, setPieces, activePieceId, state, boardBounds },
+  {
+    pieces,
+    setPieces,
+    activePieceId,
+    state,
+    boardBounds,
+    boardAnimationComplete,
+    initialLocalStorageData,
+  },
   activePieceRef
 ) {
+
   return (
-    <div className={twStyles.piecesContainer}>
+    <div
+      className={classnames(
+        twStyles.piecesContainer,
+        piecesStyles.piecesContainer
+      )}
+    >
       {pieces.map((piece, i) => {
         const isActivePiece = activePieceId === piece.id;
         const pieceProps: PieceType = {
@@ -55,6 +76,8 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
             setPieces={setPieces}
             ref={isActivePiece ? activePieceRef : undefined}
             boardBounds={boardBounds}
+            boardAnimationComplete={boardAnimationComplete}
+            initialLocalStorageData={initialLocalStorageData}
           />
         );
       })}
@@ -66,13 +89,23 @@ export type PieceProps = {
   piece: PieceType;
   setPieces: Dispatch<SetStateAction<PieceType[]>>;
   boardBounds?: DOMRect;
+  boardAnimationComplete: boolean;
   index: number;
+  initialLocalStorageData?: LevelLocalStorage;
 };
 
 export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
-  { piece, setPieces, boardBounds, index },
+  {
+    piece,
+    setPieces,
+    boardBounds,
+    boardAnimationComplete,
+    index,
+    initialLocalStorageData,
+  },
   activePieceRef
 ) {
+  const { cellSize, width, height } = useGameContext();
   const {
     id,
     position,
@@ -83,10 +116,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     onMouseDownPosition = { x: 0, y: 0 },
     dragPosition,
     placedInCells,
-    d,
     color,
-    height,
-    width,
     shape,
   } = piece;
   const isDragging = isActivePiece && !!dragPosition;
@@ -131,42 +161,67 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
             ? updatePiecesWithFlippedPiece(
                 pieces,
                 id,
-                isActivePieceOverBoard(pieceBounds, boardBounds),
+                isActivePieceOverBoard(pieceBounds, boardBounds, cellSize),
                 event.ctrlKey || event.metaKey ? "x" : "y"
               )
             : updatePiecesWithRotatedPiece(
                 pieces,
                 id,
-                isActivePieceOverBoard(pieceBounds, boardBounds)
+                isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)
               )
         );
       }
     },
-    [boardBounds, id, isDragging, piece.isLocked, setPieces]
+    [boardBounds, cellSize, id, isDragging, piece.isLocked, setPieces]
   );
 
   useEffect(() => {
-    const initialPosition = ref.current?.getBoundingClientRect();
-    if (initialPosition) {
+    const pieceBounds = ref.current?.getBoundingClientRect();
+
+    if (pieceBounds && boardAnimationComplete) {
       setPieces((pieces) =>
-        pieces.map((piece) =>
-          piece.id === id
-            ? {
+        pieces
+          .map((piece) => {
+            return piece.id === id
+              ? {
+                  ...piece,
+                  // If piece was preplaced from local storage and was rotated, adjust the initial position, otherwise just use initial position
+                  initialPosition: calcRotatedInitialPiecePosition(
+                    pieceBounds,
+                    piece.rotation,
+                    pieceBounds,
+                    true
+                  ),
+                }
+              : piece;
+          })
+          .map((piece) => {
+            // Restore placed pieces from local storage to their correct position
+            if (piece.placedInCells && boardBounds && piece.id === id) {
+              return {
                 ...piece,
-                initialPosition: { x: initialPosition.x, y: initialPosition.y },
-              }
-            : piece
-        )
+                position: calcPlacedPosition(
+                  piece,
+                  pieceBounds,
+                  boardBounds,
+                  getPlacedInCellsTopLeft(piece.placedInCells),
+                  cellSize
+                ),
+              };
+            }
+            return piece;
+          })
       );
     }
-    // Only run on first render
+    // Only run on first render or when window is resized
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cellSize, width, height, boardAnimationComplete]);
 
   const timeoutRef = useRef<number | undefined>(undefined);
 
   return (
     <div
+      id={`piece-${id}`}
       ref={mergeRefs([activePieceRef, ref])}
       style={{
         position: piece.isLocked ? "absolute" : "relative",
@@ -197,8 +252,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
           opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}
           id={id.toString()}
           color={color}
-          width={width}
-          height={height}
           shape={shape}
           rotation={rotation}
           isFlippedX={isFlippedX}

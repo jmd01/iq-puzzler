@@ -16,9 +16,34 @@
   justify-items: center;
   padding: 2rem;
 }
+@media (max-width: 800px) {
+  .topSection {
+    padding: 1.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .topSection {
+    padding: 1rem;
+  }
+}
 
 .logoContainer {
   grid-column-start: 2;
+}
+
+.logoContainer svg {
+  width: 80px;
+}
+
+@media (max-width: 800px) {
+  .logoContainer svg {
+    width: 60px;
+  }
+}
+@media (max-width: 600px) {
+  .logoContainer svg {
+    width: 40px;
+  }
 }
 
 .toolbar {
@@ -29,7 +54,27 @@
 }
 
 .toolbarButton {
-  width: 50px;
+  width: 48px;
+}
+@media (max-width: 800px) {
+  .toolbar {
+    font-size: 30px;
+    gap: 18px;
+  }
+  .toolbarButton {
+    width: 36px;
+  }
+  
+}
+@media (max-width: 600px) {
+  .toolbar {
+    font-size: 20px;
+    gap: 12px;
+  }
+  .toolbarButton {
+    width: 24px;
+  }
+  
 }
 
 .toolbarButton svg {
@@ -45,4 +90,8 @@
   z-index: 100;
   background-color: #fff;
   border-radius: 12px;
+}
+
+.piecesContainer {
+  max-width: 1500px;
 }

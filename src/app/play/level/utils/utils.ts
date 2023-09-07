@@ -1,9 +1,6 @@
 import { getFlippedShape, getRotatedShape } from "./sharedUtils";
 import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
-import { ro } from "date-fns/locale";
 
-export const CELL_SIZE = 64;
-export const DRAG_OVER_BOARD_BUFFER = CELL_SIZE / 2;
 export const DRAG_START_THRESHOLD = 5;
 
 /**
@@ -56,25 +53,28 @@ const getPlacedPieceIdFromCell = (
  */
 export function isActivePieceOverBoard(
   pieceBounds: DOMRect,
-  boardBounds: DOMRect
+  boardBounds: DOMRect,
+  cellSize: number
 ) {
+  const dragOverBoardBuffer = cellSize / 2;
   return (
-    pieceBounds.top > boardBounds.top - DRAG_OVER_BOARD_BUFFER &&
-    pieceBounds.left > boardBounds.left - DRAG_OVER_BOARD_BUFFER &&
-    pieceBounds.bottom < boardBounds.bottom + DRAG_OVER_BOARD_BUFFER &&
-    pieceBounds.right < boardBounds.right + DRAG_OVER_BOARD_BUFFER
+    pieceBounds.top > boardBounds.top - dragOverBoardBuffer &&
+    pieceBounds.left > boardBounds.left - dragOverBoardBuffer &&
+    pieceBounds.bottom < boardBounds.bottom + dragOverBoardBuffer &&
+    pieceBounds.right < boardBounds.right + dragOverBoardBuffer
   );
 }
 
 /**
  * When a piece is rotated, if it is not a square shape then it's position will change relative to the screen.
- * This function calculates the new position of the piece so that it can be positioned relative to the board and it's initial position when placed
+ * This function calculates the new position of the piece so that it can be positioned relative to both the board and it's initial position when placed
  */
-function calcRotatedInitialPiecePosition(
+export function calcRotatedInitialPiecePosition(
   pieceBounds: { width: number; height: number },
   pieceRotation: Piece["rotation"],
   pieceInitialPosition: Piece["initialPosition"],
-  isPreplaced: boolean
+  isPreplaced: boolean,
+  pieceId?: number
 ): Piece["initialPosition"] {
   if (isRotatedSideways(pieceRotation)) {
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
@@ -91,12 +91,6 @@ function calcRotatedInitialPiecePosition(
             y: pieceInitialPosition.y - Math.abs(offsetY),
           };
     } else {
-      console.log(
-        pieceBounds.height > pieceBounds.width,
-        pieceBounds.height,
-        pieceBounds.width
-      );
-
       return pieceBounds.height > pieceBounds.width
         ? {
             x: pieceInitialPosition.x + offsetX,
@@ -123,7 +117,8 @@ export function boardsCellsCoveredByPiece(
   pieceBounds: DOMRect,
   boardBounds: DOMRect,
   pieceCurrentShape: Piece["shape"],
-  gameStateGrid: GameState["grid"]
+  gameStateGrid: GameState["grid"],
+  cellSize: number
 ): PreviewPiece | undefined {
   const pieceTopRelativeToBoard = Math.max(
     pieceBounds.top - boardBounds.top,
@@ -135,9 +130,9 @@ export function boardsCellsCoveredByPiece(
   );
 
   // The board cell nearest the top side that the dragged piece is over
-  const pieceOverBoardCellY = Math.round(pieceTopRelativeToBoard / CELL_SIZE);
+  const pieceOverBoardCellY = Math.round(pieceTopRelativeToBoard / cellSize);
   // The board cell nearest the left side that the dragged piece is over
-  const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / CELL_SIZE);
+  const pieceOverBoardCellX = Math.round(pieceLeftRelativeToBoard / cellSize);
 
   // The index of boards cells that the dragged piece is over
   const pieceOverCells = getPieceOverCells(
@@ -220,12 +215,14 @@ export function nestedCopy<T>(array: T) {
  */
 export function calcPlacedPosition(
   piece: {
+    id: number;
     rotation: Piece["rotation"];
     initialPosition: Piece["initialPosition"];
   },
   pieceBounds: { width: number; height: number },
   boardBounds: { top: number; left: number },
   previewPiece: { x: number; y: number },
+  cellSize: number,
   isPreplaced?: boolean
 ) {
   const pieceInitialPosition = calcRotatedInitialPiecePosition(
@@ -236,8 +233,8 @@ export function calcPlacedPosition(
   );
 
   return {
-    x: boardBounds.left + previewPiece.x * CELL_SIZE - pieceInitialPosition.x,
-    y: boardBounds.top + previewPiece.y * CELL_SIZE - pieceInitialPosition.y,
+    x: boardBounds.left + previewPiece.x * cellSize - pieceInitialPosition.x,
+    y: boardBounds.top + previewPiece.y * cellSize - pieceInitialPosition.y,
   };
 }
 
@@ -477,4 +474,16 @@ function getRotationY(rotation: number): number {
     }
   }
   return 0;
+}
+
+export function getPlacedInCellsTopLeft(placedInCells: [number, number][]) {
+  return placedInCells.reduce(
+    (acc, [cellX, cellY]) => {
+      return {
+        x: cellX < acc.x ? cellX : acc.x,
+        y: cellY < acc.y ? cellY : acc.y,
+      };
+    },
+    { x: 10, y: 5 }
+  );
 }

@@ -1,13 +1,12 @@
 import { HTMLProps, MouseEventHandler, useState } from "react";
 import { Piece } from "../types";
-import { CELL_SIZE, calcRadialGradient, calcShadow } from "../utils/utils";
+import { calcRadialGradient, calcShadow } from "../utils/utils";
+import { useGameContext } from "../../GameContext";
 
 export const PieceDiv = ({
   onClick,
   isPlaceable,
   id,
-  height,
-  width,
   color,
   shape,
   opacity,
@@ -31,8 +30,9 @@ export const PieceDiv = ({
   isFlippedY: boolean;
   hasOutline: boolean;
 }) => {
+  const cellSize = useGameContext().cellSize || 64;
   return (
-    <div style={{ width, height }}>
+    <div style={{ width: cellSize * shape[0].length, height: cellSize * shape.length }}>
       {shape.map((row, y) => {
         // Create a div or spacer for each cell in the piece
         return row.map((isFilledCell, x) =>
@@ -45,10 +45,10 @@ export const PieceDiv = ({
                 className={`piece-${id}`}
                 style={{
                   position: "absolute",
-                  left: `${x * CELL_SIZE}px`,
-                  top: `${y * CELL_SIZE}px`,
-                  width: `${CELL_SIZE}px`,
-                  height: `${CELL_SIZE}px`,
+                  left: `${x * cellSize}px`,
+                  top: `${y * cellSize}px`,
+                  width: `${cellSize}px`,
+                  height: `${cellSize}px`,
                   background: i === 1 ? undefined : color,
                   backgroundImage: i === 1
                     ? undefined

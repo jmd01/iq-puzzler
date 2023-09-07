@@ -1,22 +1,28 @@
-import { RefObject } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 import { PlacedPiece, PreviewPiece } from "../types";
 import { PreplacedPiece } from "./Pieces";
 import { Animate } from "react-simple-animate";
 import * as twStyles from "../styles/styles";
 import boardStyles from "../styles/board.module.css";
 import classnames from "classnames";
+import { useGameContext } from "../../GameContext";
 
 export const Board = ({
   boardRef,
   previewPiece,
   prePlacedPieces,
+  setBoardAnimationComplete,
 }: {
   boardRef: RefObject<HTMLDivElement>;
   previewPiece: PreviewPiece | undefined;
   prePlacedPieces: PlacedPiece[];
+  setBoardAnimationComplete: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const cellSize = useGameContext().cellSize;
   return (
-    <div className={twStyles.boardWrapper}>
+    <div
+      className={classnames(twStyles.boardWrapper, boardStyles.boardWrapper)}
+    >
       <Animate
         play
         duration={0.4}
@@ -29,6 +35,7 @@ export const Board = ({
           transform: "scale(1) translateY(0px)",
         }}
         easeType="ease-out"
+        onComplete={() => setBoardAnimationComplete(true)}
       >
         <div
           className={classnames(twStyles.boardContainer, boardStyles.boardBgrd)}
@@ -46,8 +53,12 @@ export const Board = ({
                 {[...Array(55)].map((_, i) => (
                   <span
                     key={i}
-                    className={classnames("boardCell", twStyles.boardCell)}
+                    className={classnames("boardCell")}
                     data-board-cell={`${i % 11},${Math.floor(i / 11)}`}
+                    style={{
+                      width: cellSize,
+                      height: cellSize,
+                    }}
                   />
                 ))}
               </div>
@@ -64,12 +75,15 @@ export const Board = ({
                   <span
                     key={i}
                     className={classnames(
-                      twStyles.boardCell,
                       "rounded-full",
                       boardStyles.boardCell,
                       { [boardStyles.boardCellPreview]: isPreview }
                     )}
                     data-board-cell={`${x},${y}`}
+                    style={{
+                      width: cellSize,
+                      height: cellSize,
+                    }}
                   />
                 );
               })}
