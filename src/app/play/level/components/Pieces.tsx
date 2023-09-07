@@ -27,7 +27,6 @@ import { useGameContext } from "../../GameContext";
 import classnames from "classnames";
 import piecesStyles from "../styles/gameArea.module.css";
 import { LevelLocalStorage } from "../[id]/hooks/useLocalStorage";
-import { pieces } from "@/app/pieces";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -50,7 +49,6 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   },
   activePieceRef
 ) {
-  console.log({ pieces });
 
   return (
     <div
@@ -187,7 +185,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
             return piece.id === id
               ? {
                   ...piece,
-                  // If piece was preplaced from local storage and was rotated, djust the initial position, otherwise just use initial position
+                  // If piece was preplaced from local storage and was rotated, adjust the initial position, otherwise just use initial position
                   initialPosition: calcRotatedInitialPiecePosition(
                     pieceBounds,
                     piece.rotation,
@@ -199,7 +197,7 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
           })
           .map((piece) => {
             // Restore placed pieces from local storage to their correct position
-            if (piece.placedInCells && boardBounds) {
+            if (piece.placedInCells && boardBounds && piece.id === id) {
               return {
                 ...piece,
                 position: calcPlacedPosition(

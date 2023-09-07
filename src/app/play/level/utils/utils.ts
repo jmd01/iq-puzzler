@@ -74,7 +74,8 @@ export function calcRotatedInitialPiecePosition(
   pieceBounds: { width: number; height: number },
   pieceRotation: Piece["rotation"],
   pieceInitialPosition: Piece["initialPosition"],
-  isPreplaced: boolean
+  isPreplaced: boolean,
+  pieceId?: number
 ): Piece["initialPosition"] {
   if (isRotatedSideways(pieceRotation)) {
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
@@ -231,8 +232,6 @@ export function calcPlacedPosition(
     piece.initialPosition,
     !!isPreplaced
   );
-
-  // piece.id === 12 && console.log({ pieceInitialPosition });
 
   return {
     x: boardBounds.left + previewPiece.x * cellSize - pieceInitialPosition.x,
