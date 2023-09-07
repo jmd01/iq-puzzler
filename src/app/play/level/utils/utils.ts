@@ -1,7 +1,6 @@
 import { getFlippedShape, getRotatedShape } from "./sharedUtils";
 import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
 
-// export const CELL_SIZE = 64;
 export const DRAG_START_THRESHOLD = 5;
 
 /**

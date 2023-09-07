@@ -15,21 +15,13 @@ import {
   zIndex,
   padding,
   gap,
-  maxWidth,
-  margin,
   fontSize,
-  position,
-  textColor,
   backgroundColor,
 } from "tailwindcss-classnames";
 
 export const boardWrapper = twClassnames(
   layout("grid"),
-  grid(
-    "grid-cols-1",
-    flexBox("items-center", "justify-items-center"),
-    // spacing("p-4")
-  )
+  grid("grid-cols-1", flexBox("items-center", "justify-items-center"))
 );
 
 export const boardContainer = twClassnames(
@@ -57,13 +49,9 @@ export const logoContainer = twClassnames(
 
 export const piecesContainer = twClassnames(
   layout("flex"),
-  flexBox(
-    "flex-wrap",
-    "items-center",
-    "justify-center",
-  ),
+  flexBox("flex-wrap", "items-center", "justify-center"),
   gap("gap-4"),
-  padding("p-4"),
+  padding("p-4")
 );
 
 export const levelCompleteWrapper = twClassnames(

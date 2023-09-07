@@ -7,18 +7,14 @@ import {
   useCallback,
   useReducer,
   useEffect,
-  Dispatch,
-  SetStateAction,
 } from "react";
 import type { Reducer } from "react";
 import {
   boardsCellsCoveredByPiece,
   calcPlacedPosition,
   calcUnplacedPosition,
-  // CELL_SIZE,
   DRAG_START_THRESHOLD,
   getPieceIdOnMouseDown,
-  getPlacedInCellsTopLeft,
   isActivePieceOverBoard,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
@@ -225,8 +221,6 @@ export const GameArea = ({
         const pieceBounds = activePieceRef.current.getBoundingClientRect();
 
         // If active piece is over the board, determine if it is in a placeable position. If it is, render a preview of where it will drop
-        // console.log(isActivePieceOverBoard(pieceBounds, boardBounds));
-
         if (isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)) {
           const activePiece = pieces.find(
             ({ id }) => id === state.activePieceId
@@ -394,6 +388,7 @@ export const GameArea = ({
 
   const onContextMenu = (event: MouseEvent) => event.preventDefault();
 
+  // Sync placed pices to local storage whenever pieces changes
   useEffect(() => {
     setLocalStoragePlacedPieces(pieces);
   }, [pieces, setLocalStoragePlacedPieces]);
