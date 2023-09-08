@@ -1,5 +1,5 @@
-import { Board } from "../components/Board";
-import { Pieces } from "../components/Pieces";
+import { Board } from "../../components/Board";
+import { Pieces } from "../../components/Pieces";
 import {
   useRef,
   useState,
@@ -18,85 +18,25 @@ import {
   isActivePieceOverBoard,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
-} from "../utils/utils";
+} from "../../utils/utils";
 import type {
   GameState,
   Piece,
   PlacedPiece,
-  PreviewPiece,
-  GameAreaDragState,
-} from "../types";
-import { LevelComplete } from "./LevelComplete";
+} from "../../types";
+import { LevelComplete } from "../LevelComplete";
 import {
   addPieceToBoard,
   removePieceFromBoard,
   generateGameState,
-} from "../utils/sharedUtils";
-import { useGameContext } from "../../GameContext";
+} from "../../utils/sharedUtils";
+import { useGameContext } from "../../../GameContext";
 import {
   LevelLocalStorage,
   useLocalStorage,
-} from "../[id]/hooks/useLocalStorage";
-
-const initialState: GameAreaDragState = {
-  isMouseDown: false,
-  isDragging: false,
-  activePieceId: undefined,
-  onMouseDownPosition: undefined,
-  dragPosition: undefined,
-  previewPiece: undefined,
-};
-
-type GameAreaAction =
-  | {
-      type: "MOUSE_DOWN";
-      position: { x: number; y: number };
-      activePieceId: Piece["id"];
-    }
-  | { type: "MOUSE_UP" }
-  | { type: "DRAG_MOVE"; position: { x: number; y: number } }
-  | { type: "DRAG_OVER_BOARD"; previewPiece: PreviewPiece }
-  | { type: "DRAG_OUTSIDE_BOARD" };
-
-const reducer = (state: GameAreaDragState, action: GameAreaAction) => {
-  switch (action.type) {
-    case "MOUSE_DOWN":
-      return {
-        ...state,
-        isMouseDown: true,
-        onMouseDownPosition: action.position,
-        activePieceId: action.activePieceId,
-      };
-    case "MOUSE_UP":
-      return {
-        ...state,
-        isMouseDown: false,
-        activePieceId: undefined,
-        isDragging: false,
-        onMouseDownPosition: undefined,
-        dragPosition: undefined,
-        previewPiece: undefined,
-      };
-    case "DRAG_MOVE":
-      return {
-        ...state,
-        isDragging: true,
-        dragPosition: action.position,
-      };
-    case "DRAG_OVER_BOARD":
-      return {
-        ...state,
-        previewPiece: action.previewPiece,
-      };
-    case "DRAG_OUTSIDE_BOARD":
-      return {
-        ...state,
-        previewPiece: undefined,
-      };
-    default:
-      throw new Error();
-  }
-};
+} from "../hooks/useLocalStorage";
+import { GameAreaAction, GameAreaDragState } from "./types";
+import { initialState, reducer } from "./reducer";
 
 type GameAreaProps = {
   placedPieces: PlacedPiece[];

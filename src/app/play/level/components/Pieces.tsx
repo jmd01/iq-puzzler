@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { GameAreaDragState } from "../types";
 import type { Piece as PieceType } from "../types";
 import {
   calcPlacedPosition,
@@ -27,6 +26,7 @@ import { useGameContext } from "../../GameContext";
 import classnames from "classnames";
 import piecesStyles from "../styles/gameArea.module.css";
 import { LevelLocalStorage } from "../[id]/hooks/useLocalStorage";
+import type { GameAreaDragState } from "../[id]/GameArea/types";
 
 export type PiecesProps = {
   pieces: PieceType[];
