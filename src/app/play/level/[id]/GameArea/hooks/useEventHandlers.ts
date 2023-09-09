@@ -1,6 +1,8 @@
 import { useCallback } from "react";
-import type { MouseEvent, Dispatch, SetStateAction, RefObject } from "react";
-import { removePieceFromBoard, addPieceToBoard } from "../../../utils/sharedUtils";
+import {
+  removePieceFromBoard,
+  addPieceToBoard,
+} from "../../../utils/sharedUtils";
 import {
   getPieceIdOnMouseDown,
   DRAG_START_THRESHOLD,
@@ -12,8 +14,16 @@ import {
   updatePiecesWithRotatedPiece,
 } from "../../../utils/utils";
 import { useGameContext } from "../../../../GameContext";
-import type { GameState, Piece } from "../../../types";
+import type {
+  MouseEvent,
+  Dispatch,
+  SetStateAction,
+  RefObject,
+  TouchEvent,
+} from "react";
 import type { GameAreaAction, GameAreaDragState } from "../types";
+import type { GameState, Piece } from "../../../types";
+import { on } from "events";
 
 export const useEventHandlers = ({
   pieces,
@@ -36,11 +46,9 @@ export const useEventHandlers = ({
 }) => {
   const { cellSize } = useGameContext();
 
-  const handleMouseDown = useCallback(
-    (event: MouseEvent<HTMLElement>) => {
-      if (event.button !== 0) return;
-
-      const target = event.target as HTMLElement;
+  const onMouseDown = useCallback(
+    (target: HTMLElement, event: { clientX: number; clientY: number } ) => {
+      // const target = event.target as HTMLElement;
       const clickedPieceId = getPieceIdOnMouseDown(target, pieces);
 
       if (clickedPieceId) {
@@ -75,11 +83,32 @@ export const useEventHandlers = ({
     [dispatch, pieces, setPieces]
   );
 
-  const handleMouseMove = useCallback(
-    (event: MouseEvent) => {
-      // Prevent drags on the board getting in the way of a drag on a piece
-      event.preventDefault();
+  const handleMouseDown = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      if (event.button !== 0) return;
 
+      return onMouseDown(event.target as HTMLElement, {
+        clientX: event.clientX,
+        clientY: event.clientY,
+      });
+    },
+    [onMouseDown]
+  );
+
+  const handleTouchStart = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      console.log("touch start", event.touches[0]);
+      const touchEvent = event.touches[0];
+      onMouseDown(touchEvent.target as HTMLElement, {
+        clientX: touchEvent.clientX,
+        clientY: touchEvent.clientY,
+      });
+    },
+    [onMouseDown]
+  );
+
+  const onMove = useCallback(
+    (event: { clientX: number; clientY: number }) => {
       // Early return if no piece is being dragged or dragging has not exceeded the threshold in any direction
       if (!state.isMouseDown) return;
       if (!state.activePieceId) return;
@@ -176,8 +205,34 @@ export const useEventHandlers = ({
     ]
   );
 
-  const handleMouseUp = useCallback(
+  const handleMouseMove = useCallback(
     (event: MouseEvent) => {
+      // Prevent drags on the board getting in the way of a drag on a piece
+      event.preventDefault();
+
+      onMove(event);
+    },
+    [onMove]
+  );
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      console.log("touch move", event.touches);
+      // Prevent drags on the board getting in the way of a drag on a piece
+      event.preventDefault();
+
+      const touchEvent = event.touches[0];
+      onMove(touchEvent);
+    },
+    [onMove]
+  );
+
+  const onMouseUp = useCallback(
+    (
+      event: { clientX: number; clientY: number },
+      flipX?: boolean,
+      flipY?: boolean
+    ) => {
       // On drag end, update active piece position and if placeable, set its placedInCells value and clear any drag related state
       if (state.isDragging) {
         setPieces(
@@ -253,12 +308,12 @@ export const useEventHandlers = ({
           boardBounds
         ) {
           setPieces(
-            event.ctrlKey || event.metaKey || event.shiftKey
+            flipX || flipY
               ? updatePiecesWithFlippedPiece(
                   pieces,
                   state.activePieceId,
                   isActivePieceOverBoard(pieceBounds, boardBounds, cellSize),
-                  event.ctrlKey || event.metaKey ? "x" : "y"
+                  flipX ? "x" : "y"
                 )
               : updatePiecesWithRotatedPiece(
                   pieces,
@@ -280,20 +335,38 @@ export const useEventHandlers = ({
       dispatch({ type: "MOUSE_UP" });
     },
     [
-      state.isDragging,
-      state.previewPiece,
-      state.activePieceId,
-      state.dragPosition,
-      state.onMouseDownPosition,
-      dispatch,
-      setPieces,
-      pieces,
       activePieceRef,
       boardBounds,
       cellSize,
+      dispatch,
       gameState,
+      pieces,
       setGameState,
+      setPieces,
+      state.activePieceId,
+      state.dragPosition,
+      state.isDragging,
+      state.onMouseDownPosition,
+      state.previewPiece,
     ]
+  );
+
+  const handleMouseUp = useCallback(
+    (event: MouseEvent) => {
+      const flipX = event.ctrlKey || event.metaKey;
+      const flipY = event.shiftKey;
+      onMouseUp(event, flipX, flipY);
+    },
+    [onMouseUp]
+  );
+
+  const handleTouchEnd = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      console.log("touch end", event.touches);
+      const touchEvent = event.touches[0];
+      onMouseUp(touchEvent, false, false);
+    },
+    [onMouseUp]
   );
 
   const handleContextMenu = (event: MouseEvent) => event.preventDefault();
@@ -302,6 +375,9 @@ export const useEventHandlers = ({
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
-    handleContextMenu
+    handleContextMenu,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
   };
 };

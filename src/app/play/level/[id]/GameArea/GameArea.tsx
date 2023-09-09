@@ -43,7 +43,7 @@ export const GameArea = ({
 
   const boardBounds = boardRef.current?.getBoundingClientRect();
 
-  const { handleMouseDown, handleMouseMove, handleMouseUp, handleContextMenu } =
+  const { handleMouseDown, handleMouseMove, handleMouseUp, handleContextMenu, handleTouchStart, handleTouchMove, handleTouchEnd } =
     useEventHandlers({
       pieces,
       setPieces,
@@ -67,6 +67,9 @@ export const GameArea = ({
         onMouseMove={handleMouseMove}
         onClick={handleMouseUp}
         onContextMenu={handleContextMenu}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <Board
           boardRef={boardRef}
