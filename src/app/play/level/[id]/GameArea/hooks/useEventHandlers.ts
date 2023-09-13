@@ -23,7 +23,6 @@ import type {
 } from "react";
 import type { GameAreaAction, GameAreaDragState } from "../types";
 import type { GameState, Piece } from "../../../types";
-import { on } from "events";
 
 export const useEventHandlers = ({
   pieces,
@@ -47,8 +46,7 @@ export const useEventHandlers = ({
   const { cellSize } = useGameContext();
 
   const onMouseDown = useCallback(
-    (target: HTMLElement, event: { clientX: number; clientY: number } ) => {
-      // const target = event.target as HTMLElement;
+    (target: HTMLElement, event: { clientX: number; clientY: number }) => {
       const clickedPieceId = getPieceIdOnMouseDown(target, pieces);
 
       if (clickedPieceId) {
@@ -86,7 +84,6 @@ export const useEventHandlers = ({
   const handleMouseDown = useCallback(
     (event: MouseEvent<HTMLElement>) => {
       if (event.button !== 0) return;
-
       return onMouseDown(event.target as HTMLElement, {
         clientX: event.clientX,
         clientY: event.clientY,
@@ -97,7 +94,6 @@ export const useEventHandlers = ({
 
   const handleTouchStart = useCallback(
     (event: TouchEvent<HTMLDivElement>) => {
-      console.log("touch start", event.touches[0]);
       const touchEvent = event.touches[0];
       onMouseDown(touchEvent.target as HTMLElement, {
         clientX: touchEvent.clientX,
@@ -207,9 +203,6 @@ export const useEventHandlers = ({
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
-      // Prevent drags on the board getting in the way of a drag on a piece
-      event.preventDefault();
-
       onMove(event);
     },
     [onMove]
@@ -217,10 +210,6 @@ export const useEventHandlers = ({
 
   const handleTouchMove = useCallback(
     (event: TouchEvent<HTMLDivElement>) => {
-      console.log("touch move", event.touches);
-      // Prevent drags on the board getting in the way of a drag on a piece
-      event.preventDefault();
-
       const touchEvent = event.touches[0];
       onMove(touchEvent);
     },
@@ -302,7 +291,7 @@ export const useEventHandlers = ({
         const pieceBounds = activePieceRef.current?.getBoundingClientRect();
 
         if (
-          activePiece?.placedInCells &&
+          // activePiece?.placedInCells &&
           state.activePieceId &&
           pieceBounds &&
           boardBounds
@@ -321,14 +310,17 @@ export const useEventHandlers = ({
                   isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)
                 )
           );
-          setGameState({
-            ...gameState,
-            complete: false,
-            grid: removePieceFromBoard(
-              gameState.grid,
-              activePiece.placedInCells
-            ),
-          });
+
+          if (activePiece?.placedInCells) {
+            setGameState({
+              ...gameState,
+              complete: false,
+              grid: removePieceFromBoard(
+                gameState.grid,
+                activePiece.placedInCells
+              ),
+            });
+          }
         }
       }
 
@@ -353,6 +345,7 @@ export const useEventHandlers = ({
 
   const handleMouseUp = useCallback(
     (event: MouseEvent) => {
+      console.log("mouse up");
       const flipX = event.ctrlKey || event.metaKey;
       const flipY = event.shiftKey;
       onMouseUp(event, flipX, flipY);
@@ -362,7 +355,9 @@ export const useEventHandlers = ({
 
   const handleTouchEnd = useCallback(
     (event: TouchEvent<HTMLDivElement>) => {
-      console.log("touch end", event.touches);
+      // Prevent firing of mouse events after touch events
+      event.preventDefault();
+
       const touchEvent = event.touches[0];
       onMouseUp(touchEvent, false, false);
     },
