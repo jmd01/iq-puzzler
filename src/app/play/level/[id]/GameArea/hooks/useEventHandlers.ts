@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import {
   removePieceFromBoard,
   addPieceToBoard,
@@ -12,6 +12,8 @@ import {
   calcUnplacedPosition,
   updatePiecesWithFlippedPiece,
   updatePiecesWithRotatedPiece,
+  calcRotatedInitialPiecePosition,
+  isRotatedSideways,
 } from "../../../utils/utils";
 import { useGameContext } from "../../../../GameContext";
 import type {
@@ -20,9 +22,20 @@ import type {
   SetStateAction,
   RefObject,
   TouchEvent,
+  Touch,
 } from "react";
 import type { GameAreaAction, GameAreaDragState } from "../types";
 import type { GameState, Piece } from "../../../types";
+
+type SwipePosition = {
+  clientX: number;
+  clientY: number;
+};
+
+type SwipedPiece = {
+  id: number;
+  pieceBounds: { top: number; left: number; right: number; bottom: number };
+};
 
 export const useEventHandlers = ({
   pieces,
@@ -44,6 +57,11 @@ export const useEventHandlers = ({
   boardBounds: DOMRect | undefined;
 }) => {
   const { cellSize } = useGameContext();
+
+  // Will be set on touch start if the touch isn't on a piece
+  const swipeStartPosition = useRef<SwipePosition>();
+  // Will be set on touch move if the touch intersects a piece
+  const swipedPiece = useRef<SwipedPiece>();
 
   const onMouseDown = useCallback(
     (target: HTMLElement, event: { clientX: number; clientY: number }) => {
@@ -95,12 +113,23 @@ export const useEventHandlers = ({
   const handleTouchStart = useCallback(
     (event: TouchEvent<HTMLDivElement>) => {
       const touchEvent = event.touches[0];
-      onMouseDown(touchEvent.target as HTMLElement, {
+      const target = touchEvent.target as HTMLElement;
+      const touchPosition = {
         clientX: touchEvent.clientX,
         clientY: touchEvent.clientY,
-      });
+      };
+
+      // if touch outside a piece, initiate a swipe and prevent a drag or rotation
+      const touchedPieceId = getPieceIdOnMouseDown(target, pieces);
+      if (!touchedPieceId) {
+        swipeStartPosition.current = touchPosition;
+        return;
+      }
+
+      // else do onMouseDown
+      onMouseDown(target, touchPosition);
     },
-    [onMouseDown]
+    [onMouseDown, pieces]
   );
 
   const onMove = useCallback(
@@ -210,10 +239,44 @@ export const useEventHandlers = ({
 
   const handleTouchMove = useCallback(
     (event: TouchEvent<HTMLDivElement>) => {
-      const touchEvent = event.touches[0];
+      const touchEvent = event.changedTouches[0];
+      if (swipeStartPosition.current && boardBounds) {
+        const piece = getPieceBoundsOnSwipe(touchEvent, pieces, cellSize);
+
+        // If the swipe intersected a piece
+        if (swipedPiece.current) {
+          // But is no longer intersecting a piece, then flip it
+          if (!piece) {
+            setPieces(
+              updatePiecesWithFlippedPiece(
+                pieces,
+                swipedPiece.current.id,
+                isActivePieceOverBoard(
+                  swipedPiece.current.pieceBounds,
+                  boardBounds,
+                  cellSize
+                ),
+                getSwipeDirection(swipeStartPosition.current, touchEvent)
+              )
+            );
+            // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
+            new Audio("/transform.mp3").play();
+
+            swipeStartPosition.current = undefined;
+          }
+          return;
+        }
+
+        // Swipe has intersected a piece
+        if (piece) {
+          swipedPiece.current = piece;
+          return;
+        }
+      }
+
       onMove(touchEvent);
     },
-    [onMove]
+    [boardBounds, cellSize, onMove, pieces, setPieces]
   );
 
   const onMouseUp = useCallback(
@@ -290,12 +353,7 @@ export const useEventHandlers = ({
         );
         const pieceBounds = activePieceRef.current?.getBoundingClientRect();
 
-        if (
-          // activePiece?.placedInCells &&
-          state.activePieceId &&
-          pieceBounds &&
-          boardBounds
-        ) {
+        if (state.activePieceId && pieceBounds && boardBounds) {
           setPieces(
             flipX || flipY
               ? updatePiecesWithFlippedPiece(
@@ -345,7 +403,6 @@ export const useEventHandlers = ({
 
   const handleMouseUp = useCallback(
     (event: MouseEvent) => {
-      console.log("mouse up");
       const flipX = event.ctrlKey || event.metaKey;
       const flipY = event.shiftKey;
       onMouseUp(event, flipX, flipY);
@@ -358,8 +415,14 @@ export const useEventHandlers = ({
       // Prevent firing of mouse events after touch events
       event.preventDefault();
 
-      const touchEvent = event.touches[0];
-      onMouseUp(touchEvent, false, false);
+      // Tidy up the swipe event and return early to prevent onMouseUp running
+      if (swipeStartPosition.current || swipedPiece.current) {
+        swipeStartPosition.current = undefined;
+        swipedPiece.current = undefined;
+        return;
+      }
+
+      onMouseUp(event.touches[0], false, false);
     },
     [onMouseUp]
   );
@@ -375,4 +438,59 @@ export const useEventHandlers = ({
     handleTouchMove,
     handleTouchEnd,
   };
+};
+
+const getSwipeDirection = (
+  startPosition: SwipePosition,
+  endPosition: SwipePosition
+) => {
+  const xDiff = Math.abs(endPosition.clientX - startPosition.clientX);
+  const yDiff = Math.abs(endPosition.clientY - startPosition.clientY);
+  return xDiff < yDiff ? "x" : "y";
+};
+
+const getPieceBoundsOnSwipe = (
+  event: Touch,
+  pieces: Piece[],
+  cellSize: number
+): SwipedPiece | undefined => {
+  for (const piece of pieces) {
+    const pieceWidth = piece.currentShape[0].length * cellSize;
+    const pieceHeight = piece.currentShape.length * cellSize;
+    const piecePosition = calcRotatedInitialPiecePosition(
+      {
+        width: pieceWidth,
+        height: pieceHeight,
+      },
+      piece.rotation,
+      {
+        x: piece.initialPosition.x + piece.position.x,
+        y: piece.initialPosition.y + piece.position.y,
+      },
+      false
+    );
+
+    const pieceBounds = {
+      top: piecePosition.y,
+      left: piecePosition.x,
+      bottom:
+        piecePosition.y +
+        (isRotatedSideways(piece.rotation) ? pieceWidth : pieceHeight),
+      right:
+        piecePosition.x +
+        (isRotatedSideways(piece.rotation) ? pieceHeight : pieceWidth),
+    };
+
+    if (
+      pieceBounds.top < event.clientY &&
+      pieceBounds.bottom > event.clientY &&
+      pieceBounds.left < event.clientX &&
+      pieceBounds.right > event.clientX
+    ) {
+      return {
+        id: piece.id,
+        pieceBounds,
+      };
+    }
+  }
 };

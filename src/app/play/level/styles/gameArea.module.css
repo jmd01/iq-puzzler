@@ -92,6 +92,12 @@
   border-radius: 12px;
 }
 
+.gameArea {
+  height: 100%;
+}
+
 .piecesContainer {
   max-width: 1500px;
+  height: 100%;
+  align-items: flex-start;
 }
