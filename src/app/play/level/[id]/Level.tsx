@@ -181,7 +181,5 @@ export default function Level({ level }: { level: number }) {
         level={level}
       />
     );
-  } else {
-    return <>Error</>;
   }
 }
