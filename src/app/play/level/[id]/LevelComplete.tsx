@@ -27,6 +27,7 @@ import {
   differenceInMinutes,
   differenceInSeconds,
 } from "date-fns";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 export const LevelComplete = memo(function LevelComplete({
   isVisible,
@@ -38,6 +39,7 @@ export const LevelComplete = memo(function LevelComplete({
   startDate: Date;
 }) {
   const params = useParams();
+  const { clearLocalStorage } = useLocalStorage(parseInt(params.id));
 
   return (
     <div
@@ -163,7 +165,10 @@ export const LevelComplete = memo(function LevelComplete({
                 className={twStyles.levelCompleteIconWrapper}
               >
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={() => {
+                    clearLocalStorage();
+                    window.location.reload();
+                  }}
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
