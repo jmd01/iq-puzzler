@@ -326,6 +326,8 @@ export const useEventHandlers = ({
 
         // If piece was dropped on the board in a placeable position, add it to the board grid and check if grid is full (i.e game complete)
         if (state.previewPiece) {
+          new Audio("/place.mp3").play();
+
           const updatedGrid = addPieceToBoard(
             gameState.grid,
             state.previewPiece.cells
@@ -334,13 +336,19 @@ export const useEventHandlers = ({
           const complete = updatedGrid.every((row) =>
             row.every((cell) => cell)
           );
-          setGameState({
-            ...gameState,
-            grid: updatedGrid,
-            complete,
-            moves: gameState.moves + 1,
-          });
-          new Audio("/place.mp3").play();
+
+          // Delay setting game state on complete to allow piece to animate into place first
+          setTimeout(
+            () => {
+              setGameState({
+                ...gameState,
+                grid: updatedGrid,
+                complete,
+                moves: gameState.moves + 1,
+              });
+            },
+            complete ? 500 : 0
+          );
         } else {
           new Audio("/drop.mp3").play();
         }

@@ -78,7 +78,7 @@ export const GameArea = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className={gameAreaStyles.gameArea}
+        // className={gameAreaStyles.gameArea}
       >
         <Board
           boardRef={boardRef}
