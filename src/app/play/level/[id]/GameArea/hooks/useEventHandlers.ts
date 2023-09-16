@@ -247,6 +247,9 @@ export const useEventHandlers = ({
         if (swipedPiece.current) {
           // But is no longer intersecting a piece, then flip it
           if (!piece) {
+            // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
+            new Audio("/transform.mp3").play();
+
             setPieces(
               updatePiecesWithFlippedPiece(
                 pieces,
@@ -259,8 +262,6 @@ export const useEventHandlers = ({
                 getSwipeDirection(swipeStartPosition.current, touchEvent)
               )
             );
-            // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
-            new Audio("/transform.mp3").play();
 
             swipeStartPosition.current = undefined;
           }
@@ -353,15 +354,15 @@ export const useEventHandlers = ({
           new Audio("/drop.mp3").play();
         }
       } else {
-        // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
-        new Audio("/transform.mp3").play();
-
         const activePiece = pieces.find(
           (piece) => piece.id === state.activePieceId
         );
         const pieceBounds = activePieceRef.current?.getBoundingClientRect();
 
         if (state.activePieceId && pieceBounds && boardBounds) {
+          // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
+          new Audio("/transform.mp3").play();
+
           setPieces(
             flipX || flipY
               ? updatePiecesWithFlippedPiece(
