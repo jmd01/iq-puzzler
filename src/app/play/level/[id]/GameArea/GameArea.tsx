@@ -9,7 +9,6 @@ import type { Reducer } from "react";
 import type { GameAreaAction, GameAreaDragState } from "./types";
 import type { Piece, PlacedPiece } from "../../types";
 import { useGameState } from "./hooks/useGameState";
-import gameAreaStyles from "../../styles/gameArea.module.css";
 
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
@@ -78,7 +77,6 @@ export const GameArea = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        // className={gameAreaStyles.gameArea}
       >
         <Board
           boardRef={boardRef}
