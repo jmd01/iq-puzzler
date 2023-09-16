@@ -202,7 +202,7 @@ export const useEventHandlers = ({
                 previewPiece,
               });
 
-              hasFx && new Audio("/over-board.mp3").play();
+              playFx("/over-board.mp3", hasFx);
             }
             return;
           }
@@ -249,7 +249,7 @@ export const useEventHandlers = ({
           // But is no longer intersecting a piece, then flip it
           if (!piece) {
             // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
-            hasFx && new Audio("/transform.mp3").play();
+            playFx("/transform.mp3", hasFx);
 
             setPieces(
               updatePiecesWithFlippedPiece(
@@ -278,7 +278,7 @@ export const useEventHandlers = ({
 
       onMove(touchEvent);
     },
-    [boardBounds, cellSize, onMove, pieces, setPieces]
+    [boardBounds, cellSize, hasFx, onMove, pieces, setPieces]
   );
 
   const onMouseUp = useCallback(
@@ -328,7 +328,7 @@ export const useEventHandlers = ({
 
         // If piece was dropped on the board in a placeable position, add it to the board grid and check if grid is full (i.e game complete)
         if (state.previewPiece) {
-          hasFx && new Audio("/place.mp3").play();
+          playFx("/place.mp3", hasFx);
 
           const updatedGrid = addPieceToBoard(
             gameState.grid,
@@ -352,7 +352,7 @@ export const useEventHandlers = ({
             complete ? 500 : 0
           );
         } else {
-          hasFx && new Audio("/drop.mp3").play();
+          playFx("/drop.mp3", hasFx);
         }
       } else {
         const activePiece = pieces.find(
@@ -362,7 +362,7 @@ export const useEventHandlers = ({
 
         if (state.activePieceId && pieceBounds && boardBounds) {
           // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
-          hasFx && new Audio("/transform.mp3").play();
+          playFx("/transform.mp3", hasFx);
 
           setPieces(
             flipX || flipY
@@ -400,6 +400,7 @@ export const useEventHandlers = ({
       cellSize,
       dispatch,
       gameState,
+      hasFx,
       pieces,
       setGameState,
       setPieces,
@@ -502,5 +503,13 @@ const getPieceBoundsOnSwipe = (
         pieceBounds,
       };
     }
+  }
+};
+
+const playFx = (path: string, hasFx: boolean) => {
+  if (hasFx) {
+    const audio = new Audio(path);
+    audio.volume = 0.7;
+    audio.play();
   }
 };

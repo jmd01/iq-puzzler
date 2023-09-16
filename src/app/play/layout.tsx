@@ -67,7 +67,7 @@ export default function PlayLayout({
       hasFx,
       toggleFx,
     }),
-    [cellSize, hasFx, height, width]
+    [cellSize, hasFx, height, toggleFx, width]
   );
 
   return (
@@ -118,15 +118,9 @@ const useAudio = () => {
   }, [hasFx]);
 
   const toggleMusic = useCallback(() => {
-    setHasMusic(!hasMusic);
-    localStorage.setItem("hasMusic", String(!hasMusic));
-
-    if (audioContextRef.current && gainNodeRef.current) {
-      gainNodeRef.current.gain.exponentialRampToValueAtTime(
-        hasMusic ? 0.0000001 : 1.0,
-        audioContextRef.current.currentTime + 1
-      );
-    }
+    const hasMusicNewValue = !hasMusic;
+    setHasMusic(hasMusicNewValue);
+    localStorage.setItem("hasMusic", String(hasMusicNewValue));
   }, [hasMusic]);
 
   const audioContextRef = useRef<AudioContext>();
@@ -135,8 +129,8 @@ const useAudio = () => {
 
   // Create audio and fade it in on first level loaded. Audio will loop seamlessly and will continue playing on transitioning between levels
   // TODO If loading straight to a level page (rather than from the home page), Google will prevent audio from playing since no user interactions have taken place
-  useEffect(() => {
-    if (!audioContextRef.current) {
+  useEffect(() => {    
+    if (hasMusic) {
       audioContextRef.current = new AudioContext();
 
       // Fetch and buffer the audio - allows for seamless looping
@@ -164,20 +158,32 @@ const useAudio = () => {
               if (hasMusic) {
                 // Fade in
                 gainNodeRef.current.gain.exponentialRampToValueAtTime(
-                  1.0,
-                  audioContextRef.current.currentTime + 4
+                  1,
+                  audioContextRef.current.currentTime + 2
                 );
               }
             }
           });
         });
+    } else {
+      audioContextRef.current?.close();
+      audioNodeRef.current?.stop();
+      audioContextRef.current = undefined;
+      audioNodeRef.current = undefined;
+      gainNodeRef.current = undefined;
     }
 
-    return () => audioNodeRef.current?.stop();
+    return () => {
+      audioContextRef.current?.close();
+      audioNodeRef.current?.stop();
+      audioContextRef.current = undefined;
+      audioNodeRef.current = undefined;
+      gainNodeRef.current = undefined;
+    };
 
     // Only run on first render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hasMusic]);
 
   return {
     audioContextRef,
