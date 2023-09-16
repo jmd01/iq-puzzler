@@ -182,4 +182,5 @@ export default function Level({ level }: { level: number }) {
       />
     );
   }
+  return <></>
 }

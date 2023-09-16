@@ -6,6 +6,7 @@ import gameAreaStyles from "./level/styles/gameArea.module.css";
 import { GameContext } from "./GameContext";
 import { useResizeDetector } from "react-resize-detector";
 import { usePrevious } from "./hooks/usePrevious";
+import { boolean } from "zod";
 
 export default function PlayLayout({
   children,
@@ -33,7 +34,8 @@ export default function PlayLayout({
     height,
   });
 
-  const { audioContextRef, hasMusic, toggleMusic } = useMusic();
+  const { audioContextRef, hasMusic, toggleMusic, hasFx, toggleFx } =
+    useAudio();
 
   const cellSize = useMemo(() => {
     if (!(width && height)) {
@@ -62,8 +64,10 @@ export default function PlayLayout({
       cellSize,
       width: width || 0,
       height: height || 0,
+      hasFx,
+      toggleFx,
     }),
-    [cellSize, height, width]
+    [cellSize, hasFx, height, width]
   );
 
   return (
@@ -80,18 +84,38 @@ export default function PlayLayout({
         }}
       >
         <AnimatedBackground />
-        <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
+        <TopSection
+          hasMusic={hasMusic}
+          toggleMusic={toggleMusic}
+          hasFx={hasFx}
+          toggleFx={toggleFx}
+        />
         {width && height && cellSize ? children : null}
       </div>
     </GameContext.Provider>
   );
 }
 
-const useMusic = () => {
+const useAudio = () => {
   const [hasMusic, setHasMusic] = useState(
-    typeof window !== "undefined" &&
-      window.localStorage.getItem("hasMusic") === "true"
+    typeof window !== "undefined" && window.localStorage.getItem("hasMusic")
+      ? window.localStorage.getItem("hasMusic") === "true"
+        ? true
+        : false
+      : true
   );
+  const [hasFx, setHasFx] = useState(
+    typeof window !== "undefined" && window.localStorage.getItem("hasFx")
+      ? window.localStorage.getItem("hasFx") === "true"
+        ? true
+        : false
+      : true
+  );
+
+  const toggleFx = useCallback(() => {
+    setHasFx(!hasFx);
+    localStorage.setItem("hasFx", String(!hasFx));
+  }, [hasFx]);
 
   const toggleMusic = useCallback(() => {
     setHasMusic(!hasMusic);
@@ -159,5 +183,7 @@ const useMusic = () => {
     audioContextRef,
     hasMusic,
     toggleMusic,
+    hasFx,
+    toggleFx,
   };
 };

@@ -56,7 +56,7 @@ export const useEventHandlers = ({
   activePieceRef: RefObject<HTMLDivElement>;
   boardBounds: DOMRect | undefined;
 }) => {
-  const { cellSize } = useGameContext();
+  const { cellSize, hasFx } = useGameContext();
 
   // Will be set on touch start if the touch isn't on a piece
   const swipeStartPosition = useRef<SwipePosition>();
@@ -202,7 +202,7 @@ export const useEventHandlers = ({
                 previewPiece,
               });
 
-              new Audio("/over-board.mp3").play();
+              hasFx && new Audio("/over-board.mp3").play();
             }
             return;
           }
@@ -220,6 +220,7 @@ export const useEventHandlers = ({
       cellSize,
       dispatch,
       gameState,
+      hasFx,
       pieces,
       setGameState,
       setPieces,
@@ -248,7 +249,7 @@ export const useEventHandlers = ({
           // But is no longer intersecting a piece, then flip it
           if (!piece) {
             // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
-            new Audio("/transform.mp3").play();
+            hasFx && new Audio("/transform.mp3").play();
 
             setPieces(
               updatePiecesWithFlippedPiece(
@@ -327,7 +328,7 @@ export const useEventHandlers = ({
 
         // If piece was dropped on the board in a placeable position, add it to the board grid and check if grid is full (i.e game complete)
         if (state.previewPiece) {
-          new Audio("/place.mp3").play();
+          hasFx && new Audio("/place.mp3").play();
 
           const updatedGrid = addPieceToBoard(
             gameState.grid,
@@ -351,7 +352,7 @@ export const useEventHandlers = ({
             complete ? 500 : 0
           );
         } else {
-          new Audio("/drop.mp3").play();
+          hasFx && new Audio("/drop.mp3").play();
         }
       } else {
         const activePiece = pieces.find(
@@ -361,7 +362,7 @@ export const useEventHandlers = ({
 
         if (state.activePieceId && pieceBounds && boardBounds) {
           // If click on placed board piece but didn't drag, rotate it and remove from board grid (unplace it)
-          new Audio("/transform.mp3").play();
+          hasFx && new Audio("/transform.mp3").play();
 
           setPieces(
             flipX || flipY
