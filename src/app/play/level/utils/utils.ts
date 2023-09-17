@@ -52,7 +52,7 @@ const getPlacedPieceIdFromCell = (
  * The buffer allows a piece to be considered over the board even if piece is not fully over the board
  */
 export function isActivePieceOverBoard(
-  pieceBounds: DOMRect,
+  pieceBounds: { top: number; left: number; right: number; bottom: number },
   boardBounds: DOMRect,
   cellSize: number
 ) {

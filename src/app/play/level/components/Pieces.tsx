@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { GameAreaDragState } from "../types";
 import type { Piece as PieceType } from "../types";
 import {
   calcPlacedPosition,
@@ -27,6 +26,7 @@ import { useGameContext } from "../../GameContext";
 import classnames from "classnames";
 import piecesStyles from "../styles/gameArea.module.css";
 import { LevelLocalStorage } from "../[id]/hooks/useLocalStorage";
+import type { GameAreaDragState } from "../[id]/GameArea/types";
 
 export type PiecesProps = {
   pieces: PieceType[];
@@ -149,32 +149,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const onClickPath = useCallback(
-    (event: MouseEvent) => {
-      if (piece.isLocked) return;
-
-      const pieceBounds = ref.current?.getBoundingClientRect();
-
-      if (!isDragging && pieceBounds && boardBounds) {
-        setPieces((pieces) =>
-          event.ctrlKey || event.metaKey || event.shiftKey
-            ? updatePiecesWithFlippedPiece(
-                pieces,
-                id,
-                isActivePieceOverBoard(pieceBounds, boardBounds, cellSize),
-                event.ctrlKey || event.metaKey ? "x" : "y"
-              )
-            : updatePiecesWithRotatedPiece(
-                pieces,
-                id,
-                isActivePieceOverBoard(pieceBounds, boardBounds, cellSize)
-              )
-        );
-      }
-    },
-    [boardBounds, cellSize, id, isDragging, piece.isLocked, setPieces]
-  );
-
   useEffect(() => {
     const pieceBounds = ref.current?.getBoundingClientRect();
 
@@ -246,7 +220,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
         easeType="ease-out"
       >
         <PieceDiv
-          onClick={onClickPath}
           hasBoxShadow={!isPlaced}
           hasOutline={!isPlaced && isHovered}
           opacity={!isPlaced && !isDragging && piece.droppedOnBoard ? 0.8 : 1}

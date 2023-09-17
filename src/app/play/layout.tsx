@@ -6,6 +6,7 @@ import gameAreaStyles from "./level/styles/gameArea.module.css";
 import { GameContext } from "./GameContext";
 import { useResizeDetector } from "react-resize-detector";
 import { usePrevious } from "./hooks/usePrevious";
+import { boolean } from "zod";
 
 export default function PlayLayout({
   children,
@@ -33,7 +34,8 @@ export default function PlayLayout({
     height,
   });
 
-  const { audioContextRef, hasMusic, toggleMusic } = useMusic();
+  const { audioContextRef, hasMusic, toggleMusic, hasFx, toggleFx } =
+    useAudio();
 
   const cellSize = useMemo(() => {
     if (!(width && height)) {
@@ -62,8 +64,10 @@ export default function PlayLayout({
       cellSize,
       width: width || 0,
       height: height || 0,
+      hasFx,
+      toggleFx,
     }),
-    [cellSize, height, width]
+    [cellSize, hasFx, height, toggleFx, width]
   );
 
   return (
@@ -80,29 +84,43 @@ export default function PlayLayout({
         }}
       >
         <AnimatedBackground />
-        <TopSection hasMusic={hasMusic} toggleMusic={toggleMusic} />
+        <TopSection
+          hasMusic={hasMusic}
+          toggleMusic={toggleMusic}
+          hasFx={hasFx}
+          toggleFx={toggleFx}
+        />
         {width && height && cellSize ? children : null}
       </div>
     </GameContext.Provider>
   );
 }
 
-const useMusic = () => {
+const useAudio = () => {
   const [hasMusic, setHasMusic] = useState(
-    typeof window !== "undefined" &&
-      window.localStorage.getItem("hasMusic") === "true"
+    typeof window !== "undefined" && window.localStorage.getItem("hasMusic")
+      ? window.localStorage.getItem("hasMusic") === "true"
+        ? true
+        : false
+      : true
+  );
+  const [hasFx, setHasFx] = useState(
+    typeof window !== "undefined" && window.localStorage.getItem("hasFx")
+      ? window.localStorage.getItem("hasFx") === "true"
+        ? true
+        : false
+      : true
   );
 
-  const toggleMusic = useCallback(() => {
-    setHasMusic(!hasMusic);
-    localStorage.setItem("hasMusic", String(!hasMusic));
+  const toggleFx = useCallback(() => {
+    setHasFx(!hasFx);
+    localStorage.setItem("hasFx", String(!hasFx));
+  }, [hasFx]);
 
-    if (audioContextRef.current && gainNodeRef.current) {
-      gainNodeRef.current.gain.exponentialRampToValueAtTime(
-        hasMusic ? 0.0000001 : 1.0,
-        audioContextRef.current.currentTime + 1
-      );
-    }
+  const toggleMusic = useCallback(() => {
+    const hasMusicNewValue = !hasMusic;
+    setHasMusic(hasMusicNewValue);
+    localStorage.setItem("hasMusic", String(hasMusicNewValue));
   }, [hasMusic]);
 
   const audioContextRef = useRef<AudioContext>();
@@ -111,8 +129,8 @@ const useMusic = () => {
 
   // Create audio and fade it in on first level loaded. Audio will loop seamlessly and will continue playing on transitioning between levels
   // TODO If loading straight to a level page (rather than from the home page), Google will prevent audio from playing since no user interactions have taken place
-  useEffect(() => {
-    if (!audioContextRef.current) {
+  useEffect(() => {    
+    if (hasMusic) {
       audioContextRef.current = new AudioContext();
 
       // Fetch and buffer the audio - allows for seamless looping
@@ -140,24 +158,38 @@ const useMusic = () => {
               if (hasMusic) {
                 // Fade in
                 gainNodeRef.current.gain.exponentialRampToValueAtTime(
-                  1.0,
-                  audioContextRef.current.currentTime + 4
+                  1,
+                  audioContextRef.current.currentTime + 2
                 );
               }
             }
           });
         });
+    } else {
+      audioContextRef.current?.close();
+      audioNodeRef.current?.stop();
+      audioContextRef.current = undefined;
+      audioNodeRef.current = undefined;
+      gainNodeRef.current = undefined;
     }
 
-    return () => audioNodeRef.current?.stop();
+    return () => {
+      audioContextRef.current?.close();
+      audioNodeRef.current?.stop();
+      audioContextRef.current = undefined;
+      audioNodeRef.current = undefined;
+      gainNodeRef.current = undefined;
+    };
 
     // Only run on first render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hasMusic]);
 
   return {
     audioContextRef,
     hasMusic,
     toggleMusic,
+    hasFx,
+    toggleFx,
   };
 };

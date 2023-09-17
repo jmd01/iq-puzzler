@@ -57,6 +57,7 @@ export const GameArea = ({ placedPieces }: GameAreaProps) => {
         boardRef={boardRef}
         previewPiece={undefined}
         prePlacedPieces={prePlacedPieces}
+        setBoardAnimationComplete={() => {}}
       />
     </div>
   );

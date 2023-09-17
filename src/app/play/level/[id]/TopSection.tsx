@@ -3,20 +3,22 @@ import Logo from "../components/Logo";
 import gameAreaStyles from "../styles/gameArea.module.css";
 import {
   faMusic,
-  faQuestion,
   faQuestionCircle,
-  faVolumeHigh,
-  faVolumeLow,
   faVolumeOff,
-  faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export const TopSection = ({hasMusic, toggleMusic}: {
+export const TopSection = ({
+  hasMusic,
+  toggleMusic,
+  hasFx,
+  toggleFx,
+}: {
   hasMusic: boolean;
   toggleMusic: () => void;
+  hasFx: boolean;
+  toggleFx: () => void;
 }) => {
-  const [hasFx, setHasFx] = useState(false);
   const [isOpenHelp, setIsOpenHelp] = useState(false);
   const [hoverMusic, setHoverMusic] = useState(false);
   const [hoverFx, setHoverFx] = useState(false);
@@ -25,7 +27,7 @@ export const TopSection = ({hasMusic, toggleMusic}: {
   return (
     <div className={gameAreaStyles.topSection}>
       <div className={gameAreaStyles.logoContainer}>
-        <Logo fill="#3a287a"/>
+        <Logo fill="#3a287a" />
       </div>
       <div className={gameAreaStyles.toolbar}>
         <button
@@ -40,7 +42,7 @@ export const TopSection = ({hasMusic, toggleMusic}: {
           />
         </button>
         <button
-          onClick={() => setHasFx(!hasFx)}
+          onClick={() => toggleFx()}
           onMouseEnter={() => setHoverFx(!hasFx)}
           onMouseLeave={() => setHoverFx(hasFx)}
           className={gameAreaStyles.toolbarButton}
