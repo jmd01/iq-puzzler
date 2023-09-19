@@ -172,6 +172,10 @@ export default function Level({ level }: { level: number }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cellSize, level]);
 
+  useEffect(() => {
+    localStorage.setLocalStorageLastLevel(level);
+  }, [level, localStorage]);
+
   if (levelData.data) {
     return (
       <GameArea
@@ -182,5 +186,5 @@ export default function Level({ level }: { level: number }) {
       />
     );
   }
-  return <></>
+  return <></>;
 }

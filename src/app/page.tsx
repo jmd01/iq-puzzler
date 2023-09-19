@@ -15,9 +15,7 @@ import Link from "next/link";
 import classnames from "classnames";
 import { sigmarOne } from "./fonts";
 
-
 export default function Home() {
-
   return (
     <div className={classnames(gameAreaStyles.gameArea)}>
       <AnimatedBackground />
@@ -37,11 +35,16 @@ export default function Home() {
 }
 
 const PlayButton = () => {
+  const lastLevelPlayed = useMemo(() => {
+    const lastLevelPlayed = localStorage.getItem("lastLevel");
+    return lastLevelPlayed ? Number(lastLevelPlayed) : 1;
+  }, []);
+
   return (
     <div className={homeStyles.startButtonWrapper}>
       <div className={homeStyles.startButtonBorder}>
         <Link
-          href={`/play/level/1`}
+          href={`/play/level/${lastLevelPlayed}`}
           className={classnames(homeStyles.startButton, sigmarOne.className)}
         >
           <span>PLAY</span>
