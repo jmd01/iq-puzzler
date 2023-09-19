@@ -4,9 +4,15 @@ import gameAreaStyles from "../styles/gameArea.module.css";
 import {
   faMusic,
   faQuestionCircle,
+  faRefresh,
   faVolumeOff,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classnames from "classnames";
+import Image from "next/image";
+
+const iconColor = "#352d9d";
+const iconActiveColor = "#4c44b4";
 
 export const TopSection = ({
   hasMusic,
@@ -26,10 +32,12 @@ export const TopSection = ({
 
   return (
     <div className={gameAreaStyles.topSection}>
-      <div className={gameAreaStyles.logoContainer}>
-        <Logo fill="#3a287a" />
-      </div>
-      <div className={gameAreaStyles.toolbar}>
+      <div
+        className={classnames(
+          gameAreaStyles.toolbar,
+          gameAreaStyles.toolbarLeft
+        )}
+      >
         <button
           onClick={() => toggleMusic()}
           onMouseEnter={() => setHoverMusic(!hasMusic)}
@@ -38,7 +46,7 @@ export const TopSection = ({
         >
           <FontAwesomeIcon
             icon={faMusic}
-            color={hasMusic || hoverMusic ? "#3a2879" : "#2d1976"}
+            color={hasMusic || hoverMusic ? iconActiveColor : iconColor}
           />
         </button>
         <button
@@ -49,8 +57,28 @@ export const TopSection = ({
         >
           <FontAwesomeIcon
             icon={faVolumeOff}
-            color={hasFx || hoverFx ? "#3a2879" : "#2d1976"}
+            color={hasFx || hoverFx ? iconActiveColor : iconColor}
           />
+        </button>
+      </div>
+      <div className={gameAreaStyles.logoContainer}>
+        <Logo fill={iconColor} />
+      </div>
+      <div
+        className={classnames(
+          gameAreaStyles.toolbar,
+          gameAreaStyles.toolbarRight
+        )}
+      >
+        <button
+          onClick={() => {
+            const levelId = window.location.pathname.split("/").at(-1);
+            window.localStorage.removeItem(`level-${levelId}`);
+            window.location.reload();
+          }}
+          className={gameAreaStyles.toolbarButton}
+        >
+          <FontAwesomeIcon icon={faRefresh} />
         </button>
         <button
           onClick={() => setIsOpenHelp(!isOpenHelp)}
@@ -60,10 +88,77 @@ export const TopSection = ({
         >
           <FontAwesomeIcon
             icon={faQuestionCircle}
-            color={isOpenHelp || hoverHelp ? "#3a2879" : "#2d1976"}
+            color={isOpenHelp || hoverHelp ? iconActiveColor : iconColor}
           />
         </button>
-        {isOpenHelp && <div className={gameAreaStyles.helpTooltip}>help</div>}
+        {isOpenHelp && (
+          <div className={gameAreaStyles.helpTooltip}>
+            <div className={gameAreaStyles.helpTooltipRow}>
+              <div className={gameAreaStyles.helpTooltipImg}>
+                <Image
+                  src={"/piece.svg"}
+                  width={112}
+                  height={64}
+                  alt="Piece"
+                  className={gameAreaStyles.tooltipPiece}
+                />
+                <Image
+                  src={"/rotate.svg"}
+                  width={50}
+                  height={64}
+                  alt="Rotate piece"
+                  className={gameAreaStyles.tooltipArrowRotate}
+                />
+              </div>
+              <div className={gameAreaStyles.helpTooltipText}>
+                Click to rotate
+              </div>
+            </div>
+            <div className={gameAreaStyles.helpTooltipRow}>
+              <div className={gameAreaStyles.helpTooltipImg}>
+                <Image
+                  src={"/piece.svg"}
+                  width={112}
+                  height={64}
+                  alt="Piece"
+                  className={gameAreaStyles.tooltipPiece}
+                />
+
+                <Image
+                  src={"/flip-v.svg"}
+                  width={30}
+                  height={64}
+                  alt="Flip piece vertically"
+                  className={gameAreaStyles.tooltipArrowFlipV}
+                />
+              </div>
+              <div className={gameAreaStyles.helpTooltipText}>
+                Cmd + click to flip vertically
+              </div>
+            </div>
+            <div className={gameAreaStyles.helpTooltipRow}>
+              <div className={gameAreaStyles.helpTooltipImg}>
+                <Image
+                  src={"/piece.svg"}
+                  width={112}
+                  height={64}
+                  alt="Piece"
+                />
+
+                <Image
+                  src={"/flip-h.svg"}
+                  width={112}
+                  height={64}
+                  alt="Flip piece horizontally"
+                  className={gameAreaStyles.tooltipArrowFlipH}
+                />
+              </div>
+              <div className={gameAreaStyles.helpTooltipText}>
+                Shift + click to flip horizontally
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -16,11 +16,13 @@
   justify-items: center;
   padding: 2rem;
 }
+
 @media (max-width: 800px) {
   .topSection {
     padding: 1.5rem;
   }
 }
+
 @media (max-width: 600px) {
   .topSection {
     padding: 1rem;
@@ -40,6 +42,7 @@
     width: 60px;
   }
 }
+
 @media (max-width: 600px) {
   .logoContainer svg {
     width: 40px;
@@ -47,34 +50,50 @@
 }
 
 .toolbar {
-  margin-left: auto;
   font-size: 40px;
   display: flex;
   gap: 24px;
 }
 
+.toolbarLeft {
+  margin-right: auto;
+}
+
+.toolbarRight {
+  margin-left: auto;
+}
+
 .toolbarButton {
+  color: #352d9d;
   width: 48px;
 }
+
+.toolbarButton :hover {
+  color: #4c44b4;
+}
+
 @media (max-width: 800px) {
   .toolbar {
     font-size: 30px;
     gap: 18px;
   }
+
   .toolbarButton {
     width: 36px;
   }
-  
+
 }
+
 @media (max-width: 600px) {
   .toolbar {
     font-size: 20px;
     gap: 12px;
   }
+
   .toolbarButton {
     width: 24px;
   }
-  
+
 }
 
 .toolbarButton svg {
@@ -88,8 +107,49 @@
   width: 300px;
   height: 400px;
   z-index: 100;
-  background-color: #fff;
+  background-color: #352d9d;
+  border-top: 5px solid #4c44b4;
+  filter: drop-shadow(8px 8px 8px #000);
   border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.helpTooltipRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+}
+
+.helpTooltipImg {
+  position: relative;
+  width: 112px;
+  flex-shrink: 0;
+}
+
+.tooltipArrowRotate {
+  position: absolute;
+  top: 10px;
+  left: 30px;
+}
+
+.tooltipArrowFlipV {
+  position: absolute;
+  top: 0px;
+  left: 35px;
+}
+
+.tooltipArrowFlipH {
+  position: absolute;
+  top: 22px;
+}
+
+.helpTooltipText {
+  font-size: 16px;
+  color: #FFF;
 }
 
 .piecesContainer {
