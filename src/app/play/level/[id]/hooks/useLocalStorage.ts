@@ -2,7 +2,12 @@ import { GameState, Piece } from "../../types";
 
 export type LocalStoragePiece = Pick<
   Piece,
-  "id" | "rotation" | "isFlippedX" | "isFlippedY" | "placedInCells" | "currentShape"
+  | "id"
+  | "rotation"
+  | "isFlippedX"
+  | "isFlippedY"
+  | "placedInCells"
+  | "currentShape"
 >;
 export type LevelLocalStorage = GameState & {
   level: number;
@@ -21,7 +26,7 @@ export const useLocalStorage = (levelId: number) => {
           "startDate" in parsedLocalStorage
             ? new Date(parsedLocalStorage.startDate)
             : undefined;
-            
+
         return {
           ...parsedLocalStorage,
           startDate,
@@ -61,6 +66,9 @@ export const useLocalStorage = (levelId: number) => {
       })
     );
   };
+  const setLocalStorageLastLevel = (level: number) => {
+    window.localStorage.setItem("lastLevel", level.toString());
+  };
 
   const clearLocalStorage = () => {
     window.localStorage.removeItem(localStorageKey);
@@ -71,6 +79,7 @@ export const useLocalStorage = (levelId: number) => {
     setLocalStorage,
     setLocalStorageGameState,
     setLocalStoragePlacedPieces,
+    setLocalStorageLastLevel,
     clearLocalStorage,
   };
 };

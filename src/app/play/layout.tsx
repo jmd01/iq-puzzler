@@ -6,7 +6,6 @@ import gameAreaStyles from "./level/styles/gameArea.module.css";
 import { GameContext } from "./GameContext";
 import { useResizeDetector } from "react-resize-detector";
 import { usePrevious } from "./hooks/usePrevious";
-import { boolean } from "zod";
 
 export default function PlayLayout({
   children,
