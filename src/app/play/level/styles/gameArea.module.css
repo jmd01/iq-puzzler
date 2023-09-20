@@ -136,10 +136,6 @@
   flex-shrink: 0;
 }
 
-/* .helpTooltipImg svg {
-  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
-} */
-
 .tooltipArrowRotate {
   position: absolute;
   top: 10px;
@@ -175,4 +171,18 @@
 
 .piecesContainer {
   max-width: 1500px;
+}
+
+.solutionWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.solutionContainer {
+  opacity: 0.8
 }

@@ -14,6 +14,7 @@ import Image from "next/image";
 import { inter, sigmarOne } from "@/app/fonts";
 import Solution from "../components/solution/Solution";
 import { Animate } from "react-simple-animate";
+import { isTouchDevice } from "../utils/utils";
 
 const iconColor = "#352d9d";
 const iconActiveColor = "#4c44b4";
@@ -95,12 +96,6 @@ export const TopSection = ({
         >
           <FontAwesomeIcon icon={faQuestionCircle} />
         </button>
-        {/* <Link
-              href={`/play/solution/${levelId}`}
-              className={gameAreaStyles.toolbarButton}
-            >
-              <FontAwesomeIcon icon={faQuestionCircle} />
-            </Link> */}
         <button
           onClick={() => setIsOpenHelp(!isOpenHelp)}
           onMouseEnter={() => setHoverHelp(!isOpenHelp)}
@@ -126,21 +121,13 @@ export const TopSection = ({
             easeType="ease-out"
           >
             <div
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                left: 0,
-                top: 0,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                zIndex: 100,
-              }}
+              className={gameAreaStyles.solutionWrapper}
               onClick={() => setIsOpenSolution(false)}
             >
               <div
+                className={gameAreaStyles.solutionContainer}
                 style={{
                   paddingTop: ref.current?.offsetHeight || 0,
-                  opacity: 0.8,
                 }}
               >
                 <Solution level={Number(levelId)} />
@@ -233,6 +220,4 @@ const Tooltip = () => {
     </div>
   );
 };
-function isTouchDevice() {
-  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
-}
+

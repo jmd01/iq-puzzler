@@ -69,9 +69,6 @@ export const useLocalStorage = (levelId: number) => {
   const setLocalStorageLastLevel = (level: number) => {
     window.localStorage.setItem("lastLevel", level.toString());
   };
-  const getLocalStorageLastLevel = () => {
-    return Number(window.localStorage.getItem("lastLevel"));
-  };
 
   const clearLocalStorage = () => {
     window.localStorage.removeItem(localStorageKey);
@@ -83,7 +80,6 @@ export const useLocalStorage = (levelId: number) => {
     setLocalStorageGameState,
     setLocalStoragePlacedPieces,
     setLocalStorageLastLevel,
-    getLocalStorageLastLevel,
     clearLocalStorage,
   };
 };

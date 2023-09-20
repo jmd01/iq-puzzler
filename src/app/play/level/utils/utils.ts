@@ -487,3 +487,7 @@ export function getPlacedInCellsTopLeft(placedInCells: [number, number][]) {
     { x: 10, y: 5 }
   );
 }
+
+export function isTouchDevice() {
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
