@@ -1,14 +1,14 @@
 "use client";
 import { GameArea } from "./GameArea";
 import { useEffect, useState } from "react";
-import { useGameContext } from "../../GameContext";
-import { PlacedPiece, piecesDataSchema, levelSchema } from "../../level/types";
-import { getPlacedRotatedAndFlippedShape } from "../../level/utils/sharedUtils";
+import { useGameContext } from "../../../GameContext";
+import { PlacedPiece, piecesDataSchema, levelSchema } from "../../types";
+import { getPlacedRotatedAndFlippedShape } from "../../utils/sharedUtils";
 import {
   calcPlacedPosition,
   getPlacedInCellsTopLeft,
   isRotatedSideways,
-} from "../../level/utils/utils";
+} from "../../utils/utils";
 
 export default function Solution({ level }: { level: number }) {
   const [levelData, setLevelData] = useState<{

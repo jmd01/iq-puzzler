@@ -111,16 +111,22 @@
   border-top: 5px solid #4c44b4;
   filter: drop-shadow(8px 8px 8px #000);
   border-radius: 12px;
-  padding: 12px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
+.helpTooltip h2 {
+  font-size: 26px;
+  color: #FFF;
+  text-align: center;
+}
+
 .helpTooltipRow {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  gap: 18px;
+  align-items: flex-start;
 
 }
 
@@ -129,6 +135,10 @@
   width: 112px;
   flex-shrink: 0;
 }
+
+/* .helpTooltipImg svg {
+  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+} */
 
 .tooltipArrowRotate {
   position: absolute;
@@ -147,9 +157,20 @@
   top: 22px;
 }
 
-.helpTooltipText {
+.helpTooltipText h3 {
   font-size: 16px;
+  font-weight: 500;
   color: #FFF;
+}
+
+.helpTooltipText pre {
+  font-size: 14px;
+  color: #FFF;
+  border: 1px solid #FFF;
+  border-radius: 4px;
+  background-color: #4c44b4;
+  padding: 2px 4px;
+  margin: 4px 0;
 }
 
 .piecesContainer {

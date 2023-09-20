@@ -1,7 +1,7 @@
 "use client";
-import { Board } from "../../level/components/Board";
+import { Board } from "../Board";
 import { useRef, useState } from "react";
-import type { PlacedPiece } from "../../level/types";
+import type { PlacedPiece } from "../../types";
 
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
