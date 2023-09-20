@@ -35,7 +35,7 @@ export const TopSection = ({
   const [hoverMusic, setHoverMusic] = useState(false);
   const [hoverFx, setHoverFx] = useState(false);
   const [hoverHelp, setHoverHelp] = useState(false);
-  const levelId = window.location.pathname.split("/").at(-1);
+  const levelId = typeof window !== "undefined" ? window.location.pathname.split("/").at(-1) : 1;
 
   const ref = useRef<HTMLDivElement>(null);
 
