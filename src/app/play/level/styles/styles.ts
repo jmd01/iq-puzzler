@@ -1,6 +1,7 @@
 import {
   backgroundOpacity,
   borderRadius,
+  textAlign,
   translate,
 } from "tailwindcss-classnames";
 import {
@@ -67,7 +68,7 @@ export const levelCompleteContainer = twClassnames(
   flexBox("items-center", "justify-center"),
   width("w-full"),
   height("h-full"),
-  padding("p-4")
+  padding("p-6","sm:p-4")
 );
 
 export const levelCompleteBadge = twClassnames(
@@ -82,14 +83,19 @@ export const levelCompleteStars = twClassnames(
   layout("flex"),
   flexBox("justify-center"),
   gap("gap-2"),
-  height("h-24")
+  height("h-16", "sm:!h-24")
 );
 
 export const levelCompleteMiddleStar = twClassnames(translate("translate-y-6"));
 
 export const levelCompleteText = twClassnames(
-  fontSize("text-4xl"),
+  fontSize("text-2xl", "sm:text-4xl"),
+  textAlign("text-center"),
   padding("py-6")
+);
+
+export const levelCompleteStatsWrapper = twClassnames(
+  fontSize("text-xl", "sm:text-3xl"),
 );
 
 export const levelCompleteIcons = twClassnames(
@@ -104,8 +110,8 @@ export const levelCompleteIconWrapper = twClassnames(
 export const levelCompleteIcon = twClassnames(
   layout("flex"),
   flexBox("justify-center", "items-center"),
-  fontSize("text-4xl"),
+  fontSize("text-3xl", "sm:text-4xl"),
   borderRadius("rounded-full"),
-  width("w-20"),
-  height("h-20")
+  width("w-16", "sm:w-20"),
+  height("h-16", "sm:h-20")
 );
