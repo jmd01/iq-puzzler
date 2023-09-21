@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { PieceData } from "../../types";
+import { PieceData } from "../../../../play/level/types";
 
 export async function GET(
   request: Request,
