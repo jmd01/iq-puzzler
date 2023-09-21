@@ -2,14 +2,12 @@
 import Logo from "./play/assets/logo-final-1-min.svg";
 import { AnimatedBackground } from "./play/level/components/AnimatedBackground";
 import gameAreaStyles from "./play/level/styles/gameArea.module.css";
-import * as twStyles from "./play/level/styles/styles";
 import { PieceData, pieces, row } from "./pieces";
-import { memo, useEffect, useMemo, useState } from "react";
-import { Animate } from "react-simple-animate";
+import { memo, useMemo } from "react";
 import { PieceDiv } from "./play/level/components/PieceDiv";
 import { useResizeDetector } from "react-resize-detector";
 import homeStyles from "./home.module.css";
-import { faForwardStep, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import classnames from "classnames";
@@ -36,8 +34,11 @@ export default function Home() {
 
 const PlayButton = () => {
   const lastLevelPlayed = useMemo(() => {
-    const lastLevelPlayed = localStorage.getItem("lastLevel");
-    return lastLevelPlayed ? Number(lastLevelPlayed) : 1;
+    // if (typeof window !== undefined) {
+    //   const lastLevelPlayed = window.localStorage.getItem("lastLevel");
+    //   return lastLevelPlayed ? Number(lastLevelPlayed) : 1;
+    // }
+    return 1;
   }, []);
 
   return (
