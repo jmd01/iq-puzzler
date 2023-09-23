@@ -3,27 +3,17 @@ import prisma from "@/lib/prisma";
 import { PieceData } from "../../../../play/level/types";
 
 export async function generateStaticParams() {
-  // const levels = await prisma.level.findFirst();
-  return [{
-    id: "1",
-  }, {
-    id: "2",
-  }];
-  // const levels = await prisma.level.findMany();
+  const levels = await prisma.level.findMany();
 
-  // return levels.map(({ id }) => ({
-  //   id: id.toString(),
-  // }));
+  return levels.map(({ id }) => ({
+    id: id.toString(),
+  }));
 }
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_: Request, { params }: { params: { id: string } }) {
   const level = await prisma.level.findUnique({
     where: {
       id: Number(params.id),
-      // id: 1,
     },
     include: {
       solutionPieces: true,
