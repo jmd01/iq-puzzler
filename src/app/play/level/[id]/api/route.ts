@@ -2,6 +2,20 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PieceData } from "../../../../play/level/types";
 
+export async function generateStaticParams() {
+  // const levels = await prisma.level.findFirst();
+  return [{
+    id: "1",
+  }, {
+    id: "2",
+  }];
+  // const levels = await prisma.level.findMany();
+
+  // return levels.map(({ id }) => ({
+  //   id: id.toString(),
+  // }));
+}
+
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
@@ -9,6 +23,7 @@ export async function GET(
   const level = await prisma.level.findUnique({
     where: {
       id: Number(params.id),
+      // id: 1,
     },
     include: {
       solutionPieces: true,
@@ -48,3 +63,5 @@ export async function GET(
     ) ?? [];
   return NextResponse.json({ level, allPieces });
 }
+
+export const dynamic = "force-static";

@@ -38,7 +38,7 @@ export const LevelComplete = memo(function LevelComplete({
   moves: number;
   startDate: Date;
 }) {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const { clearLocalStorage } = useLocalStorage(parseInt(params.id));
 
   return (

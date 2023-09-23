@@ -34,10 +34,10 @@ export default function Home() {
 
 const PlayButton = () => {
   const lastLevelPlayed = useMemo(() => {
-    // if (typeof window !== undefined) {
-    //   const lastLevelPlayed = window.localStorage.getItem("lastLevel");
-    //   return lastLevelPlayed ? Number(lastLevelPlayed) : 1;
-    // }
+    if (typeof window !== "undefined") {
+      const lastLevelPlayed = window.localStorage.getItem("lastLevel");
+      return lastLevelPlayed ? Number(lastLevelPlayed) : 1;
+    }
     return 1;
   }, []);
 
