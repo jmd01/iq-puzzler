@@ -37,7 +37,6 @@ export const TopSection = ({
   );
 
   const [isOpenControls, setIsOpenControls] = useState(levelId === 1);
-  console.log({ levelId, isOpenControls });
   const [isOpenSolution, setIsOpenSolution] = useState(false);
   const [hoverMusic, setHoverMusic] = useState(false);
   const [hoverFx, setHoverFx] = useState(false);

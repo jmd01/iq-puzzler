@@ -4,6 +4,7 @@ import Level from "./Level";
 export async function generateStaticParams() {
   const levels = await prisma.level.findMany();
 
+  return [{ id: "1" }, { id: "2" }];
   return levels.map(({ id }) => ({
     id: id.toString(),
   }));

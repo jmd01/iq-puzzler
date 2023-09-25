@@ -2,13 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PieceData } from "../../../../play/level/types";
 
-export async function generateStaticParams() {
-  const levels = await prisma.level.findMany();
-
-  return levels.map(({ id }) => ({
-    id: id.toString(),
-  }));
-}
+export { generateStaticParams } from "../page";
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   const level = await prisma.level.findUnique({
