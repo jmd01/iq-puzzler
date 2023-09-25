@@ -29,7 +29,7 @@ export default function Solution({ level }: { level: number }) {
 
   useEffect(() => {
     const getPieces = () => {
-      fetch(`/api/play/level/${level}`)
+      fetch(`/play/level/${level}/api`)
         .then((res) => res.json())
         .then(({ allPieces, level }) => {
           // Ensure JSON.parsed() shape and placedInCells arrays are valid

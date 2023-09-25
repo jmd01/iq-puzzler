@@ -30,17 +30,20 @@ export const TopSection = ({
   hasFx: boolean;
   toggleFx: () => void;
 }) => {
-  const [isOpenHelp, setIsOpenHelp] = useState(false);
+  const levelId = Number(
+    typeof window !== "undefined"
+      ? window.location.pathname.split("/").at(-1)
+      : 1);
+
+  const [isOpenControls, setIsOpenControls] = useState(levelId === 1);
+  console.log({ levelId, isOpenControls });
   const [isOpenSolution, setIsOpenSolution] = useState(false);
   const [hoverMusic, setHoverMusic] = useState(false);
   const [hoverFx, setHoverFx] = useState(false);
   const [hoverHelp, setHoverHelp] = useState(false);
-  const levelId =
-    typeof window !== "undefined"
-      ? window.location.pathname.split("/").at(-1)
-      : 1;
-
   const ref = useRef<HTMLDivElement>(null);
+
+  const paddingTop = ref.current?.offsetHeight || 0;
 
   return (
     <div ref={ref} className={gameAreaStyles.topSection}>
@@ -102,17 +105,22 @@ export const TopSection = ({
           <FontAwesomeIcon icon={faQuestionCircle} />
         </button>
         <button
-          onClick={() => setIsOpenHelp(!isOpenHelp)}
-          onMouseEnter={() => setHoverHelp(!isOpenHelp)}
-          onMouseLeave={() => setHoverHelp(isOpenHelp)}
+          onClick={() => setIsOpenControls(!isOpenControls)}
+          onMouseEnter={() => setHoverHelp(!isOpenControls)}
+          onMouseLeave={() => setHoverHelp(isOpenControls)}
           className={gameAreaStyles.toolbarButton}
         >
           <FontAwesomeIcon
             icon={faCog}
-            color={isOpenHelp || hoverHelp ? iconActiveColor : iconColor}
+            color={isOpenControls || hoverHelp ? iconActiveColor : iconColor}
           />
         </button>
-        {isOpenHelp && <Tooltip />}
+        {isOpenControls && (
+          <ControlsTooltip
+            top={paddingTop}
+            setIsOpenControls={setIsOpenControls}
+          />
+        )}
         {isOpenSolution && levelId && (
           <Animate
             play
@@ -132,10 +140,10 @@ export const TopSection = ({
               <div
                 className={gameAreaStyles.solutionContainer}
                 style={{
-                  paddingTop: ref.current?.offsetHeight || 0,
+                  paddingTop,
                 }}
               >
-                <Solution level={Number(levelId)} />
+                <Solution level={levelId} />
               </div>
             </div>
           </Animate>
@@ -145,83 +153,127 @@ export const TopSection = ({
   );
 };
 
-const Tooltip = () => {
+const ControlsTooltip = ({
+  top,
+  setIsOpenControls,
+}: {
+  top: number;
+  setIsOpenControls: (isOpen: boolean) => void;
+}) => {
   return (
-    <div className={classnames(gameAreaStyles.helpTooltip, inter.className)}>
-      <h2 className={sigmarOne.className}>Game Controls</h2>
-      <div className={gameAreaStyles.helpTooltipRow}>
-        <div className={gameAreaStyles.helpTooltipImg}>
-          <Image
-            src={"/piece.svg"}
-            width={112}
-            height={64}
-            alt="Piece"
-            className={gameAreaStyles.tooltipPiece}
-          />
-          <Image
-            src={"/rotate.svg"}
-            width={50}
-            height={64}
-            alt="Rotate piece"
-            className={gameAreaStyles.tooltipArrowRotate}
-          />
-        </div>
-        <div className={gameAreaStyles.helpTooltipText}>
-          <h3>Rotate</h3>
-          {isTouchDevice() ? <pre>tap</pre> : <pre>click</pre>}
-        </div>
-      </div>
-      <div className={gameAreaStyles.helpTooltipRow}>
-        <div className={gameAreaStyles.helpTooltipImg}>
-          <Image
-            src={"/piece.svg"}
-            width={112}
-            height={64}
-            alt="Piece"
-            className={gameAreaStyles.tooltipPiece}
-          />
+    // <Animate
+    //   play
+    //   duration={0.5}
+    //   start={{
+    //     opacity: 0,
+    //   }}
+    //   end={{
+    //     opacity: 1,
+    //   }}
+    //   easeType="ease-out"
+    // >
+    <div
+      className={gameAreaStyles.solutionWrapper}
+      onClick={() => setIsOpenControls(false)}
+    >
+      <div className={classnames(gameAreaStyles.helpTooltipWrapper)}>
+        <div className={classnames(gameAreaStyles.helpTooltipContainer)}>
+          <div
+            className={classnames(gameAreaStyles.helpTooltip, inter.className)}
+          >
+            <h2 className={sigmarOne.className}>Game Controls</h2>
+            <div className={gameAreaStyles.helpTooltipRow}>
+              <div className={gameAreaStyles.helpTooltipImg}>
+                <Image
+                  src={"/piece.svg"}
+                  width={112}
+                  height={64}
+                  alt="Piece"
+                  className={gameAreaStyles.tooltipPiece}
+                />
+                <Image
+                  src={"/rotate.svg"}
+                  width={50}
+                  height={64}
+                  alt="Rotate piece"
+                  className={gameAreaStyles.tooltipArrowRotate}
+                />
+              </div>
+              <div className={gameAreaStyles.helpTooltipText}>
+                <h3>Rotate</h3>
+                {isTouchDevice() ? <pre>tap</pre> : <pre>click</pre>}
+              </div>
+            </div>
+            <div className={gameAreaStyles.helpTooltipRow}>
+              <div className={gameAreaStyles.helpTooltipImg}>
+                <Image
+                  src={"/piece.svg"}
+                  width={112}
+                  height={64}
+                  alt="Piece"
+                  className={gameAreaStyles.tooltipPiece}
+                />
 
-          <Image
-            src={"/flip-v.svg"}
-            width={30}
-            height={64}
-            alt="Flip piece vertically"
-            className={gameAreaStyles.tooltipArrowFlipV}
-          />
-        </div>
-        <div className={gameAreaStyles.helpTooltipText}>
-          <h3>Flip vertically</h3>
-          {isTouchDevice() ? (
-            <pre>swipe vertically</pre>
-          ) : (
-            <>
-              <pre>cmd + click</pre>
-              <pre>ctrl + click</pre>
-            </>
-          )}
-        </div>
-      </div>
-      <div className={gameAreaStyles.helpTooltipRow}>
-        <div className={gameAreaStyles.helpTooltipImg}>
-          <Image src={"/piece.svg"} width={112} height={64} alt="Piece" />
+                <Image
+                  src={"/flip-v.svg"}
+                  width={30}
+                  height={64}
+                  alt="Flip piece vertically"
+                  className={gameAreaStyles.tooltipArrowFlipV}
+                />
+              </div>
+              <div className={gameAreaStyles.helpTooltipText}>
+                <h3>Flip vertically</h3>
+                {isTouchDevice() ? (
+                  <pre>swipe vertically</pre>
+                ) : (
+                  <>
+                    <pre>cmd + click</pre>
+                    <pre>ctrl + click</pre>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className={gameAreaStyles.helpTooltipRow}>
+              <div className={gameAreaStyles.helpTooltipImg}>
+                <Image src={"/piece.svg"} width={112} height={64} alt="Piece" />
 
-          <Image
-            src={"/flip-h.svg"}
-            width={112}
-            height={64}
-            alt="Flip piece horizontally"
-            className={gameAreaStyles.tooltipArrowFlipH}
-          />
-        </div>
-        <div className={gameAreaStyles.helpTooltipText}>
-          <h3>Flip horizontally</h3>
-          {isTouchDevice() ? (
-            <pre>swipe horizontally</pre>
-          ) : (
-            <pre>shift + click</pre>
-          )}
+                <Image
+                  src={"/flip-h.svg"}
+                  width={112}
+                  height={64}
+                  alt="Flip piece horizontally"
+                  className={gameAreaStyles.tooltipArrowFlipH}
+                />
+              </div>
+              <div className={gameAreaStyles.helpTooltipText}>
+                <h3>Flip horizontally</h3>
+                {isTouchDevice() ? (
+                  <pre>swipe horizontally</pre>
+                ) : (
+                  <pre>shift + click</pre>
+                )}
+              </div>
+            </div>
+            {isTouchDevice() ? (
+              <div className={gameAreaStyles.helpTooltipRow}>
+                <div className={gameAreaStyles.helpTooltipText}>
+                  <h3>Flip vs move</h3>
+                  <p>
+                    <b>Flip:</b> start your swipe outside the piece and swipe
+                    all the way through it.
+                  </p>
+                  <p>
+                    <b>Move:</b> make sure your start touch is on a piece, then
+                    drag as normal.
+                  </p>
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
+    // </Animate>
   );
 };
