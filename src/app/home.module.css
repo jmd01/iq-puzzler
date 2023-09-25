@@ -18,6 +18,8 @@
   align-items: center;
   justify-content: center;
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .piecesWrappper {

@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import classnames from "classnames";
 import { sigmarOne } from "./fonts";
+import { Animate } from "react-simple-animate";
 
 export default function Home() {
   return (
@@ -21,9 +22,21 @@ export default function Home() {
         className={homeStyles.homeStack}
         style={{ height: `calc(100% - 240px)` }}
       >
-        <div className={homeStyles.logoWrapper}>
-          <Logo height={240} style={{ maxWidth: "90%" }} />
-        </div>
+        <Animate
+          play
+          duration={0.2}
+          start={{
+            transform: "translateY(50px)",
+          }}
+          end={{
+            transform: "translateY(0px)",
+          }}
+          easeType="ease-out"
+        >
+          <div className={homeStyles.logoWrapper}>
+            <Logo height={240} style={{ maxWidth: "90%" }} />
+          </div>
+        </Animate>
         <PlayButton />
       </div>
       <FallingPieces />
@@ -43,18 +56,31 @@ const PlayButton = () => {
 
   return (
     <div className={homeStyles.startButtonWrapper}>
-      <div className={homeStyles.startButtonBorder}>
-        <Link
-          href={`/play/level/${lastLevelPlayed}`}
-          className={classnames(homeStyles.startButton, sigmarOne.className)}
-        >
-          <span>PLAY</span>
-          <FontAwesomeIcon
-            icon={faPlay}
-            style={{ filter: `drop-shadow(1px 1px 0 #000)` }}
-          />
-        </Link>
-      </div>
+      <Animate
+        play
+        delay={0.1}
+        duration={0.2}
+        start={{
+          transform: "translateY(20px)",
+        }}
+        end={{
+          transform: "translateY(0px)",
+        }}
+        easeType="ease-out"
+      >
+        <div className={homeStyles.startButtonBorder}>
+          <Link
+            href={`/play/level/${lastLevelPlayed}`}
+            className={classnames(homeStyles.startButton, sigmarOne.className)}
+          >
+            <span>PLAY</span>
+            <FontAwesomeIcon
+              icon={faPlay}
+              style={{ filter: `drop-shadow(1px 1px 0 #000)` }}
+            />
+          </Link>
+        </div>
+      </Animate>
     </div>
   );
 };
@@ -99,9 +125,24 @@ const Pieces = memo(function Pieces() {
         bottom: getBottom(width),
       }}
     >
-      <Row1 width={width} />
-      <Row2 width={width} />
-      <Row3 width={width} />
+      {width && scale && (
+        <Animate
+          play
+          delay={0.15}
+          duration={0.2}
+          start={{
+            transform: "translateY(20px)",
+          }}
+          end={{
+            transform: "translateY(0px)",
+          }}
+          easeType="ease-out"
+        >
+          <Row1 width={width} />
+          <Row2 width={width} />
+          <Row3 width={width} />
+        </Animate>
+      )}
     </div>
   );
 });
@@ -216,21 +257,6 @@ const Piece = ({ piece, index }: PreplacedPieceProps) => {
         ...style,
       }}
     >
-      {/* <Animate
-        key={piece.id}
-        play
-        duration={0.25}
-        delay={index * 0.03}
-        start={{
-          transform: "translateY(-20px)  scale(0)",
-          opacity: 0.5,
-        }}
-        end={{
-          transform: "translateX(0px) scale(1)",
-          opacity: 1,
-        }}
-        easeType="ease-out"
-      > */}
       <PieceDiv
         hasBoxShadow={false}
         hasOutline={false}
@@ -244,7 +270,6 @@ const Piece = ({ piece, index }: PreplacedPieceProps) => {
         isFlippedX={false}
         isFlippedY={false}
       />
-      {/* </Animate> */}
     </div>
   );
 };
