@@ -125,7 +125,7 @@ const Pieces = memo(function Pieces() {
         bottom: getBottom(width),
       }}
     >
-      {width && scale && (
+      {width && scale ? (
         <Animate
           play
           delay={0.15}
@@ -142,7 +142,7 @@ const Pieces = memo(function Pieces() {
           <Row2 width={width} />
           <Row3 width={width} />
         </Animate>
-      )}
+      ) : null}
     </div>
   );
 });
