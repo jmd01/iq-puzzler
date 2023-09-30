@@ -77,7 +77,6 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
             ref={isActivePiece ? activePieceRef : undefined}
             boardBounds={boardBounds}
             boardAnimationComplete={boardAnimationComplete}
-            initialLocalStorageData={initialLocalStorageData}
           />
         );
       })}
@@ -91,7 +90,6 @@ export type PieceProps = {
   boardBounds?: DOMRect;
   boardAnimationComplete: boolean;
   index: number;
-  initialLocalStorageData?: LevelLocalStorage;
 };
 
 export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
@@ -101,7 +99,6 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
     boardBounds,
     boardAnimationComplete,
     index,
-    initialLocalStorageData,
   },
   activePieceRef
 ) {
