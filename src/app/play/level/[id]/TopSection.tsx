@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Logo from "../components/Logo";
 import gameAreaStyles from "../styles/gameArea.module.css";
 import {
@@ -30,12 +30,7 @@ export const TopSection = ({
   hasFx: boolean;
   toggleFx: () => void;
 }) => {
-  const levelId = Number(
-    typeof window !== "undefined"
-      ? window.location.pathname.split("/").at(-1)
-      : 1
-  );
-
+  const [levelId, setLevelId] = useState<number>();
   const [isOpenControls, setIsOpenControls] = useState(levelId === 1);
   const [isOpenSolution, setIsOpenSolution] = useState(false);
   const [hoverMusic, setHoverMusic] = useState(false);
@@ -44,6 +39,15 @@ export const TopSection = ({
   const ref = useRef<HTMLDivElement>(null);
 
   const paddingTop = ref.current?.offsetHeight || 0;
+
+  useEffect(() => {
+    const levelId = Number(
+      typeof window !== "undefined"
+        ? window.location.pathname.split("/").at(-1)
+        : 1
+    );
+    setLevelId(levelId);
+  }, []);
 
   const onButtonHover = () => {
     const fx = new Audio("/button-hover.mp3");
