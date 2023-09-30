@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Confetti } from "./Confetti";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import {
   addYears,
   addMonths,
@@ -40,6 +40,29 @@ export const LevelComplete = memo(function LevelComplete({
 }) {
   const params = useParams<{ id: string }>();
   const { clearLocalStorage } = useLocalStorage(parseInt(params.id));
+
+  useEffect(() => {
+    if (isVisible) {
+      const confetti = new Audio("/confetti.mp3");
+      confetti.volume = 0.1;
+      confetti.play();
+      const complete = new Audio("/level-complete.mp3");
+      complete.volume = 0.4;
+      complete.play();
+    }
+  }, [isVisible]);
+
+  const onButtonHover = () => {
+    const fx = new Audio("/button-hover.mp3");
+    fx.volume = 0.2;
+    fx.play();
+  }
+
+  const onButtonClick = () => {
+    const fx = new Audio("/button-click.mp3");
+    fx.volume = 0.4;
+    fx.play();
+  }
 
   return (
     <div
@@ -156,6 +179,8 @@ export const LevelComplete = memo(function LevelComplete({
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
+                  onMouseEnter={onButtonHover}
+                  onClick={onButtonClick}
                 >
                   <FontAwesomeIcon icon={faHome} />
                 </Link>
@@ -166,9 +191,11 @@ export const LevelComplete = memo(function LevelComplete({
               >
                 <button
                   onClick={() => {
+                    onButtonClick();
                     clearLocalStorage();
                     window.location.reload();
                   }}
+                  onMouseEnter={onButtonHover}
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
@@ -187,6 +214,8 @@ export const LevelComplete = memo(function LevelComplete({
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
+                  onMouseEnter={onButtonHover}
+                  onClick={onButtonClick}
                 >
                   <FontAwesomeIcon icon={faForwardStep} />
                 </Link>

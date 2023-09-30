@@ -15,6 +15,15 @@
   grid-column-gap: 5px;
   justify-items: center;
   padding: 2rem;
+  position: relative;
+  z-index: 51;
+}
+
+.topSectionLevel {
+  font-size: 32px;
+  color: #4c44b4;
+  text-align: center;
+  line-height: 1;
 }
 
 @media (max-width: 800px) {
@@ -22,15 +31,31 @@
     padding: 1.5rem;
   }
 }
+@media (max-width: 400px) {
+  .topSection {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .topSectionLevel {
+    font-size: 12px;
+  }
+}
 
 @media (max-width: 600px) {
+  .topSectionLevel {
+    font-size: 16px;
+  }
+
   .topSection {
-    padding: 1rem;
+    padding: 1rem 0.6rem;
   }
 }
 
 .logoContainer {
   grid-column-start: 2;
+  padding: 0 8px;
 }
 
 .logoContainer svg {
@@ -53,6 +78,7 @@
   font-size: 40px;
   display: flex;
   gap: 24px;
+  align-items: center;
 }
 
 .toolbarLeft {

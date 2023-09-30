@@ -45,6 +45,18 @@ export const TopSection = ({
 
   const paddingTop = ref.current?.offsetHeight || 0;
 
+  const onButtonHover = () => {
+    const fx = new Audio("/button-hover.mp3");
+    fx.volume = 0.2;
+    fx.play();
+  };
+
+  const onButtonClick = () => {
+    const fx = new Audio("/button-click.mp3");
+    fx.volume = 0.4;
+    fx.play();
+  };
+
   return (
     <div ref={ref} className={gameAreaStyles.topSection}>
       <div
@@ -53,9 +65,23 @@ export const TopSection = ({
           gameAreaStyles.toolbarLeft
         )}
       >
+        <div
+          className={classnames(
+            gameAreaStyles.topSectionLevel,
+            sigmarOne.className
+          )}
+        >
+          L {levelId}
+        </div>
         <button
-          onClick={() => toggleMusic()}
-          onMouseEnter={() => setHoverMusic(!hasMusic)}
+          onClick={() => {
+            onButtonClick();
+            toggleMusic();
+          }}
+          onMouseEnter={() => {
+            onButtonHover();
+            setHoverMusic(!hasMusic);
+          }}
           onMouseLeave={() => setHoverMusic(hasMusic)}
           className={gameAreaStyles.toolbarButton}
         >
@@ -65,8 +91,14 @@ export const TopSection = ({
           />
         </button>
         <button
-          onClick={() => toggleFx()}
-          onMouseEnter={() => setHoverFx(!hasFx)}
+          onClick={() => {
+            onButtonClick();
+            toggleFx();
+          }}
+          onMouseEnter={() => {
+            onButtonHover();
+            setHoverFx(!hasFx);
+          }}
           onMouseLeave={() => setHoverFx(hasFx)}
           className={gameAreaStyles.toolbarButton}
         >
@@ -87,17 +119,21 @@ export const TopSection = ({
       >
         <button
           onClick={() => {
+            onButtonClick();
             if (typeof window !== "undefined") {
               window.localStorage.removeItem(`level-${levelId}`);
               window.location.reload();
             }
           }}
+          onMouseEnter={onButtonHover}
           className={gameAreaStyles.toolbarButton}
         >
           <FontAwesomeIcon icon={faRefresh} />
         </button>
         <button
+          onMouseEnter={onButtonHover}
           onClick={() => {
+            onButtonClick();
             setIsOpenSolution(true);
           }}
           className={gameAreaStyles.toolbarButton}
@@ -105,8 +141,14 @@ export const TopSection = ({
           <FontAwesomeIcon icon={faQuestionCircle} />
         </button>
         <button
-          onClick={() => setIsOpenControls(!isOpenControls)}
-          onMouseEnter={() => setHoverHelp(!isOpenControls)}
+          onClick={() => {
+            onButtonClick();
+            setIsOpenControls(!isOpenControls);
+          }}
+          onMouseEnter={() => {
+            onButtonHover();
+            setHoverHelp(!isOpenControls);
+          }}
           onMouseLeave={() => setHoverHelp(isOpenControls)}
           className={gameAreaStyles.toolbarButton}
         >
