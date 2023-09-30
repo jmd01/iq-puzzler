@@ -73,7 +73,7 @@ export default function PlayLayout({
     <GameContext.Provider value={value}>
       <div
         ref={gameAreaRef}
-        className={gameAreaStyles.gameArea}
+        className={gameAreaStyles.layout}
         style={{
           width: "100%",
           height: "100%",

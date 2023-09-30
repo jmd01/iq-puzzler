@@ -122,9 +122,12 @@ export const useEventHandlers = ({
       // if touch outside a piece, initiate a swipe and prevent a drag or rotation
       const touchedPieceId = getPieceIdOnMouseDown(target, pieces);
       if (!touchedPieceId) {
+        console.log("swipe start");        
         swipeStartPosition.current = touchPosition;
         return;
       }
+      console.log({ touchedPieceId });
+      
 
       // else do onMouseDown
       onMouseDown(target, touchPosition);

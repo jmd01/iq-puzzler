@@ -16,7 +16,7 @@ import { Animate } from "react-simple-animate";
 
 export default function Home() {
   return (
-    <div className={classnames(gameAreaStyles.gameArea)}>
+    <div className={classnames(gameAreaStyles.layout)}>
       <AnimatedBackground />
       <div
         className={homeStyles.homeStack}

@@ -313,7 +313,7 @@ const ControlsTooltip = ({
               {isTouchDevice() ? (
                 <div className={gameAreaStyles.helpTooltipRow}>
                   <div className={gameAreaStyles.helpTooltipText}>
-                    <h3>Flip vs move</h3>
+                    <h3>TIPS</h3>
                     <p>
                       <b>Flip:</b> start your swipe outside the piece and swipe
                       all the way through it.

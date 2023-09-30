@@ -9,6 +9,7 @@ import type { Reducer } from "react";
 import type { GameAreaAction, GameAreaDragState } from "./types";
 import type { Piece, PlacedPiece } from "../../types";
 import { useGameState } from "./hooks/useGameState";
+import gameAreaStyles from "../../../level/styles/gameArea.module.css";
 
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
@@ -70,6 +71,7 @@ export const GameArea = ({
   return (
     <>
       <div
+        className={gameAreaStyles.gameArea}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onClick={handleMouseUp}
