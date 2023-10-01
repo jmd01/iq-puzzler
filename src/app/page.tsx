@@ -13,6 +13,10 @@ import Link from "next/link";
 import classnames from "classnames";
 import { sigmarOne } from "./fonts";
 import { Animate } from "react-simple-animate";
+import {
+  onButtonClick,
+  onButtonHover,
+} from "./play/level/[id]/GameArea/hooks/useEventHandlers";
 
 export default function Home() {
   return (
@@ -54,20 +58,6 @@ const PlayButton = () => {
     return 1;
   }, []);
 
-  const onButtonHover = () => {
-    const fx = new Audio("/button-hover.mp3");
-    fx.volume = 0.2;
-    fx.play();
-  };
-
-  const onButtonClick = () => {
-    const fx = new Audio("/button-click.mp3");
-    fx.volume = 0.4;
-    fx.play();
-  };
-
-
-
   return (
     <div className={homeStyles.startButtonWrapper}>
       <Animate
@@ -86,8 +76,8 @@ const PlayButton = () => {
           <Link
             href={`/play/level/${lastLevelPlayed}`}
             className={classnames(homeStyles.startButton, sigmarOne.className)}
-            onMouseEnter={onButtonHover}
-            onClick={onButtonClick}
+            onMouseEnter={() => onButtonHover(true)}
+            onClick={() => onButtonClick(true)}
           >
             <span>PLAY</span>
             <FontAwesomeIcon

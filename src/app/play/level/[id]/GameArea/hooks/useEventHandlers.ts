@@ -509,10 +509,19 @@ const getPieceBoundsOnSwipe = (
   }
 };
 
-const playFx = (path: string, hasFx: boolean) => {
+const playFx = (path: string, hasFx: boolean, volume = 0.7) => {
   if (hasFx) {
     const audio = new Audio(path);
-    audio.volume = 0.7;
+    audio.volume = volume;
     audio.play();
   }
+};
+
+
+export const onButtonHover = (hasFx: boolean) => {
+  playFx("/button-hover.mp3", hasFx, 0.2);
+};
+
+export const onButtonClick = (hasFx: boolean) => {
+  playFx("/button-click.mp3", hasFx, 0.4);
 };

@@ -28,6 +28,11 @@ import {
   differenceInSeconds,
 } from "date-fns";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import {
+  onButtonClick,
+  onButtonHover,
+} from "./GameArea/hooks/useEventHandlers";
+import { useGameContext } from "../../GameContext";
 
 export const LevelComplete = memo(function LevelComplete({
   isVisible,
@@ -40,9 +45,10 @@ export const LevelComplete = memo(function LevelComplete({
 }) {
   const params = useParams<{ id: string }>();
   const { clearLocalStorage } = useLocalStorage(parseInt(params.id));
+  const { hasFx } = useGameContext();
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && hasFx) {
       const confetti = new Audio("/confetti.mp3");
       confetti.volume = 0.1;
       confetti.play();
@@ -50,19 +56,7 @@ export const LevelComplete = memo(function LevelComplete({
       complete.volume = 0.4;
       complete.play();
     }
-  }, [isVisible]);
-
-  const onButtonHover = () => {
-    const fx = new Audio("/button-hover.mp3");
-    fx.volume = 0.2;
-    fx.play();
-  }
-
-  const onButtonClick = () => {
-    const fx = new Audio("/button-click.mp3");
-    fx.volume = 0.4;
-    fx.play();
-  }
+  }, [hasFx, isVisible]);
 
   return (
     <div
@@ -179,8 +173,8 @@ export const LevelComplete = memo(function LevelComplete({
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
-                  onMouseEnter={onButtonHover}
-                  onClick={onButtonClick}
+                  onMouseEnter={() => onButtonHover(hasFx)}
+                  onClick={() => onButtonClick(hasFx)}
                 >
                   <FontAwesomeIcon icon={faHome} />
                 </Link>
@@ -191,11 +185,11 @@ export const LevelComplete = memo(function LevelComplete({
               >
                 <button
                   onClick={() => {
-                    onButtonClick();
+                    onButtonClick(hasFx);
                     clearLocalStorage();
                     window.location.reload();
                   }}
-                  onMouseEnter={onButtonHover}
+                  onMouseEnter={() => onButtonHover(hasFx)}
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
@@ -214,8 +208,8 @@ export const LevelComplete = memo(function LevelComplete({
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
-                  onMouseEnter={onButtonHover}
-                  onClick={onButtonClick}
+                  onMouseEnter={() => onButtonHover(hasFx)}
+                  onClick={() => onButtonClick(hasFx)}
                 >
                   <FontAwesomeIcon icon={faForwardStep} />
                 </Link>

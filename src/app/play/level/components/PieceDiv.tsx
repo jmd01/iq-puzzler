@@ -56,9 +56,9 @@ export const PieceDiv = ({
                     top: `${y * cellSize}px`,
                     width: `${cellSize}px`,
                     height: `${cellSize}px`,
-                    background: i === 0 ? color : undefined,
+                    background: i === 1 ? color : undefined,
                     backgroundImage:
-                      i === 0
+                      i === 1
                         ? `
                       radial-gradient(
                         circle at ${calcRadialGradient(
@@ -78,7 +78,7 @@ export const PieceDiv = ({
                     pointerEvents: isPlaceable ? "none" : "auto",
                     borderRadius: i === 2 ? undefined : "50%",
                     boxShadow:
-                      i === 1 && boxShadow
+                      i === 0 && boxShadow
                         ? `${calcShadow(
                             rotation,
                             isFlippedX,
@@ -86,7 +86,7 @@ export const PieceDiv = ({
                           )} 15px 0px rgb(1 1 1 / 0.45)`
                         : undefined,
                     outline:
-                      i === 1 && hasOutline
+                      i === 0 && hasOutline
                         ? "2px solid rgba(255, 255, 255, 0.8)"
                         : undefined,
                   }}

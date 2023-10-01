@@ -15,6 +15,7 @@ import { inter, sigmarOne } from "@/app/fonts";
 import Solution from "../components/solution/Solution";
 import { Animate } from "react-simple-animate";
 import { isTouchDevice } from "../utils/utils";
+import { onButtonClick, onButtonHover } from "./GameArea/hooks/useEventHandlers";
 
 const iconColor = "#352d9d";
 const iconActiveColor = "#4c44b4";
@@ -49,18 +50,6 @@ export const TopSection = ({
     setLevelId(levelId);
   }, []);
 
-  const onButtonHover = () => {
-    const fx = new Audio("/button-hover.mp3");
-    fx.volume = 0.2;
-    fx.play();
-  };
-
-  const onButtonClick = () => {
-    const fx = new Audio("/button-click.mp3");
-    fx.volume = 0.4;
-    fx.play();
-  };
-
   return (
     <div ref={ref} className={gameAreaStyles.topSection}>
       <div
@@ -79,11 +68,11 @@ export const TopSection = ({
         </div>
         <button
           onClick={() => {
-            onButtonClick();
+            onButtonClick(hasFx);
             toggleMusic();
           }}
           onMouseEnter={() => {
-            onButtonHover();
+            onButtonHover(hasFx);
             setHoverMusic(!hasMusic);
           }}
           onMouseLeave={() => setHoverMusic(hasMusic)}
@@ -96,11 +85,11 @@ export const TopSection = ({
         </button>
         <button
           onClick={() => {
-            onButtonClick();
+            onButtonClick(hasFx);
             toggleFx();
           }}
           onMouseEnter={() => {
-            onButtonHover();
+            onButtonHover(hasFx);
             setHoverFx(!hasFx);
           }}
           onMouseLeave={() => setHoverFx(hasFx)}
@@ -123,21 +112,21 @@ export const TopSection = ({
       >
         <button
           onClick={() => {
-            onButtonClick();
+            onButtonClick(hasFx);
             if (typeof window !== "undefined") {
               window.localStorage.removeItem(`level-${levelId}`);
               window.location.reload();
             }
           }}
-          onMouseEnter={onButtonHover}
+          onMouseEnter={() => onButtonHover(hasFx)}
           className={gameAreaStyles.toolbarButton}
         >
           <FontAwesomeIcon icon={faRefresh} />
         </button>
         <button
-          onMouseEnter={onButtonHover}
+          onMouseEnter={() => onButtonHover(hasFx)}
           onClick={() => {
-            onButtonClick();
+            onButtonClick(hasFx);
             setIsOpenSolution(true);
           }}
           className={gameAreaStyles.toolbarButton}
@@ -146,11 +135,11 @@ export const TopSection = ({
         </button>
         <button
           onClick={() => {
-            onButtonClick();
+            onButtonClick(hasFx);
             setIsOpenControls(!isOpenControls);
           }}
           onMouseEnter={() => {
-            onButtonHover();
+            onButtonHover(hasFx);
             setHoverHelp(!isOpenControls);
           }}
           onMouseLeave={() => setHoverHelp(isOpenControls)}
