@@ -74,7 +74,6 @@ export function calcRotatedInitialPiecePosition(
   pieceRotation: Piece["rotation"],
   pieceInitialPosition: Piece["initialPosition"],
   isPreplaced: boolean,
-  pieceId?: number
 ): Piece["initialPosition"] {
   if (isRotatedSideways(pieceRotation)) {
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
@@ -187,7 +186,7 @@ export const getIsPiecePlaceable = (
 /**
  * Utility for merging refs eg where 2 or more separate refs need to be passed to a single element
  */
-export function mergeRefs<T = any>(
+export function mergeRefs<T = unknown>(
   refs: Array<React.MutableRefObject<T> | React.LegacyRef<T>>
 ): React.RefCallback<T> {
   return (value) => {

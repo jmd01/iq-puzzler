@@ -1,4 +1,4 @@
-import { HTMLProps, MouseEventHandler, useState } from "react";
+import { HTMLProps, MouseEventHandler } from "react";
 import { Piece } from "../types";
 import { calcRadialGradient, calcShadow } from "../utils/utils";
 import { useGameContext } from "../../GameContext";

@@ -1,9 +1,7 @@
 import {
   Dispatch,
-  MouseEvent,
   SetStateAction,
   forwardRef,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -12,10 +10,7 @@ import {
 import type { Piece as PieceType } from "../types";
 import {
   calcPlacedPosition,
-  isActivePieceOverBoard,
   mergeRefs,
-  updatePiecesWithFlippedPiece,
-  updatePiecesWithRotatedPiece,
   getPlacedInCellsTopLeft,
   calcRotatedInitialPiecePosition,
 } from "../utils/utils";
@@ -25,7 +20,6 @@ import * as twStyles from "../styles/styles";
 import { useGameContext } from "../../GameContext";
 import classnames from "classnames";
 import piecesStyles from "../styles/gameArea.module.css";
-import { LevelLocalStorage } from "../[id]/hooks/useLocalStorage";
 import type { GameAreaDragState } from "../[id]/GameArea/types";
 
 export type PiecesProps = {
@@ -35,7 +29,6 @@ export type PiecesProps = {
   state: GameAreaDragState;
   boardBounds: DOMRect | undefined;
   boardAnimationComplete: boolean;
-  initialLocalStorageData?: LevelLocalStorage;
 };
 export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
   {
@@ -45,7 +38,6 @@ export const Pieces = forwardRef<HTMLDivElement, PiecesProps>(function Pieces(
     state,
     boardBounds,
     boardAnimationComplete,
-    initialLocalStorageData,
   },
   activePieceRef
 ) {

@@ -188,7 +188,7 @@ const Row2 = ({ width }: { width: number }) => {
         position: "relative",
       }}
     >
-      {row.slice(0, pieceCount).map(({ id, position, rotation }, index) => {
+      {row.slice(0, pieceCount).map(({ id, position }, index) => {
         const piece = pieces.find((piece) => piece.id === id);
         return piece ? (
           <Piece
@@ -242,7 +242,7 @@ type PreplacedPieceProps = {
   index: number;
 };
 
-const Piece = ({ piece, index }: PreplacedPieceProps) => {
+const Piece = ({ piece }: PreplacedPieceProps) => {
   const { id, position, color, height, width, currentShape, rotation } = piece;
 
   const x = position.x;
@@ -340,7 +340,7 @@ const getBottom = (width: number) => {
 };
 
 function shadeHexColor(color: string, percent: number) {
-  var f = parseInt(color.slice(1), 16),
+  const f = parseInt(color.slice(1), 16),
     t = percent < 0 ? 0 : 255,
     p = percent < 0 ? percent * -1 : percent,
     R = f >> 16,

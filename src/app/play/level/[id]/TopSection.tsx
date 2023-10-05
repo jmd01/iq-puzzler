@@ -152,7 +152,6 @@ export const TopSection = ({
         </button>
         {isOpenControls && (
           <ControlsTooltip
-            top={paddingTop}
             setIsOpenControls={setIsOpenControls}
           />
         )}
@@ -189,10 +188,8 @@ export const TopSection = ({
 };
 
 const ControlsTooltip = ({
-  top,
   setIsOpenControls,
 }: {
-  top: number;
   setIsOpenControls: (isOpen: boolean) => void;
 }) => {
   return (

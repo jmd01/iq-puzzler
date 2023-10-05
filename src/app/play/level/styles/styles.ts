@@ -68,12 +68,13 @@ export const levelCompleteContainer = twClassnames(
   flexBox("items-center", "justify-center"),
   width("w-full"),
   height("h-full"),
-  padding("p-6","sm:p-4")
+  padding("p-6", "sm:p-4")
 );
 
 export const levelCompleteBadge = twClassnames(
   layout("flex"),
   flexBox("flex-col", "items-center"),
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   borderRadius("rounded-t-2xl", "rounded-b-[64px]"),
   padding("px-12", "py-4")
@@ -95,7 +96,7 @@ export const levelCompleteText = twClassnames(
 );
 
 export const levelCompleteStatsWrapper = twClassnames(
-  fontSize("text-xl", "sm:text-3xl"),
+  fontSize("text-xl", "sm:text-3xl")
 );
 
 export const levelCompleteIcons = twClassnames(

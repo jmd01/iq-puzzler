@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import {
   removePieceFromBoard,
   addPieceToBoard,
@@ -122,12 +122,11 @@ export const useEventHandlers = ({
       // if touch outside a piece, initiate a swipe and prevent a drag or rotation
       const touchedPieceId = getPieceIdOnMouseDown(target, pieces);
       if (!touchedPieceId) {
-        console.log("swipe start");        
+        console.log("swipe start");
         swipeStartPosition.current = touchPosition;
         return;
       }
       console.log({ touchedPieceId });
-      
 
       // else do onMouseDown
       onMouseDown(target, touchPosition);
@@ -516,7 +515,6 @@ const playFx = (path: string, hasFx: boolean, volume = 0.7) => {
     audio.play();
   }
 };
-
 
 export const onButtonHover = (hasFx: boolean) => {
   playFx("/button-hover.mp3", hasFx, 0.2);

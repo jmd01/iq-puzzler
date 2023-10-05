@@ -159,7 +159,7 @@ export default function Level({ level }: { level: number }) {
             });
           }
         })
-        .catch((e) => {
+        .catch(() => {
           setLevelData({
             data: undefined,
             error: true,

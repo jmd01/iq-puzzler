@@ -94,7 +94,6 @@ export const GameArea = ({
           ref={activePieceRef}
           boardBounds={boardBounds}
           boardAnimationComplete={boardAnimationComplete}
-          initialLocalStorageData={initialLocalStorageData}
         />
       </div>
       <LevelComplete

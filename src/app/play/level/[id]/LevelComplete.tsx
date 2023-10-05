@@ -224,11 +224,11 @@ export const LevelComplete = memo(function LevelComplete({
 
 const completionTime = (startDate: Date) => {
   const y = new Date();
-  var x = startDate;
+  let x = startDate;
 
-  var temp;
+  let temp;
   temp = differenceInYears(y, x);
-  var result = temp ? temp + "y " : "";
+  let result = temp ? temp + "y " : "";
   x = addYears(x, temp);
   temp = differenceInMonths(y, x);
   result = temp ? result + temp + "m " : result;
