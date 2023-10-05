@@ -196,8 +196,8 @@ export const Piece = forwardRef<HTMLDivElement, PieceProps>(function Piece(
       <Animate
         key={piece.id}
         play
-        duration={0.25}
-        delay={index * 0.03}
+        duration={isPlaced ? 0 : 0.25}
+        delay={isPlaced ? 0 : index * 0.03}
         start={{
           transform: "translateY(-20px)  scale(0)",
           opacity: 0.5,
