@@ -24,7 +24,7 @@ export default function Home() {
       <AnimatedBackground />
       <div
         className={homeStyles.homeStack}
-        style={{ height: `calc(100% - 240px)` }}
+        style={{ height: "100%" }}
       >
         <Animate
           play
