@@ -112,7 +112,10 @@ export const useEventHandlers = ({
 
   const handleTouchStart = useCallback(
     (event: TouchEvent<HTMLDivElement>) => {
+      if (event.touches.length > 1) return;
+
       const touchEvent = event.touches[0];
+      
       const target = touchEvent.target as HTMLElement;
       const touchPosition = {
         clientX: touchEvent.clientX,
