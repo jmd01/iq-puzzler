@@ -493,3 +493,20 @@ export function isTouchDevice() {
     ("ontouchstart" in window || window.navigator.maxTouchPoints > 0)
   );
 }
+
+
+export const playFx = (path: string, hasFx: boolean, volume = 0.7) => {
+  if (hasFx) {
+    if (
+      typeof window !== "undefined" &&
+      window.ReactNativeWebView &&
+      window.IQ_IS_WEBVIEW
+    ) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ path, volume }));
+    } else {
+      const audio = new Audio(path);
+      audio.volume = volume;
+      audio.play();
+    }
+  }
+};

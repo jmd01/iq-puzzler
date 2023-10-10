@@ -33,6 +33,7 @@ import {
   onButtonHover,
 } from "./GameArea/hooks/useEventHandlers";
 import { useGameContext } from "../../GameContext";
+import { playFx } from "../utils/utils";
 
 export const LevelComplete = memo(function LevelComplete({
   isVisible,
@@ -49,12 +50,8 @@ export const LevelComplete = memo(function LevelComplete({
 
   useEffect(() => {
     if (isVisible && hasFx) {
-      const confetti = new Audio("/confetti.mp3");
-      confetti.volume = 0.1;
-      confetti.play();
-      const complete = new Audio("/level-complete.mp3");
-      complete.volume = 0.4;
-      complete.play();
+      playFx("/audio/confetti.mp3", hasFx, 0.2);
+      playFx("/audio/level-complete.mp3", hasFx, 0.3);
     }
   }, [hasFx, isVisible]);
 

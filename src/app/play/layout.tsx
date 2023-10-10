@@ -135,7 +135,7 @@ const useAudio = () => {
       audioContextRef.current = new AudioContext();
 
       // Fetch and buffer the audio - allows for seamless looping
-      fetch("/blur.mp3", { mode: "cors" })
+      fetch("/audio/blur.mp3", { mode: "cors" })
         .then(function (resp) {
           return resp.arrayBuffer();
         })
