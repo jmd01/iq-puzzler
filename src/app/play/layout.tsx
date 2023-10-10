@@ -96,6 +96,8 @@ export default function PlayLayout({
 }
 
 const useAudio = () => {
+  const [tabIsFocussed, setTabIsFocussed] = useState(true);
+
   const [hasMusic, setHasMusic] = useState(
     typeof window !== "undefined" && window.localStorage.getItem("hasMusic")
       ? window.localStorage.getItem("hasMusic") === "true"
@@ -128,8 +130,8 @@ const useAudio = () => {
 
   // Create audio and fade it in on first level loaded. Audio will loop seamlessly and will continue playing on transitioning between levels
   // TODO If loading straight to a level page (rather than from the home page), Google will prevent audio from playing since no user interactions have taken place
-  useEffect(() => {    
-    if (hasMusic) {
+  useEffect(() => {
+    if (hasMusic && tabIsFocussed) {
       audioContextRef.current = new AudioContext();
 
       // Fetch and buffer the audio - allows for seamless looping
@@ -182,7 +184,17 @@ const useAudio = () => {
 
     // Only run on first render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasMusic]);
+  }, [hasMusic, tabIsFocussed]);
+
+  useEffect(() => {
+    const handleVisibilityChange = function () {
+        setTabIsFocussed(document.visibilityState === "visible") 
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   return {
     audioContextRef,
