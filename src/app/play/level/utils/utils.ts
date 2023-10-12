@@ -73,7 +73,7 @@ export function calcRotatedInitialPiecePosition(
   pieceBounds: { width: number; height: number },
   pieceRotation: Piece["rotation"],
   pieceInitialPosition: Piece["initialPosition"],
-  isPreplaced: boolean,
+  isPreplaced: boolean
 ): Piece["initialPosition"] {
   if (isRotatedSideways(pieceRotation)) {
     const offsetX = (pieceBounds.height - pieceBounds.width) / 2;
@@ -494,6 +494,12 @@ export function isTouchDevice() {
   );
 }
 
+declare const window: {
+  IQ_IS_WEBVIEW?: boolean;
+  ReactNativeWebView: {
+    postMessage: (value: string) => void;
+  };
+} & Window;
 
 export const playFx = (path: string, hasFx: boolean, volume = 0.7) => {
   if (hasFx) {

@@ -25,13 +25,16 @@ export const TopSection = ({
   toggleMusic,
   hasFx,
   toggleFx,
+  levelId,
+  setLevelId
 }: {
   hasMusic: boolean;
   toggleMusic: () => void;
   hasFx: boolean;
   toggleFx: () => void;
+  levelId?: number;
+  setLevelId: (levelId: number) => void;
 }) => {
-  const [levelId, setLevelId] = useState<number>();
   const [isOpenControls, setIsOpenControls] = useState(levelId === 1);
   const [isOpenSolution, setIsOpenSolution] = useState(false);
   const [hoverMusic, setHoverMusic] = useState(false);
@@ -48,7 +51,9 @@ export const TopSection = ({
         : 1
     );
     setLevelId(levelId);
-  }, []);
+  }, [setLevelId]);
+
+    
 
   return (
     <div ref={ref} className={gameAreaStyles.topSection}>

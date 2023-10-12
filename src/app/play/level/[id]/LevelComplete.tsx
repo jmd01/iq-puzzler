@@ -45,8 +45,9 @@ export const LevelComplete = memo(function LevelComplete({
   startDate: Date;
 }) {
   const params = useParams<{ id: string }>();
+  const nextLevelId = parseInt(params.id) + 1;
   const { clearLocalStorage } = useLocalStorage(parseInt(params.id));
-  const { hasFx } = useGameContext();
+  const { hasFx, setLevelId } = useGameContext();
 
   useEffect(() => {
     if (isVisible && hasFx) {
@@ -200,13 +201,16 @@ export const LevelComplete = memo(function LevelComplete({
                 className={twStyles.levelCompleteIconWrapper}
               >
                 <Link
-                  href={`/play/level/${parseInt(params.id) + 1}`}
+                  href={`/play/level/${nextLevelId}`}
                   className={classnames(
                     twStyles.levelCompleteIcon,
                     levelCompleteStyles.levelCompleteIcon
                   )}
                   onMouseEnter={() => onButtonHover(hasFx)}
-                  onClick={() => onButtonClick(hasFx)}
+                  onClick={() => {
+                    onButtonClick(hasFx);
+                    setLevelId(nextLevelId);
+                  }}
                 >
                   <FontAwesomeIcon icon={faForwardStep} />
                 </Link>

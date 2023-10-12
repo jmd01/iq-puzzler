@@ -58,6 +58,9 @@ export default function PlayLayout({
     }
   }, [width, height]);
 
+  const [levelId, setLevelId] = useState<number>();
+
+
   const value = useMemo(
     () => ({
       cellSize,
@@ -65,6 +68,7 @@ export default function PlayLayout({
       height: height || 0,
       hasFx,
       toggleFx,
+      setLevelId
     }),
     [cellSize, hasFx, height, toggleFx, width]
   );
@@ -88,6 +92,8 @@ export default function PlayLayout({
           toggleMusic={toggleMusic}
           hasFx={hasFx}
           toggleFx={toggleFx}
+          levelId={levelId}
+           setLevelId={setLevelId}
         />
         {width && height && cellSize ? children : null}
       </div>
