@@ -51,8 +51,9 @@ export const LevelComplete = memo(function LevelComplete({
 
   useEffect(() => {
     if (isVisible && hasFx) {
-      playFx("/audio/confetti.mp3", hasFx, 0.2);
-      playFx("/audio/level-complete.mp3", hasFx, 0.3);
+      // playFx("/audio/confetti.mp3", hasFx, 0.2);
+      // playFx("/audio/level-complete.mp3", hasFx, 0.3);
+      playFx("/audio/level-complete-group.mp3", hasFx, 0.3);
     }
   }, [hasFx, isVisible]);
 

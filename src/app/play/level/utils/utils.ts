@@ -511,7 +511,7 @@ export const playFx = (path: string, hasFx: boolean, volume = 0.7) => {
       window.ReactNativeWebView.postMessage(JSON.stringify({ path, volume }));
     } else {
       const audio = new Audio(path);
-      audio.volume = volume;
+      // audio.volume = volume;
       audio.play();
     }
   }
