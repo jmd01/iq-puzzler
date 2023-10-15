@@ -10,6 +10,8 @@ import type { GameAreaAction, GameAreaDragState } from "./types";
 import type { Piece, PlacedPiece } from "../../types";
 import { useGameState } from "./hooks/useGameState";
 import gameAreaStyles from "../../../level/styles/gameArea.module.css";
+import { playFx } from "../../utils/utils";
+import { useGameContext } from "@/app/play/GameContext";
 
 type GameAreaProps = {
   placedPieces: PlacedPiece[];
@@ -24,6 +26,7 @@ export const GameArea = ({
   initialLocalStorageData,
   level,
 }: GameAreaProps) => {
+  const { hasFx } = useGameContext();
   const [gameState, setGameState] = useGameState(
     level,
     placedPieces,
@@ -67,6 +70,13 @@ export const GameArea = ({
   useEffect(() => {
     setLocalStoragePlacedPieces(pieces);
   }, [pieces, setLocalStoragePlacedPieces]);
+
+  useEffect(() => {
+    if (hasFx && !gameState.complete) {
+      playFx("/audio/new-level-2.mp3", hasFx, 0.3);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState.complete]);
 
   return (
     <>

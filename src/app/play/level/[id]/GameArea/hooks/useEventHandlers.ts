@@ -289,7 +289,7 @@ export const useEventHandlers = ({
 
   const onMouseUp = useCallback(
     (
-      event: { clientX: number; clientY: number },
+      _event: { clientX: number; clientY: number },
       flipX?: boolean,
       flipY?: boolean
     ) => {
@@ -512,8 +512,8 @@ const getPieceBoundsOnSwipe = (
   }
 };
 
-export const onButtonHover = (hasFx: boolean) => {
-  playFx("/audio/button-hover.mp3", hasFx, 0.2);
+export const onButtonHover = (_hasFx: boolean) => {
+  // playFx("/audio/button-hover.mp3", hasFx, 0.2);
 };
 
 export const onButtonClick = (hasFx: boolean) => {
