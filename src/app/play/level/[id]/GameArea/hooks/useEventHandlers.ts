@@ -36,6 +36,7 @@ type SwipePosition = {
 type SwipedPiece = {
   id: number;
   pieceBounds: { top: number; left: number; right: number; bottom: number };
+  placedInCells?: [number, number][];
 };
 
 export const useEventHandlers = ({
@@ -270,6 +271,18 @@ export const useEventHandlers = ({
               )
             );
 
+            // If swiped piece was placed on the board, remove it from the board grid
+            if (swipedPiece.current?.placedInCells) {
+              setGameState({
+                ...gameState,
+                complete: false,
+                grid: removePieceFromBoard(
+                  gameState.grid,
+                  swipedPiece.current.placedInCells
+                ),
+              });
+            }
+
             swipeStartPosition.current = undefined;
           }
           return;
@@ -284,7 +297,16 @@ export const useEventHandlers = ({
 
       onMove(touchEvent);
     },
-    [boardBounds, cellSize, hasFx, onMove, pieces, setPieces]
+    [
+      boardBounds,
+      cellSize,
+      gameState,
+      hasFx,
+      onMove,
+      pieces,
+      setGameState,
+      setPieces,
+    ]
   );
 
   const onMouseUp = useCallback(
@@ -507,6 +529,7 @@ const getPieceBoundsOnSwipe = (
       return {
         id: piece.id,
         pieceBounds,
+        placedInCells: piece.placedInCells,
       };
     }
   }
