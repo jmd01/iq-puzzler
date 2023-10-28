@@ -6,6 +6,8 @@ export const metadata = {
   description: "Test your IQ yo",
 };
 
+const VERSION = "1.0.0";
+
 export default function RootLayout({
   children,
 }: {
@@ -18,6 +20,18 @@ export default function RootLayout({
         style={{ height: "100vh", overflow: "hidden" }}
       >
         {children}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            opacity: 0.3,
+            color: "#FFF",
+            fontSize: 12,
+          }}
+        >
+          {VERSION}
+        </div>
       </body>
     </html>
   );
