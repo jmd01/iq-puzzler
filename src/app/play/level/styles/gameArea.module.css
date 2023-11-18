@@ -100,12 +100,15 @@
 }
 
 .toolbarButton {
-  color: #352d9d;
+  color: #4c44b4;
   width: 48px;
 }
 
 .toolbarButton :hover {
-  color: #4c44b4;
+  color: #9e97f9;
+}
+.levelButton :hover {
+  color: #9e97f9;
 }
 
 @media (max-width: 800px) {
@@ -177,6 +180,14 @@
   display: flex;
   gap: 18px;
   align-items: flex-start;
+
+}
+
+.levelSelectRow {
+  display: flex;
+  gap: 18px;
+  flex-direction: column;
+  align-items: center;
 
 }
 

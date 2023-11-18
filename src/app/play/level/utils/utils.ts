@@ -1,5 +1,6 @@
+import { match } from "ts-pattern";
 import { getFlippedShape, getRotatedShape } from "./sharedUtils";
-import type { GameState, Piece, PreviewPiece, Rotation } from "../types";
+import type { Difficulty, GameState, Piece, PreviewPiece, Rotation } from "../types";
 
 export const DRAG_START_THRESHOLD = 5;
 
@@ -516,3 +517,29 @@ export const playFx = (path: string, hasFx: boolean, volume = 0.7) => {
     }
   }
 };
+
+export const mapDifficultyToLevelId: Record<Difficulty, number> = {
+  EASY: 1,
+  MEDIUM: 2090,
+  EXPERT: 4179,
+  WIZARD: 6267,
+};
+
+export const getLevelDifficulty = (levelId: number): Difficulty => {
+  return match<number, Difficulty>(levelId)
+    .when(
+      (id) => id < mapDifficultyToLevelId["MEDIUM"],
+      () => "EASY"
+    )
+    .when(
+      (id) => id < mapDifficultyToLevelId["EXPERT"],
+      () => "MEDIUM"
+    )
+    .when(
+      (id) => id < mapDifficultyToLevelId["WIZARD"],
+      () => "EXPERT"
+    )
+    .otherwise(() => "WIZARD");
+};
+
+

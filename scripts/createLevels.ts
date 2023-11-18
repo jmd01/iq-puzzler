@@ -1,29 +1,25 @@
-import { Difficulty } from "../src/app/play/level/types";
-import { PrismaClient, Solution, SolutionPiece } from "@prisma/client";
+import { DifficultyDB } from "../src/app/play/level/types";
+import { PrismaClient, Solution } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 const getSolutions = async () => {
   return await prisma.solution.findMany({
-    // include: {
-    //   solutionPieces: true,
-    // },
   });
 };
 
 type SolutionWithPieces = Solution & {
-  // solutionPieces: SolutionPiece[];
-  difficulty: Difficulty;
+  difficulty: DifficultyDB;
 };
 /**
  * Create levels from all the solutions
  */
 getSolutions().then((solutions) => {
   const groupedSolutions = solutions.reduce<
-    Record<Difficulty, SolutionWithPieces[]>
+    Record<DifficultyDB, SolutionWithPieces[]>
   >(
     (acc, item) => {
-      const difficulty = getDifficulty(item.id);
+      const difficulty = getDifficultyDB(item.id);
       return {
         ...acc,
         [difficulty]: [...acc[difficulty], { ...item, difficulty }],
@@ -60,7 +56,7 @@ getSolutions().then((solutions) => {
   });
 });
 
-const getDifficulty = (id: number): Difficulty => {
+const getDifficultyDB = (id: number): DifficultyDB => {
   const modulo = (id % 4) as 1 | 2 | 3 | 0;
   switch (modulo) {
     case 1:
@@ -88,7 +84,7 @@ const shuffle = () => {
 /**
  * Return the first x number of ids from the shuffled array
  */
-const getRandomSolutionPieces = (difficulty: Difficulty): number[] => {
+const getRandomSolutionPieces = (difficulty: DifficultyDB): number[] => {
   switch (difficulty) {
     case "EASY":
       return shuffle().slice(0, 8);
