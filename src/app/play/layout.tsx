@@ -60,7 +60,6 @@ export default function PlayLayout({
 
   const [levelId, setLevelId] = useState<number>();
 
-
   const value = useMemo(
     () => ({
       cellSize,
@@ -68,9 +67,10 @@ export default function PlayLayout({
       height: height || 0,
       hasFx,
       toggleFx,
-      setLevelId
+      levelId,
+      setLevelId,
     }),
-    [cellSize, hasFx, height, toggleFx, width]
+    [cellSize, hasFx, height, levelId, toggleFx, width]
   );
 
   return (
@@ -93,7 +93,7 @@ export default function PlayLayout({
           hasFx={hasFx}
           toggleFx={toggleFx}
           levelId={levelId}
-           setLevelId={setLevelId}
+          setLevelId={setLevelId}
         />
         {width && height && cellSize ? children : null}
       </div>
@@ -194,7 +194,7 @@ const useAudio = () => {
 
   useEffect(() => {
     const handleVisibilityChange = function () {
-        setTabIsFocussed(document.visibilityState === "visible") 
+      setTabIsFocussed(document.visibilityState === "visible");
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {

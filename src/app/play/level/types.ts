@@ -78,7 +78,8 @@ export type GameState = {
   startDate: Date;
 };
 
-export type Difficulty = "EASY" | "INTERMEDIATE" | "EXPERT" | "WIZARD";
+export type DifficultyDB = "EASY" | "INTERMEDIATE" | "EXPERT" | "WIZARD";
+export type Difficulty = "EASY" | "MEDIUM" | "EXPERT" | "WIZARD";
 
 export const levelSchema = z
   .object({

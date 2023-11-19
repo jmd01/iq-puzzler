@@ -48,6 +48,7 @@ export const useEventHandlers = ({
   setGameState,
   activePieceRef,
   boardBounds,
+  setLocalStorageLastCompletedLevel,
 }: {
   pieces: Piece[];
   setPieces: Dispatch<SetStateAction<Piece[]>>;
@@ -57,6 +58,7 @@ export const useEventHandlers = ({
   setGameState: (gameState: GameState) => void;
   activePieceRef: RefObject<HTMLDivElement>;
   boardBounds: DOMRect | undefined;
+  setLocalStorageLastCompletedLevel: () => void;
 }) => {
   const { cellSize, hasFx } = useGameContext();
 
@@ -367,6 +369,10 @@ export const useEventHandlers = ({
             row.every((cell) => cell)
           );
 
+          if (complete) {
+            setLocalStorageLastCompletedLevel();
+          }
+
           // Delay setting game state on complete to allow piece to animate into place first
           setTimeout(
             () => {
@@ -437,6 +443,7 @@ export const useEventHandlers = ({
       state.isDragging,
       state.onMouseDownPosition,
       state.previewPiece,
+      setLocalStorageLastCompletedLevel,
     ]
   );
 

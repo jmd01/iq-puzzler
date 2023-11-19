@@ -1,4 +1,5 @@
 import { GameState, Piece } from "../../types";
+import { getLevelDifficulty } from "../../utils/utils";
 
 export type LocalStoragePiece = Pick<
   Piece,
@@ -69,6 +70,12 @@ export const useLocalStorage = (levelId: number) => {
   const setLocalStorageLastLevel = (level: number) => {
     window.localStorage.setItem("lastLevel", level.toString());
   };
+  const setLocalStorageLastCompletedLevel = () => {
+    window.localStorage.setItem(
+      `lastCompletedLevel-${getLevelDifficulty(levelId)}`,
+      levelId.toString()
+    );
+  };
 
   const clearLocalStorage = () => {
     window.localStorage.removeItem(localStorageKey);
@@ -80,6 +87,7 @@ export const useLocalStorage = (levelId: number) => {
     setLocalStorageGameState,
     setLocalStoragePlacedPieces,
     setLocalStorageLastLevel,
+    setLocalStorageLastCompletedLevel,
     clearLocalStorage,
   };
 };

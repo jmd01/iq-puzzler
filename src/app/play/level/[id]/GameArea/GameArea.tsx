@@ -36,7 +36,7 @@ export const GameArea = ({
   const [pieces, setPieces] = useState(unplacedPieces);
   const [boardAnimationComplete, setBoardAnimationComplete] = useState(false);
 
-  const { setLocalStoragePlacedPieces } = useLocalStorage(level);
+  const { setLocalStoragePlacedPieces, setLocalStorageLastCompletedLevel } = useLocalStorage(level);
 
   const [state, dispatch] = useReducer<
     Reducer<GameAreaDragState, GameAreaAction>
@@ -64,6 +64,7 @@ export const GameArea = ({
     setGameState,
     activePieceRef,
     boardBounds,
+    setLocalStorageLastCompletedLevel,
   });
 
   // Sync placed pices to local storage whenever pieces changes

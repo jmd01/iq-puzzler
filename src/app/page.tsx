@@ -22,10 +22,7 @@ export default function Home() {
   return (
     <div className={classnames(gameAreaStyles.layout)}>
       <AnimatedBackground />
-      <div
-        className={homeStyles.homeStack}
-        style={{ height: "100%" }}
-      >
+      <div className={homeStyles.homeStack} style={{ height: "100%" }}>
         <Animate
           play
           duration={0.2}

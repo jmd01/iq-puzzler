@@ -108,6 +108,7 @@ export const levelCompleteIcons = twClassnames(
 export const levelCompleteIconWrapper = twClassnames(
   borderRadius("rounded-full")
 );
+
 export const levelCompleteIcon = twClassnames(
   layout("flex"),
   flexBox("justify-center", "items-center"),

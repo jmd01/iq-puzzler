@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Confetti } from "./Confetti";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import {
   addYears,
   addMonths,
@@ -33,7 +33,8 @@ import {
   onButtonHover,
 } from "./GameArea/hooks/useEventHandlers";
 import { useGameContext } from "../../GameContext";
-import { playFx } from "../utils/utils";
+import { getLevelDifficulty, playFx } from "../utils/utils";
+import { LevelSelectorTooltip } from "./LevelSelectorTooltip";
 
 export const LevelComplete = memo(function LevelComplete({
   isVisible,
@@ -48,11 +49,10 @@ export const LevelComplete = memo(function LevelComplete({
   const nextLevelId = parseInt(params.id) + 1;
   const { clearLocalStorage } = useLocalStorage(parseInt(params.id));
   const { hasFx, setLevelId } = useGameContext();
+  const [isOpenLevelSelector, setIsOpenLevelSelector] = useState(false);
 
   useEffect(() => {
     if (isVisible && hasFx) {
-      // playFx("/audio/confetti.mp3", hasFx, 0.2);
-      // playFx("/audio/level-complete.mp3", hasFx, 0.3);
       playFx("/audio/level-complete-group.mp3", hasFx, 0.3);
     }
   }, [hasFx, isVisible]);
@@ -134,7 +134,7 @@ export const LevelComplete = memo(function LevelComplete({
                 levelCompleteStyles.levelCompleteText
               )}
             >
-              LEVEL COMPLETE
+              LEVEL {params.id} COMPLETE
             </div>
             <div
               className={classnames(
@@ -148,6 +148,7 @@ export const LevelComplete = memo(function LevelComplete({
               >
                 <div>MOVES:</div>
                 <div>TIME:</div>
+                <div>DIFFICULTY:</div>
               </div>
               <div
                 className={classnames(
@@ -156,8 +157,25 @@ export const LevelComplete = memo(function LevelComplete({
               >
                 <div>{moves}</div>
                 <div>{completionTime(startDate)}</div>
+                <div>{getLevelDifficulty(parseInt(params.id))} </div>
               </div>
             </div>
+            <button
+              className={classnames(
+                sigmarOne.className,
+                levelCompleteStyles.levelCompleteChangeButton
+              )}
+              onClick={() => setIsOpenLevelSelector(true)}
+            >
+              Change Difficulty
+            </button>
+            {isOpenLevelSelector && (
+              <LevelSelectorTooltip
+                setIsOpenLevelSelector={setIsOpenLevelSelector}
+                hasFx={hasFx}
+              />
+            )}
+
             <div
               style={{ transform: "translateY(40px)" }}
               className={twStyles.levelCompleteIcons}
