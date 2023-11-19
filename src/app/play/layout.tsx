@@ -67,9 +67,10 @@ export default function PlayLayout({
       height: height || 0,
       hasFx,
       toggleFx,
+      levelId,
       setLevelId,
     }),
-    [cellSize, hasFx, height, toggleFx, width]
+    [cellSize, hasFx, height, levelId, toggleFx, width]
   );
 
   return (

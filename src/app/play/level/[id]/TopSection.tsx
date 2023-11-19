@@ -52,19 +52,15 @@ export const TopSection = ({
   const paddingTop = ref.current?.offsetHeight || 0;
 
   useEffect(() => {
-    const levelId = Number(
-      typeof window !== "undefined"
-        ? window.location.pathname.split("/").at(-1)
-        : 1
-    );
-    setLevelId(levelId);
+    if (!levelId) {
+      return;
+    }
     setLevelDifficulty(getLevelDifficulty(levelId));
-
 
     if (levelId === 1) {
       setIsOpenControls(true);
     }
-  }, [setLevelId]);
+  }, [levelId, setLevelId]);
 
   return (
     <div ref={ref} className={gameAreaStyles.topSection}>
@@ -99,7 +95,6 @@ export const TopSection = ({
           <LevelSelectorTooltip
             setIsOpenLevelSelector={setIsOpenLevelSelector}
             hasFx={hasFx}
-            setLevelDifficulty={setLevelDifficulty}
           />
         )}
 

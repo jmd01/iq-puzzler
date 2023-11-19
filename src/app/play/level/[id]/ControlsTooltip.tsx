@@ -134,11 +134,11 @@ export const ControlsTooltip = ({
                   <div className={gameAreaStyles.helpTooltipText}>
                     <h3>TIPS</h3>
                     <p>
-                      <b>Flip:</b> start your swipe outside the piece and swipe
+                      <b>Flip:</b> start your swipe <b>OUTSIDE</b> the piece and swipe
                       all the way through it.
                     </p>
                     <p>
-                      <b>Move:</b> make sure your start touch is on a piece,
+                      <b>Move:</b> make sure your start touch is <b>ON</b> a piece,
                       then drag as normal.
                     </p>
                   </div>

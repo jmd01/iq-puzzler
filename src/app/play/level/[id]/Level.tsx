@@ -27,7 +27,7 @@ export default function Level({ level }: { level: number }) {
     loading: true,
   });
 
-  const { cellSize } = useGameContext();
+  const { cellSize, setLevelId } = useGameContext();
   const localStorage = useLocalStorage(level);
 
   useEffect(() => {
@@ -175,6 +175,11 @@ export default function Level({ level }: { level: number }) {
   useEffect(() => {
     localStorage.setLocalStorageLastLevel(level);
   }, [level, localStorage]);
+
+  // Set the level id in the Top section which is defined above the dynamic route so doesn't have the route params
+  useEffect(() => {
+    setLevelId(level);
+  }, [setLevelId, level]);
 
   if (levelData.data) {
     return (

@@ -542,4 +542,16 @@ export const getLevelDifficulty = (levelId: number): Difficulty => {
     .otherwise(() => "WIZARD");
 };
 
+export const getNextUncompletedLevel = (difficulty: Difficulty): number => {
+  if (typeof window !== "undefined") {
+    const lastCompletedLevel = window.localStorage.getItem(
+      `lastCompletedLevel-${difficulty}`
+    );
+    return lastCompletedLevel
+      ? Number(lastCompletedLevel) + 1
+      : mapDifficultyToLevelId[difficulty];
+  }
+  return 1;
+};
+
 

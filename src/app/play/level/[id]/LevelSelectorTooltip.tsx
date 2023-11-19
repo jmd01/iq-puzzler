@@ -8,24 +8,21 @@ import {
   onButtonClick,
   onButtonHover,
 } from "./GameArea/hooks/useEventHandlers";
-import { useGameContext } from "../../GameContext";
 import Link from "next/link";
 import { Difficulty } from "../types";
-import { mapDifficultyToLevelId } from "../utils/utils";
+import {
+  getNextUncompletedLevel,
+} from "../utils/utils";
 import * as twStyles from "../styles/styles";
 import levelCompleteStyles from "../styles/levelComplete.module.css";
 
 export const LevelSelectorTooltip = ({
   setIsOpenLevelSelector,
-  setLevelDifficulty,
   hasFx,
 }: {
   setIsOpenLevelSelector: (isOpen: boolean) => void;
-  setLevelDifficulty: (difficulty: Difficulty) => void;
   hasFx: boolean;
 }) => {
-  const { setLevelId } = useGameContext();
-
   return (
     <div
       className={gameAreaStyles.solutionWrapper}
@@ -75,30 +72,22 @@ export const LevelSelectorTooltip = ({
                 <LevelSelectorButton
                   hasFx={hasFx}
                   difficulty="EASY"
-                  setLevelId={setLevelId}
                   color="#fe0665"
-                  setLevelDifficulty={setLevelDifficulty}
                 />
                 <LevelSelectorButton
                   hasFx={hasFx}
                   difficulty="MEDIUM"
-                  setLevelId={setLevelId}
                   color="#8100ff"
-                  setLevelDifficulty={setLevelDifficulty}
                 />
                 <LevelSelectorButton
                   hasFx={hasFx}
                   difficulty="EXPERT"
-                  setLevelId={setLevelId}
                   color="#00c04b"
-                  setLevelDifficulty={setLevelDifficulty}
                 />
                 <LevelSelectorButton
                   hasFx={hasFx}
                   difficulty="WIZARD"
-                  setLevelId={setLevelId}
                   color="#0011ff"
-                  setLevelDifficulty={setLevelDifficulty}
                 />
               </div>
             </div>
@@ -112,14 +101,10 @@ export const LevelSelectorTooltip = ({
 export const LevelSelectorButton = ({
   hasFx,
   difficulty,
-  setLevelId,
-  setLevelDifficulty,
   color,
 }: {
   hasFx: boolean;
   difficulty: Difficulty;
-  setLevelId: (level: number) => void;
-  setLevelDifficulty: (difficulty: Difficulty) => void;
   color: string;
 }) => {
   return (
@@ -128,18 +113,16 @@ export const LevelSelectorButton = ({
       className={twStyles.levelCompleteIconWrapper}
     >
       <Link
-        href={`/play/level/${mapDifficultyToLevelId[difficulty]}`}
+        href={`/play/level/${getNextUncompletedLevel(difficulty)}`}
         className={classnames(
           twStyles.levelCompleteIcon,
           levelCompleteStyles.levelCompleteIcon,
           sigmarOne.className,
-          "w-auto h-12 px-4 py-1 text-white"
+          "w-auto sm:w-auto h-12 px-4 py-1 text-white"
         )}
         onMouseEnter={() => onButtonHover(hasFx)}
         onClick={() => {
           onButtonClick(hasFx);
-          setLevelId(mapDifficultyToLevelId[difficulty]);
-          setLevelDifficulty(difficulty);
         }}
       >
         {difficulty}

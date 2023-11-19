@@ -6,6 +6,7 @@ type GameContextProps = {
   height: number;
   hasFx: boolean;
   toggleFx: () => void;
+  levelId?: number;
   setLevelId: (levelId?: number) => void;
 };
 
@@ -15,6 +16,7 @@ export const GameContext = createContext<GameContextProps>({
   height: 0,
   hasFx: true,
   toggleFx: () => {},
+  levelId: undefined,
   setLevelId: () => {},
 });
 export const useGameContext = () => useContext(GameContext);
